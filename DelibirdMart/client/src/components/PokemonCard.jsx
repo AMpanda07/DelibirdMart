@@ -1,204 +1,285 @@
 /**
  * PokemonCard.jsx
- * Reusable Pokémon listing card. Used in Home (featured grid) and Marketplace.
- * Features: 5-degree hover tilt, magnetic adopt button, stat mini-bars,
- *           type + rarity badges, PokeAPI artwork.
+ * High-visibility Pokémon card with HopeRise aesthetics.
+ * Features:
+ *   – Web Audio API sound triggers on user interaction
+ *   – Crystal-clear background contrast (#0F1F33 container)
+ *   – Vibrant Type badges, Rarity tags, & Evolution Stage indicators
+ *   – 3D motion spring tilt & hover elevation
+ *   – Instant adoption feedback
  */
 import React, { useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Star, Heart, ShoppingBag, Zap, TrendingUp } from 'lucide-react';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { Star, Heart, ShoppingBag, Sparkles, ShieldCheck } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { TYPE_MAP, formatPrice } from '../data/mockData';
+import { sound } from '../utils/audio';
 
-/* ── Stat mini bar ─────────────────────────────────────────────── */
-function StatBar({ label, value, max = 160, color = '#2B59FF' }) {
+/* ── Price Formatter ───────────────────────────────────────────── */
+const fmt = (p) =>
+  new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(p);
+
+/* ── Type Badges Lookup ────────────────────────────────────────── */
+const TYPE_INFO = {
+  fire:     { emoji: '🔥', cls: 'type-fire'     },
+  water:    { emoji: '💧', cls: 'type-water'    },
+  grass:    { emoji: '🌿', cls: 'type-grass'    },
+  electric: { emoji: '⚡', cls: 'type-electric' },
+  psychic:  { emoji: '🔮', cls: 'type-psychic'  },
+  fighting: { emoji: '🥊', cls: 'type-fighting' },
+  dragon:   { emoji: '🐉', cls: 'type-dragon'   },
+  ghost:    { emoji: '👻', cls: 'type-ghost'    },
+  dark:     { emoji: '🌑', cls: 'type-dark'     },
+  fairy:    { emoji: '✨', cls: 'type-fairy'    },
+  ice:      { emoji: '❄️', cls: 'type-ice'      },
+  steel:    { emoji: '⚙️', cls: 'type-steel'    },
+  normal:   { emoji: '⭕', cls: 'type-normal'   },
+  flying:   { emoji: '🪶', cls: 'type-flying'   },
+  poison:   { emoji: '☠️', cls: 'type-poison'   },
+  ground:   { emoji: '🌍', cls: 'type-ground'   },
+  rock:     { emoji: '🪨', cls: 'type-rock'     },
+  bug:      { emoji: '🐛', cls: 'type-bug'      },
+};
+
+/* ── Rarity Styles ─────────────────────────────────────────────── */
+const RARITY_CONFIG = {
+  Common:    { cls: 'rarity-common',    icon: null,  glow: '#94A3B8' },
+  Uncommon:  { cls: 'rarity-uncommon',  icon: '🌱',  glow: '#10B981' },
+  Rare:      { cls: 'rarity-rare',      icon: '💎',  glow: '#3B82F6' },
+  Epic:      { cls: 'rarity-epic',      icon: '👑',  glow: '#FFB800' },
+  Legendary: { cls: 'rarity-legendary', icon: '🔥',  glow: '#EF4444' },
+};
+
+/* ── Evolution Stage Config ───────────────────────────────────── */
+const EVO_CONFIG = {
+  1: { label: 'Stage 1', cls: 'bg-slate-800/80 border-slate-500/50 text-slate-200' },
+  2: { label: 'Stage 2', cls: 'bg-blue-900/80 border-blue-400/60 text-blue-200' },
+  3: { label: 'Stage 3', cls: 'bg-orange-900/80 border-orange-400/60 text-orange-200' },
+  'Base':    { label: 'Stage 1', cls: 'bg-slate-800/80 border-slate-500/50 text-slate-200' },
+  'Stage 1': { label: 'Stage 2', cls: 'bg-blue-900/80 border-blue-400/60 text-blue-200' },
+  'Stage 2': { label: 'Stage 3', cls: 'bg-orange-900/80 border-orange-400/60 text-orange-200' },
+};
+
+/* ── Type Accent Glows ─────────────────────────────────────────── */
+function getTypeAccent(type) {
+  const accents = {
+    fire: '#FF5A36', water: '#3B82F6', grass: '#10B981', electric: '#FFB800',
+    psychic: '#EC4899', dragon: '#6366F1', ghost: '#8B5CF6', dark: '#64748B',
+    fairy: '#F472B6', ice: '#06B6D4', steel: '#94A3B8', fighting: '#EF4444',
+    poison: '#A855F7', ground: '#D97706', rock: '#78716C', flying: '#38BDF8',
+    bug: '#84CC16', normal: '#A1A1AA',
+  };
+  return accents[type] || '#2B59FF';
+}
+
+/* ── Stat Bar Component ────────────────────────────────────────── */
+function StatBar({ label, value, max = 160, color }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="font-body text-[10px] text-white/35 w-[22px] shrink-0">{label}</span>
-      <div className="flex-1 h-1 rounded-full bg-white/8 overflow-hidden">
+      <span className="font-body text-[10px] font-semibold text-slate-400 w-6 shrink-0">{label}</span>
+      <div className="flex-1 h-1.5 rounded-full bg-slate-800/90 border border-white/5 overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           whileInView={{ width: `${Math.min((value / max) * 100, 100)}%` }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: 'easeOut', delay: 0.15 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
           className="h-full rounded-full"
           style={{ background: color }}
         />
       </div>
-      <span className="font-num text-[10px] text-white/50 w-[22px] text-right shrink-0">{value}</span>
+      <span className="font-num text-[10px] font-bold text-slate-300 w-6 text-right shrink-0">{value}</span>
     </div>
   );
 }
 
-/* ── Rarity config ─────────────────────────────────────────────── */
-const RARITY_CONFIG = {
-  Common:    { cls: 'rarity-common', icon: null },
-  Rare:      { cls: 'rarity-rare',   icon: '⭐' },
-  Epic:      { cls: 'rarity-epic',   icon: '💎' },
-  Legendary: { cls: 'rarity-legendary', icon: '👑' },
-};
-
+/* ── Pokémon Card Component ────────────────────────────────────── */
 export default function PokemonCard({ pokemon, compact = false }) {
   const cardRef = useRef(null);
   const { addToCart, isInCart } = useCart();
   const [liked, setLiked] = useState(false);
   const [addedFlash, setAddedFlash] = useState(false);
 
-  /* 3D tilt via MotionValues */
+  /* 3D Motion Spring Tilt */
   const rotX = useMotionValue(0);
   const rotY = useMotionValue(0);
-  const springX = useSpring(rotX, { stiffness: 220, damping: 20 });
-  const springY = useSpring(rotY, { stiffness: 220, damping: 20 });
+  const springX = useSpring(rotX, { stiffness: 240, damping: 22 });
+  const springY = useSpring(rotY, { stiffness: 240, damping: 22 });
 
   const handleMouseMove = (e) => {
     const rect = cardRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const x = (e.clientX - rect.left) / rect.width  - 0.5;
-    const y = (e.clientY - rect.top)  / rect.height - 0.5;
-    rotX.set(-y * 8);   // max ±4deg vertically
-    rotY.set( x * 8);   // max ±4deg horizontally
+    rotX.set(-((e.clientY - rect.top) / rect.height - 0.5) * 8);
+    rotY.set(((e.clientX - rect.left) / rect.width - 0.5) * 8);
   };
-  const resetTilt = () => { rotX.set(0); rotY.set(0); };
 
-  const handleAdopt = () => {
+  const handleMouseLeave = () => {
+    rotX.set(0);
+    rotY.set(0);
+  };
+
+  const toggleWishlist = (e) => {
+    e.stopPropagation();
+    sound.playPop();
+    setLiked(l => !l);
+  };
+
+  const handleAdoptClick = (e) => {
+    e.stopPropagation();
+    sound.playSuccess();
     addToCart(pokemon);
     setAddedFlash(true);
     setTimeout(() => setAddedFlash(false), 1400);
   };
 
-  const rarity = RARITY_CONFIG[pokemon.rarity] ?? RARITY_CONFIG.Common;
+  /* Metadata Resolution */
+  const primaryType = pokemon.types?.[0] || 'normal';
+  const accent = getTypeAccent(primaryType);
+  const rarity = RARITY_CONFIG[pokemon.rarity] || RARITY_CONFIG.Common;
+  const evoKey = pokemon.evolutionStage ?? pokemon.evolutionLevel ?? 1;
+  const evo = EVO_CONFIG[evoKey] || EVO_CONFIG[1];
   const inCart = isInCart(pokemon.id);
-
-  const statColor = pokemon.types[0] === 'fire'
-    ? '#f87171'
-    : pokemon.types[0] === 'water'
-    ? '#60a5fa'
-    : pokemon.types[0] === 'electric'
-    ? '#facc15'
-    : '#6366f1';
 
   return (
     <motion.div
       ref={cardRef}
-      style={{ rotateX: springX, rotateY: springY, perspective: 1000 }}
+      style={{ rotateX: springX, rotateY: springY }}
       onMouseMove={handleMouseMove}
-      onMouseLeave={resetTilt}
-      whileHover={{ y: -8 }}
-      transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-      className="relative glass-card rounded-2xl overflow-hidden cursor-default group"
+      onMouseLeave={handleMouseLeave}
+      onClick={() => sound.playClick()}
+      className="pokemon-card-container relative rounded-2xl overflow-hidden cursor-pointer group flex flex-col justify-between"
     >
-      {/* ── Shimmer overlay on hover ─── */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none shimmer rounded-2xl" />
+      {/* Top Accent Line */}
+      <div
+        className="h-1 w-full"
+        style={{ background: `linear-gradient(90deg, ${accent}, #FF5A36)` }}
+      />
 
-      {/* ── Top: rarity + wishlist ─── */}
-      <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10">
-        <span className={`${rarity.cls} border font-body text-[10px] font-semibold px-2 py-0.5 rounded-full`}>
-          {rarity.icon && <span className="mr-1">{rarity.icon}</span>}
-          {pokemon.rarity}
-        </span>
+      {/* ── Top Floating Badges ── */}
+      <div className="p-3 pb-0 flex items-start justify-between relative z-20">
+        <div className="flex flex-col gap-1">
+          <span className={`${rarity.cls} text-[10px] font-head font-bold px-2.5 py-0.5 rounded-full backdrop-blur-md`}>
+            {rarity.icon && <span className="mr-1">{rarity.icon}</span>}
+            {pokemon.rarity}
+          </span>
+          <span className={`${evo.cls} text-[10px] font-head font-semibold px-2 py-0.5 rounded-full border backdrop-blur-md self-start`}>
+            {evo.label}
+          </span>
+        </div>
+
+        {/* Wishlist Button */}
         <button
-          onClick={() => setLiked(l => !l)}
-          className="w-8 h-8 rounded-full glass flex items-center justify-center transition-all duration-200 cursor-pointer hover:scale-110"
+          onClick={toggleWishlist}
+          className="w-8 h-8 rounded-full bg-slate-900/80 border border-white/20 flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md"
         >
-          <Heart
-            className={`w-3.5 h-3.5 transition-colors ${liked ? 'text-red-400 fill-red-400' : 'text-white/40'}`}
-          />
+          <Heart className={`w-4 h-4 transition-colors ${liked ? 'text-rose-500 fill-rose-500' : 'text-slate-400'}`} />
         </button>
       </div>
 
-      {/* ── Artwork panel ─── */}
-      <div className="relative h-44 flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-950/40 via-purple-950/30 to-transparent pt-4">
-        {/* Radial glow behind Pokémon */}
+      {/* ── Pokémon Artwork Display Panel ── */}
+      <div className="relative h-44 flex items-center justify-center my-2">
+        {/* Glow Sphere */}
         <div
-          className="absolute w-32 h-32 rounded-full opacity-30 blur-2xl"
-          style={{ background: statColor }}
+          className="absolute w-28 h-28 rounded-full opacity-35 blur-xl group-hover:scale-125 transition-transform duration-500"
+          style={{ background: accent }}
         />
+        <div
+          className="absolute w-36 h-36 rounded-full border border-white/5 opacity-40 animate-pulse"
+        />
+
+        {/* Pokémon Image */}
         <motion.img
           src={pokemon.image}
           alt={pokemon.name}
-          className="relative z-10 w-[120px] h-[120px] object-contain group-hover:scale-110 transition-transform duration-500"
+          className="relative z-10 w-32 h-32 object-contain group-hover:scale-115 transition-transform duration-500"
+          style={{ filter: `drop-shadow(0 10px 20px ${accent}60)` }}
           loading="lazy"
-          initial={{ opacity: 0, scale: 0.85 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          onError={(e) => {
+            e.currentTarget.style.opacity = '0.4';
+          }}
         />
-        {/* Stock indicator */}
-        {pokemon.stock <= 2 && (
-          <div className="absolute bottom-2 right-3 font-body text-[10px] text-amber-400 bg-amber-400/10 border border-amber-400/30 px-2 py-0.5 rounded-full">
-            Only {pokemon.stock} left
+
+        {/* Pokédex Number Tag */}
+        {pokemon.pokedexId && (
+          <div className="absolute bottom-1 right-4 font-num text-[11px] font-bold text-slate-500/80 bg-slate-900/60 px-2 py-0.5 rounded-md border border-white/5">
+            #{String(pokemon.pokedexId).padStart(3, '0')}
           </div>
         )}
       </div>
 
-      {/* ── Card body ─── */}
-      <div className="p-4 space-y-3">
-
-        {/* Name + region */}
+      {/* ── Content Section ── */}
+      <div className="p-4 pt-2 bg-slate-950/40 border-t border-white/10 flex-1 flex flex-col justify-between space-y-3">
+        {/* Title & Rating */}
         <div>
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <h3 className="font-head text-base font-extrabold text-white leading-tight">{pokemon.name}</h3>
-              <p className="font-body text-[11px] text-white/40 mt-0.5">{pokemon.subtitle}</p>
-            </div>
-            {/* Pokédex number */}
-            <span className="font-num text-[11px] text-white/25 shrink-0">#{String(pokemon.pokedexId).padStart(3,'0')}</span>
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="font-head text-base font-bold text-white tracking-wide group-hover:text-amber-400 transition-colors">
+              {pokemon.name}
+            </h3>
+            {pokemon.rating && (
+              <div className="flex items-center gap-1 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full shrink-0">
+                <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                <span className="font-num text-xs font-bold text-amber-300">{pokemon.rating}</span>
+              </div>
+            )}
           </div>
-
-          {/* Rating */}
-          <div className="flex items-center gap-1 mt-1.5">
-            <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-            <span className="font-num text-xs font-semibold text-white/70">{pokemon.rating}</span>
-            <span className="font-body text-[10px] text-white/30">({pokemon.reviewCount})</span>
-          </div>
+          <p className="font-body text-[11px] text-slate-400 mt-0.5">{pokemon.subtitle || 'Verified Companion'}</p>
         </div>
 
-        {/* Type badges */}
+        {/* Type Badges */}
         <div className="flex items-center gap-1.5 flex-wrap">
-          {pokemon.types.map(t => {
-            const info = TYPE_MAP[t];
+          {(pokemon.types || []).slice(0, 2).map(t => {
+            const info = TYPE_INFO[t] || { emoji: '✨', cls: 'type-normal' };
             return (
-              <span key={t} className={`type-${t} border font-body text-[10px] font-medium px-2 py-0.5 rounded-full`}>
-                {info?.emoji} {info?.label ?? t}
+              <span key={t} className={`${info.cls} text-[10px] font-head font-medium px-2.5 py-0.5 rounded-full`}>
+                {info.emoji} {t.toUpperCase()}
               </span>
             );
           })}
-          <span className="ml-auto font-body text-[10px] text-white/30">{pokemon.region}</span>
+          {pokemon.region && (
+            <span className="ml-auto font-body text-[10px] text-slate-400 font-semibold bg-slate-800/80 px-2 py-0.5 rounded-md border border-white/5">
+              {pokemon.region}
+            </span>
+          )}
         </div>
 
-        {/* Mini stats (only in non-compact mode) */}
-        {!compact && (
-          <div className="space-y-1 py-2 border-t border-b border-white/6">
-            <StatBar label="ATK" value={pokemon.stats.attack}        color={statColor} />
-            <StatBar label="DEF" value={pokemon.stats.defense}       color={statColor} />
-            <StatBar label="SPD" value={pokemon.stats.speed}         color={statColor} />
+        {/* Stat Bars (non-compact mode) */}
+        {!compact && pokemon.stats && (
+          <div className="space-y-1.5 py-2 border-y border-white/10 bg-slate-900/50 px-2.5 rounded-xl">
+            <StatBar label="ATK" value={pokemon.stats.attack} color={accent} />
+            <StatBar label="DEF" value={pokemon.stats.defense} color={accent} />
+            <StatBar label="SPD" value={pokemon.stats.speed} color={accent} />
           </div>
         )}
 
-        {/* Price + CTA */}
+        {/* Price & Adopt Button */}
         <div className="flex items-center justify-between pt-1">
           <div>
-            <div className="font-body text-[10px] text-white/30 uppercase tracking-wide">Adoption fee</div>
-            <div className="font-num text-base font-bold text-white">{formatPrice(pokemon.price)}</div>
+            <div className="font-body text-[9px] text-slate-400 uppercase tracking-widest font-semibold">Adoption Fee</div>
+            <div className="font-num text-lg font-bold text-white tracking-tight">
+              {fmt(pokemon.price)}
+            </div>
           </div>
+
           <motion.button
-            id={`adopt-btn-${pokemon.id}`}
-            onClick={handleAdopt}
-            whileTap={{ scale: 0.94 }}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-head font-bold transition-all cursor-pointer ${
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleAdoptClick}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-head font-bold shadow-lg transition-all cursor-pointer ${
               addedFlash
-                ? 'bg-green-500 text-white border border-green-400 shadow-[0_0_16px_rgba(34,197,94,0.5)]'
+                ? 'bg-emerald-500 text-white border border-emerald-400 shadow-emerald-500/50'
                 : inCart
-                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/40 hover:bg-blue-500/30'
+                ? 'bg-blue-600/90 text-white border border-blue-400 shadow-blue-500/30 hover:bg-blue-500'
                 : 'btn-primary text-white'
             }`}
           >
             {addedFlash ? (
               <>✓ Added!</>
             ) : inCart ? (
-              <><ShoppingBag className="w-3.5 h-3.5" />In Bag</>
+              <><ShoppingBag className="w-3.5 h-3.5" /> Adopted</>
             ) : (
-              <><ShoppingBag className="w-3.5 h-3.5" />Adopt</>
+              <><ShoppingBag className="w-3.5 h-3.5" /> Adopt</>
             )}
           </motion.button>
         </div>

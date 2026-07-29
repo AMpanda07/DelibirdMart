@@ -1,30 +1,73 @@
 /**
  * Marketplace.jsx
- * Full browsing page with:
- *  - Sidebar: Type filter, Rarity filter, Price slider, Region filter
- *  - Header: Sort + result count
- *  - Responsive product grid using PokemonCard
- *  - URL search param sync (?type=, ?rarity=)
- *  - Animated filter state
+ * HopeRise Inspired Browsing Interface
+ * Features:
+ *   – Sound synthesized audio effects on every filter toggle & page jump
+ *   – High visibility filters (Type, Evolution Stage 1/2/3, Rarity, Region, Price)
+ *   – Paginated infinite scroll via usePokemonInfinite
  */
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SlidersHorizontal, Search, X, ChevronDown, ChevronUp, Filter } from 'lucide-react';
+import {
+  SlidersHorizontal, Search, X, ChevronDown, ChevronUp,
+  Filter, Loader2, AlertCircle, RefreshCw, Dna, Sparkles
+} from 'lucide-react';
 import PokemonCard from '../components/PokemonCard';
-import { POKEMON_LIST, TYPES, RARITIES, TYPE_MAP } from '../data/mockData';
+import PokemonCardSkeleton from '../components/PokemonCardSkeleton';
+import { usePokemonInfinite } from '../hooks/usePokemon';
+import {
+  applyFilters, sortPokemon,
+  EVOLUTION_STAGES, GENERATIONS, RARITIES,
+} from '../services/pokemonService';
+import { sound } from '../utils/audio';
 
-/* ── Sidebar section accordion ────────────────────────────────── */
-function FilterSection({ title, children, defaultOpen = true }) {
+const TYPES = [
+  { id: 'fire',     emoji: '🔥', label: 'Fire'     },
+  { id: 'water',    emoji: '💧', label: 'Water'    },
+  { id: 'grass',    emoji: '🌿', label: 'Grass'    },
+  { id: 'electric', emoji: '⚡', label: 'Electric' },
+  { id: 'psychic',  emoji: '🔮', label: 'Psychic'  },
+  { id: 'fighting', emoji: '🥊', label: 'Fighting' },
+  { id: 'dragon',   emoji: '🐉', label: 'Dragon'   },
+  { id: 'ghost',    emoji: '👻', label: 'Ghost'    },
+  { id: 'dark',     emoji: '🌑', label: 'Dark'     },
+  { id: 'fairy',    emoji: '✨', label: 'Fairy'    },
+  { id: 'ice',      emoji: '❄️', label: 'Ice'      },
+  { id: 'steel',    emoji: '⚙️', label: 'Steel'    },
+  { id: 'normal',   emoji: '⭕', label: 'Normal'   },
+  { id: 'flying',   emoji: '🪶', label: 'Flying'   },
+  { id: 'poison',   emoji: '☠️', label: 'Poison'   },
+  { id: 'ground',   emoji: '🌍', label: 'Ground'   },
+  { id: 'rock',     emoji: '🪨', label: 'Rock'     },
+  { id: 'bug',      emoji: '🐛', label: 'Bug'      },
+];
+
+const SORT_OPTIONS = [
+  { value: 'featured',   label: 'Featured'            },
+  { value: 'price-asc',  label: 'Price: Low → High'   },
+  { value: 'price-desc', label: 'Price: High → Low'   },
+  { value: 'rating',     label: 'Top Rated'           },
+  { value: 'bst-desc',   label: 'Strongest (BST)'     },
+  { value: 'name',       label: 'A → Z'               },
+];
+
+const MAX_PRICE = 260000;
+
+function FilterSection({ title, icon: Icon, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-white/6 py-4">
+    <div className="border-b border-white/10 py-3.5">
       <button
-        onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between font-head text-sm font-bold text-white/70 hover:text-white transition-colors cursor-pointer"
+        onClick={() => {
+          sound.playFilter();
+          setOpen(o => !o);
+        }}
+        className="w-full flex items-center gap-2 font-head text-xs font-bold text-slate-300 hover:text-orange-400 transition-colors cursor-pointer uppercase tracking-wider"
       >
-        {title}
-        {open ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+        {Icon && <Icon className="w-3.5 h-3.5 text-orange-400 shrink-0" />}
+        <span className="flex-1 text-left">{title}</span>
+        {open ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
       </button>
       <AnimatePresence initial={false}>
         {open && (
@@ -32,10 +75,10 @@ function FilterSection({ title, children, defaultOpen = true }) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="pt-3 space-y-2">{children}</div>
+            <div className="pt-3 space-y-1.5">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -43,104 +86,104 @@ function FilterSection({ title, children, defaultOpen = true }) {
   );
 }
 
-/* ── Sort options ─────────────────────────────────────────────── */
-const SORT_OPTIONS = [
-  { value: 'featured',  label: 'Featured'     },
-  { value: 'price-asc', label: 'Price: Low → High' },
-  { value: 'price-desc',label: 'Price: High → Low' },
-  { value: 'rating',    label: 'Top Rated'    },
-  { value: 'newest',    label: 'Newest First' },
-];
-
-const REGIONS = ['All', 'Kalos', 'Kanto', 'Hoenn', 'Sinnoh', 'Paldea'];
-
-/* ── MAX_PRICE ────────────────────────────────────────────────── */
-const MAX_PRICE = 100000;
-
 export default function Marketplace() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const { allPokemon, total, hasMore, loading, error, loadMore, reset } = usePokemonInfinite(20);
 
-  /* ── Filter state ── */
-  const [searchQuery,    setSearchQuery]    = useState('');
-  const [selectedTypes,  setSelectedTypes]  = useState(() => {
-    const t = searchParams.get('type');
-    return t ? [t] : [];
+  const [searchQuery,      setSearchQuery]      = useState('');
+  const [selectedTypes,    setSelectedTypes]    = useState(() => {
+    const t = searchParams.get('type'); return t ? [t] : [];
+  });
+  const [selectedStages,   setSelectedStages]   = useState(() => {
+    const s = searchParams.get('stage'); return s ? [Number(s)] : [];
   });
   const [selectedRarities, setSelectedRarities] = useState([]);
-  const [selectedRegion,   setSelectedRegion]   = useState('All');
+  const [selectedRegions,  setSelectedRegions]  = useState([]);
   const [maxPrice,         setMaxPrice]         = useState(MAX_PRICE);
   const [sortBy,           setSortBy]           = useState('featured');
-  const [sidebarOpen,      setSidebarOpen]      = useState(false); // mobile
+  const [sidebarOpen,      setSidebarOpen]      = useState(false);
 
-  /* ── Sync URL param on mount ── */
-  useEffect(() => {
-    const t = searchParams.get('type');
-    if (t) setSelectedTypes([t]);
-  }, []); // eslint-disable-line
+  const filtered = useMemo(() => {
+    const filters = {
+      types:           selectedTypes,
+      rarities:        selectedRarities,
+      evolutionStages: selectedStages,
+      regions:         selectedRegions,
+      maxPrice:        maxPrice < MAX_PRICE ? maxPrice : undefined,
+      searchQuery,
+    };
+    return sortPokemon(applyFilters(allPokemon, filters), sortBy);
+  }, [allPokemon, selectedTypes, selectedRarities, selectedStages, selectedRegions, maxPrice, searchQuery, sortBy]);
 
-  /* ── Toggle helpers ── */
-  const toggleType = (typeId) => {
-    setSelectedTypes(prev =>
-      prev.includes(typeId) ? prev.filter(t => t !== typeId) : [...prev, typeId]
-    );
+  const makeToggle = setter => val => {
+    sound.playFilter();
+    setter(prev => prev.includes(val) ? prev.filter(x => x !== val) : [...prev, val]);
   };
-  const toggleRarity = (r) => {
-    setSelectedRarities(prev =>
-      prev.includes(r) ? prev.filter(x => x !== r) : [...prev, r]
-    );
-  };
+
+  const toggleType   = useCallback(makeToggle(setSelectedTypes), []);
+  const toggleStage  = useCallback(makeToggle(setSelectedStages), []);
+  const toggleRarity = useCallback(makeToggle(setSelectedRarities), []);
+  const toggleRegion = useCallback(makeToggle(setSelectedRegions), []);
+
+  const hasFilters =
+    selectedTypes.length > 0  || selectedStages.length > 0  ||
+    selectedRarities.length > 0 || selectedRegions.length > 0 ||
+    maxPrice < MAX_PRICE        || Boolean(searchQuery);
+
   const clearFilters = () => {
+    sound.playPop();
     setSelectedTypes([]);
+    setSelectedStages([]);
     setSelectedRarities([]);
-    setSelectedRegion('All');
+    setSelectedRegions([]);
     setMaxPrice(MAX_PRICE);
     setSearchQuery('');
     setSortBy('featured');
   };
-  const hasFilters = selectedTypes.length > 0 || selectedRarities.length > 0
-    || selectedRegion !== 'All' || maxPrice < MAX_PRICE || searchQuery;
 
-  /* ── Filtered + sorted list ── */
-  const filtered = useMemo(() => {
-    let list = POKEMON_LIST.filter(p => {
-      const matchType   = selectedTypes.length === 0 || selectedTypes.some(t => p.types.includes(t));
-      const matchRarity = selectedRarities.length === 0 || selectedRarities.includes(p.rarity);
-      const matchRegion = selectedRegion === 'All' || p.region === selectedRegion;
-      const matchPrice  = p.price <= maxPrice;
-      const q = searchQuery.toLowerCase();
-      const matchSearch = !q || p.name.toLowerCase().includes(q) || p.types.some(t => t.includes(q));
-      return matchType && matchRarity && matchRegion && matchPrice && matchSearch;
-    });
-
-    switch (sortBy) {
-      case 'price-asc':  return [...list].sort((a,b) => a.price - b.price);
-      case 'price-desc': return [...list].sort((a,b) => b.price - a.price);
-      case 'rating':     return [...list].sort((a,b) => b.rating - a.rating);
-      case 'newest':     return [...list].reverse();
-      default:           return list; // featured = default order
-    }
-  }, [selectedTypes, selectedRarities, selectedRegion, maxPrice, searchQuery, sortBy]);
-
-  /* ── Sidebar panel (shared desktop/mobile) ── */
   const SidebarContent = () => (
-    <div className="space-y-0">
-      {/* Types */}
+    <div className="space-y-1">
+      {/* Type */}
       <FilterSection title="Pokémon Type">
         <div className="grid grid-cols-2 gap-1.5">
-          {TYPES.map(type => {
-            const active = selectedTypes.includes(type.id);
+          {TYPES.map(t => {
+            const active = selectedTypes.includes(t.id);
             return (
               <button
-                key={type.id}
-                onClick={() => toggleType(type.id)}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-body font-medium transition-all cursor-pointer border ${
+                key={t.id}
+                onClick={() => toggleType(t.id)}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-head font-semibold border transition-all cursor-pointer ${
                   active
-                    ? `type-${type.id} border-opacity-60`
-                    : 'glass border-white/8 text-white/50 hover:text-white hover:border-white/15'
+                    ? `type-${t.id} border-orange-500/80 shadow-md`
+                    : 'bg-slate-900/80 border-white/10 text-slate-400 hover:text-white hover:border-white/20'
                 }`}
               >
-                <span>{type.emoji}</span>
-                <span>{type.label}</span>
+                <span>{t.emoji}</span>
+                <span>{t.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </FilterSection>
+
+      {/* Evolution Stage */}
+      <FilterSection title="Evolution Stage" icon={Dna}>
+        <div className="space-y-2">
+          {EVOLUTION_STAGES.map(({ value, label, description }) => {
+            const active = selectedStages.includes(value);
+            const count  = allPokemon.filter(p => p.evolutionStage === value).length;
+            return (
+              <button
+                key={value}
+                onClick={() => toggleStage(value)}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-head font-bold border transition-all cursor-pointer ${
+                  active
+                    ? 'bg-orange-500/20 border-orange-500 text-orange-300 shadow-md'
+                    : 'bg-slate-900/80 border-white/10 text-slate-400 hover:text-white'
+                }`}
+              >
+                <span>{label} <span className="text-[10px] font-normal text-slate-400">({description})</span></span>
+                <span className="font-num text-xs text-slate-400">{count}</span>
               </button>
             );
           })}
@@ -148,22 +191,23 @@ export default function Marketplace() {
       </FilterSection>
 
       {/* Rarity */}
-      <FilterSection title="Rarity">
+      <FilterSection title="Rarity Tier">
         <div className="space-y-1.5">
           {RARITIES.map(r => {
             const active = selectedRarities.includes(r);
-            const cls = `rarity-${r.toLowerCase()}`;
             return (
               <button
                 key={r}
                 onClick={() => toggleRarity(r)}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-body font-medium border transition-all cursor-pointer ${
-                  active ? `${cls} border-opacity-60 glass` : 'glass border-white/8 text-white/50 hover:text-white'
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-head font-bold border transition-all cursor-pointer ${
+                  active
+                    ? 'bg-blue-600/30 border-blue-400 text-blue-200'
+                    : 'bg-slate-900/80 border-white/10 text-slate-400 hover:text-white'
                 }`}
               >
                 <span>{r}</span>
-                <span className="font-num text-[11px] text-white/30">
-                  {POKEMON_LIST.filter(p => p.rarity === r).length}
+                <span className="font-num text-xs text-slate-400">
+                  {allPokemon.filter(p => p.rarity === r).length}
                 </span>
               </button>
             );
@@ -172,53 +216,48 @@ export default function Marketplace() {
       </FilterSection>
 
       {/* Region */}
-      <FilterSection title="Region">
+      <FilterSection title="Region" defaultOpen={false}>
         <div className="flex flex-wrap gap-1.5">
-          {REGIONS.map(reg => (
+          {GENERATIONS.map(gen => (
             <button
-              key={reg}
-              onClick={() => setSelectedRegion(reg)}
-              className={`px-3 py-1 rounded-full text-xs font-body border transition-all cursor-pointer ${
-                selectedRegion === reg
-                  ? 'bg-blue-500/20 border-blue-500/40 text-blue-300'
-                  : 'glass border-white/8 text-white/40 hover:text-white'
+              key={gen}
+              onClick={() => toggleRegion(gen)}
+              className={`px-3 py-1 rounded-full text-xs font-head font-bold border transition-all cursor-pointer ${
+                selectedRegions.includes(gen)
+                  ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300'
+                  : 'bg-slate-900/80 border-white/10 text-slate-400 hover:text-white'
               }`}
             >
-              {reg}
+              {gen}
             </button>
           ))}
         </div>
       </FilterSection>
 
-      {/* Price slider */}
-      <FilterSection title="Max Adoption Fee" defaultOpen>
+      {/* Price Slider */}
+      <FilterSection title="Max Adoption Fee">
         <div className="space-y-3">
           <input
-            type="range"
-            min={0}
-            max={MAX_PRICE}
-            step={1000}
+            type="range" min={0} max={MAX_PRICE} step={5000}
             value={maxPrice}
             onChange={e => setMaxPrice(Number(e.target.value))}
             className="w-full"
             style={{ '--val': `${(maxPrice / MAX_PRICE) * 100}%` }}
           />
-          <div className="flex justify-between font-num text-xs text-white/40">
+          <div className="flex justify-between font-num text-xs font-bold text-slate-400">
             <span>₹0</span>
-            <span className="text-blue-400 font-semibold">₹{maxPrice.toLocaleString('en-IN')}</span>
+            <span className="text-orange-400">₹{maxPrice.toLocaleString('en-IN')}</span>
           </div>
         </div>
       </FilterSection>
 
-      {/* Clear */}
       {hasFilters && (
         <div className="pt-3">
           <button
             onClick={clearFilters}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl glass border border-red-500/25 text-red-400 hover:bg-red-500/10 transition-all text-xs font-body font-semibold cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 hover:bg-rose-500/30 text-xs font-head font-bold cursor-pointer"
           >
-            <X className="w-3.5 h-3.5" />
-            Clear All Filters
+            <X className="w-4 h-4" /> Reset Filters
           </button>
         </div>
       )}
@@ -226,199 +265,114 @@ export default function Marketplace() {
   );
 
   return (
-    <main className="min-h-screen pt-24 pb-16 bg-lumiose">
+    <main className="min-h-screen pt-28 pb-20 bg-lumiose">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* ── Page header ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8 space-y-1"
-        >
-          <p className="font-body text-xs text-blue-400 uppercase tracking-widest font-medium">Lumiose City Marketplace</p>
-          <h1 className="font-head text-3xl sm:text-4xl font-extrabold text-white">
-            Find Your <span className="gradient-text">Companion</span>
+        {/* Page Header */}
+        <div className="mb-8">
+          <span className="font-head text-xs font-bold text-orange-400 uppercase tracking-widest bg-orange-500/10 px-3.5 py-1.5 rounded-full border border-orange-500/20">
+            Lumiose Sanctuary Catalog
+          </span>
+          <h1 className="font-head text-3xl sm:text-4xl font-extrabold text-white mt-3">
+            Adopt a <span className="gradient-text">Companion</span>
           </h1>
-          <p className="font-body text-white/45 text-sm">{POKEMON_LIST.length} Pokémon available for adoption</p>
-        </motion.div>
+          <p className="font-body text-slate-400 text-sm mt-1">
+            {filtered.length} shown · {allPokemon.length} loaded of {total.toLocaleString()} PokéDex entries
+          </p>
+        </div>
 
-        {/* ── Search + mobile filter toggle ── */}
+        {/* Search */}
         <div className="flex items-center gap-3 mb-6">
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
-              placeholder="Search Pokémon by name or type…"
+              placeholder="Search Pokémon by name, type, or region..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl glass border border-white/10 font-body text-sm text-white placeholder-white/30
-                         focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/25 transition-all"
+              className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-900/90 border border-white/15 text-white placeholder-slate-400 font-body text-sm focus:outline-none focus:border-orange-500 transition-all"
             />
           </div>
-
-          {/* Mobile filter toggle */}
           <button
-            onClick={() => setSidebarOpen(o => !o)}
-            className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl btn-ghost text-white/70 font-body text-sm cursor-pointer shrink-0"
+            onClick={() => {
+              sound.playPop();
+              setSidebarOpen(o => !o);
+            }}
+            className="lg:hidden flex items-center gap-2 px-4 py-3 rounded-xl btn-ghost text-white font-head text-xs font-bold shrink-0"
           >
-            <Filter className="w-4 h-4" />
-            Filters
-            {hasFilters && <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />}
+            <Filter className="w-4 h-4 text-orange-400" /> Filters
           </button>
         </div>
 
-        <div className="flex gap-7">
-
-          {/* ── Desktop Sidebar ── */}
-          <aside className="hidden lg:block w-60 shrink-0">
-            <div className="sticky top-28 glass-card rounded-2xl p-5">
-              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/8">
-                <SlidersHorizontal className="w-4 h-4 text-blue-400" />
-                <span className="font-head text-sm font-bold text-white">Filters</span>
-                {hasFilters && (
-                  <span className="ml-auto text-[10px] font-body text-blue-400 bg-blue-500/15 px-2 py-0.5 rounded-full border border-blue-500/25">Active</span>
-                )}
+        <div className="flex gap-8">
+          {/* Desktop Sidebar */}
+          <aside className="hidden lg:block w-64 shrink-0">
+            <div className="sticky top-28 pokemon-card-container rounded-2xl p-5 max-h-[calc(100vh-140px)] overflow-y-auto">
+              <div className="flex items-center gap-2 mb-3 pb-3 border-b border-white/10">
+                <SlidersHorizontal className="w-4 h-4 text-orange-400" />
+                <span className="font-head text-sm font-bold text-white">Filter Directory</span>
               </div>
               <SidebarContent />
             </div>
           </aside>
 
-          {/* ── Mobile Sidebar Overlay ── */}
-          <AnimatePresence>
-            {sidebarOpen && (
-              <>
-                <motion.div
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                  className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
-                  onClick={() => setSidebarOpen(false)}
-                />
-                <motion.div
-                  initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
-                  transition={{ type: 'spring', damping: 28, stiffness: 220 }}
-                  className="fixed left-0 top-0 h-full w-72 glass-strong border-r border-white/10 z-50 overflow-y-auto p-6 lg:hidden"
-                >
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="font-head text-sm font-bold text-white flex items-center gap-2">
-                      <SlidersHorizontal className="w-4 h-4 text-blue-400" />
-                      Filters
-                    </span>
-                    <button onClick={() => setSidebarOpen(false)} className="p-1.5 rounded-xl glass text-white/50 hover:text-white cursor-pointer">
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <SidebarContent />
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>
-
-          {/* ── Main product area ── */}
-          <div className="flex-1 min-w-0 space-y-5">
-
-            {/* Sort bar */}
+          {/* Grid */}
+          <div className="flex-1 min-w-0 space-y-6">
             <div className="flex items-center justify-between">
-              <p className="font-body text-sm text-white/40">
-                Showing <span className="text-white font-semibold">{filtered.length}</span> Pokémon
-              </p>
-              <div className="flex items-center gap-2">
-                <span className="font-body text-xs text-white/40 hidden sm:inline">Sort by:</span>
-                <select
-                  value={sortBy}
-                  onChange={e => setSortBy(e.target.value)}
-                  className="glass border border-white/10 rounded-xl px-3 py-1.5 font-body text-sm text-white bg-transparent
-                             focus:outline-none focus:border-blue-500/50 cursor-pointer appearance-none pr-8"
-                  style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2'%3E%3Cpolyline points='6,9 12,15 18,9'/%3E%3C/svg%3E\")", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center' }}
-                >
-                  {SORT_OPTIONS.map(o => (
-                    <option key={o.value} value={o.value} className="bg-[#0C1B30]">
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <span className="font-body text-sm font-bold text-slate-300">
+                Showing {filtered.length} Pokémon
+              </span>
+              <select
+                value={sortBy}
+                onChange={e => {
+                  sound.playFilter();
+                  setSortBy(e.target.value);
+                }}
+                className="bg-slate-900 border border-white/15 rounded-xl px-4 py-2 text-xs font-head font-bold text-white focus:outline-none focus:border-orange-500"
+              >
+                {SORT_OPTIONS.map(o => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
             </div>
 
-            {/* Active filter pills */}
-            <AnimatePresence>
-              {hasFilters && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="flex flex-wrap gap-2 overflow-hidden"
-                >
-                  {selectedTypes.map(t => (
-                    <span
-                      key={t}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full glass border border-white/12 text-xs font-body text-white/70"
-                    >
-                      {TYPE_MAP[t]?.emoji} {TYPE_MAP[t]?.label}
-                      <button onClick={() => toggleType(t)} className="text-white/40 hover:text-white cursor-pointer">
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  ))}
-                  {selectedRarities.map(r => (
-                    <span
-                      key={r}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full glass border border-white/12 text-xs font-body text-white/70"
-                    >
-                      {r}
-                      <button onClick={() => toggleRarity(r)} className="text-white/40 hover:text-white cursor-pointer">
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  ))}
-                  {selectedRegion !== 'All' && (
-                    <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full glass border border-white/12 text-xs font-body text-white/70">
-                      {selectedRegion}
-                      <button onClick={() => setSelectedRegion('All')} className="text-white/40 hover:text-white cursor-pointer">
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Grid */}
-            {filtered.length > 0 ? (
-              <motion.div
-                layout
-                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"
-              >
-                <AnimatePresence mode="popLayout">
-                  {filtered.map(pokemon => (
-                    <motion.div
-                      key={pokemon.id}
-                      layout
-                      initial={{ opacity: 0, scale: 0.93 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.93 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <PokemonCard pokemon={pokemon} />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </motion.div>
+            {/* Product Cards */}
+            {filtered.length > 0 || (loading && allPokemon.length === 0) ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                {filtered.map(p => <PokemonCard key={p.id} pokemon={p} />)}
+                {loading && allPokemon.length === 0 &&
+                  Array.from({ length: 20 }).map((_, i) => <PokemonCardSkeleton key={i} />)
+                }
+              </div>
             ) : (
-              <motion.div
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                className="glass-card rounded-2xl p-14 text-center space-y-4"
-              >
-                <div className="text-4xl">🔍</div>
-                <h3 className="font-head text-lg font-bold text-white">No Pokémon Found</h3>
-                <p className="font-body text-sm text-white/40 max-w-xs mx-auto">
-                  No Pokémon match your current filters. Try adjusting or clearing them.
+              <div className="pokemon-card-container rounded-2xl p-12 text-center space-y-4">
+                <div className="text-5xl">🔎</div>
+                <h3 className="font-head text-lg font-bold text-white">No Matching Pokémon</h3>
+                <p className="font-body text-xs text-slate-400 max-w-xs mx-auto">
+                  Try broadening your search filters to find available Pokémon.
                 </p>
-                <button
-                  onClick={clearFilters}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl btn-primary text-white font-body text-sm font-medium cursor-pointer"
-                >
-                  Clear Filters
+                <button onClick={clearFilters} className="px-5 py-2.5 rounded-xl btn-primary text-white font-head text-xs font-bold cursor-pointer">
+                  Reset All Filters
                 </button>
-              </motion.div>
+              </div>
+            )}
+
+            {/* Load More Pagination */}
+            {hasMore && filtered.length > 0 && (
+              <div className="flex flex-col items-center gap-3 pt-8">
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => {
+                    sound.playPop();
+                    loadMore();
+                  }}
+                  className="px-8 py-3.5 rounded-2xl btn-primary text-white font-head font-bold text-sm cursor-pointer shadow-xl flex items-center gap-2"
+                >
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                  Load Next 20 Pokémon
+                </motion.button>
+              </div>
             )}
           </div>
         </div>

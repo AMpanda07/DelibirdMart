@@ -1,46 +1,37 @@
 /**
  * Navbar.jsx
- * Sticky glassmorphic navbar with:
- *  - Brand logo (left)
- *  - Nav links (center, desktop)
- *  - Cart badge + Trainer avatar (right)
- *  - Shrinks/thickens on scroll (Framer Motion)
- *  - Mobile hamburger drawer
+ * Sticky HopeRise inspired glassmorphic navbar with audio interaction.
  */
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  ShoppingBag, User, Menu, X, ChevronDown,
-  MapPin, Sparkles, Shield
-} from 'lucide-react';
+import { ShoppingBag, Menu, X, MapPin, Shield, Sparkles, Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { sound } from '../utils/audio';
 import CartDrawerNew from './CartDrawerNew';
 
-/* ── Nav links ──────────────────────────────────────────────────── */
 const NAV_LINKS = [
   { href: '/',            label: 'Home' },
   { href: '/marketplace', label: 'Marketplace' },
-  { href: '/about',       label: 'About' },
 ];
 
 export default function Navbar() {
-  const [scrolled,    setScrolled]    = useState(false);
-  const [mobileOpen,  setMobileOpen]  = useState(false);
-  const { totalItems, isOpen: cartOpen, setIsOpen: setCartOpen } = useCart();
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { totalItems, setIsOpen: setCartOpen } = useCart();
   const { trainer, isAuthenticated } = useAuth();
   const location = useLocation();
 
-  /* Shrink on scroll */
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  /* Close mobile menu on route change */
-  useEffect(() => { setMobileOpen(false); }, [location.pathname]);
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname]);
 
   const isActive = useCallback(
     (href) => href === '/'
@@ -54,55 +45,60 @@ export default function Navbar() {
       <motion.header
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className="fixed top-0 left-0 right-0 z-50"
       >
         <motion.div
           animate={{
-            paddingTop:    scrolled ? '10px' : '16px',
+            paddingTop: scrolled ? '10px' : '16px',
             paddingBottom: scrolled ? '10px' : '16px',
           }}
-          transition={{ duration: 0.3, ease: 'easeOut' }}
+          transition={{ duration: 0.3 }}
           className={`mx-4 mt-3 rounded-2xl transition-all duration-300 ${
             scrolled
-              ? 'glass-strong shadow-[0_8px_32px_rgba(0,0,0,0.5)]'
-              : 'glass shadow-[0_4px_24px_rgba(0,0,0,0.25)]'
+              ? 'glass-strong shadow-[0_12px_40px_rgba(0,0,0,0.7)]'
+              : 'glass shadow-[0_6px_30px_rgba(0,0,0,0.4)]'
           }`}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-6">
 
-            {/* ── Logo ─── */}
-            <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
-              <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
-                <span className="text-lg">🐦</span>
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-400/30 to-transparent" />
+            {/* Logo */}
+            <Link
+              to="/"
+              onClick={() => sound.playClick()}
+              className="flex items-center gap-3 shrink-0 group"
+            >
+              <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 via-rose-500 to-blue-600 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
+                <span className="text-xl">🐦</span>
+                <div className="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <div className="leading-none">
-                <div className="font-head text-[13px] font-black text-white tracking-tight group-hover:text-blue-300 transition-colors">
-                  Delibird
+                <div className="font-head text-base font-black text-white tracking-tight group-hover:text-amber-400 transition-colors">
+                  Delibird <span className="text-rose-500">Mart</span>
                 </div>
-                <div className="font-body text-[10px] text-blue-400/80 tracking-widest uppercase">
-                  Mart
+                <div className="font-body text-[10px] text-slate-400 tracking-widest uppercase mt-0.5 font-semibold">
+                  Lumiose Sanctuary
                 </div>
               </div>
             </Link>
 
-            {/* ── Center Nav (desktop) ─── */}
-            <nav className="hidden md:flex items-center gap-1">
+            {/* Nav Links (Desktop) */}
+            <nav className="hidden md:flex items-center gap-1 bg-slate-900/60 p-1.5 rounded-2xl border border-white/10">
               {NAV_LINKS.map(link => (
                 <Link
                   key={link.href}
                   to={link.href}
-                  className={`relative px-4 py-2 rounded-xl font-body text-sm font-medium transition-all duration-200 ${
+                  onClick={() => sound.playPop()}
+                  className={`relative px-5 py-2 rounded-xl font-head text-xs font-bold transition-all duration-200 ${
                     isActive(link.href)
                       ? 'text-white'
-                      : 'text-white/60 hover:text-white'
+                      : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   {isActive(link.href) && (
                     <motion.div
-                      layoutId="nav-indicator"
-                      className="absolute inset-0 rounded-xl bg-white/10 border border-white/12"
+                      layoutId="nav-pill"
+                      className="absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500 to-rose-500 shadow-md"
                       transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
                     />
                   )}
@@ -111,29 +107,34 @@ export default function Navbar() {
               ))}
             </nav>
 
-            {/* ── Right Icons ─── */}
-            <div className="flex items-center gap-2 shrink-0">
+            {/* Right Controls */}
+            <div className="flex items-center gap-3 shrink-0">
 
-              {/* Location chip */}
-              <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full glass text-xs text-white/50 border border-white/8 font-body">
-                <MapPin className="w-3 h-3 text-blue-400" />
+              {/* Lumiose Tag */}
+              <div className="hidden lg:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-xs font-body font-semibold text-emerald-400">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
                 <span>Lumiose City</span>
               </div>
 
-              {/* Cart */}
+              {/* Cart Drawer Button */}
               <button
                 id="cart-btn"
-                onClick={() => setCartOpen(true)}
-                className="relative flex items-center gap-1.5 px-3 py-2 rounded-xl btn-ghost text-sm font-medium text-white/80 hover:text-white transition-all"
+                onClick={() => {
+                  sound.playPop();
+                  setCartOpen(true);
+                }}
+                className="relative flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/80 border border-white/15 hover:border-orange-500/50 text-white font-head text-xs font-bold transition-all cursor-pointer shadow-md active:scale-95"
               >
-                <ShoppingBag className="w-4.5 h-4.5" />
-                <span className="hidden sm:inline font-body text-sm">Cart</span>
+                <ShoppingBag className="w-4 h-4 text-orange-400" />
+                <span className="hidden sm:inline">Bag</span>
                 <AnimatePresence>
                   {totalItems > 0 && (
                     <motion.span
                       key="badge"
-                      initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
-                      className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-blue-500 text-white font-num text-[10px] font-bold flex items-center justify-center shadow-[0_0_10px_rgba(43,89,255,0.7)]"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      className="min-w-[20px] h-[20px] px-1 rounded-full bg-rose-500 text-white font-num text-[11px] font-bold flex items-center justify-center shadow-lg"
                     >
                       {totalItems}
                     </motion.span>
@@ -141,83 +142,72 @@ export default function Navbar() {
                 </AnimatePresence>
               </button>
 
-              {/* Trainer profile / Sign In */}
+              {/* Trainer Card / Sign In */}
               {isAuthenticated ? (
-                <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl btn-ghost cursor-pointer">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-white/10 cursor-pointer">
                   <img
                     src={trainer.avatar}
                     alt={trainer.displayName}
                     className="w-7 h-7 rounded-lg"
                   />
                   <div className="hidden sm:block leading-none">
-                    <div className="font-body text-[11px] text-white font-medium">{trainer.displayName}</div>
-                    <div className="font-body text-[10px] text-blue-400">{trainer.badge}</div>
+                    <div className="font-head text-[11px] text-white font-bold">{trainer.displayName}</div>
+                    <div className="font-body text-[10px] text-amber-400 font-semibold">{trainer.badge}</div>
                   </div>
                 </div>
               ) : (
                 <button
                   id="signin-btn"
-                  className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl btn-primary text-white text-sm font-medium font-body cursor-pointer"
+                  onClick={() => sound.playClick()}
+                  className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl btn-primary text-white text-xs font-head font-bold cursor-pointer"
                 >
                   <Shield className="w-3.5 h-3.5" />
                   Sign In
                 </button>
               )}
 
-              {/* Mobile hamburger */}
+              {/* Mobile Hamburger */}
               <button
-                id="mobile-menu-btn"
-                onClick={() => setMobileOpen(o => !o)}
-                className="md:hidden p-2 rounded-xl btn-ghost text-white/70 hover:text-white transition-colors"
+                onClick={() => {
+                  sound.playPop();
+                  setMobileOpen(o => !o);
+                }}
+                className="md:hidden p-2 rounded-xl bg-slate-800/80 border border-white/10 text-white/80 hover:text-white"
               >
-                <AnimatePresence mode="wait" initial={false}>
-                  {mobileOpen
-                    ? <motion.div key="x"    initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}><X className="w-5 h-5" /></motion.div>
-                    : <motion.div key="menu" initial={{ rotate:  90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}><Menu className="w-5 h-5" /></motion.div>
-                  }
-                </AnimatePresence>
+                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
           </div>
 
-          {/* ── Mobile Menu Drawer ─── */}
+          {/* Mobile Drawer */}
           <AnimatePresence>
             {mobileOpen && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="overflow-hidden md:hidden border-t border-white/10 mt-2"
+                className="overflow-hidden md:hidden border-t border-white/10 mt-3 pt-2 px-4 pb-4 space-y-2"
               >
-                <div className="px-4 py-4 space-y-1">
-                  {NAV_LINKS.map(link => (
-                    <Link
-                      key={link.href}
-                      to={link.href}
-                      className={`flex items-center px-4 py-3 rounded-xl font-body text-sm font-medium transition-all ${
-                        isActive(link.href)
-                          ? 'bg-blue-500/20 text-white border border-blue-500/30'
-                          : 'text-white/60 hover:text-white hover:bg-white/5'
-                      }`}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                  {!isAuthenticated && (
-                    <button className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-xl btn-primary text-white text-sm font-medium font-body cursor-pointer">
-                      <Shield className="w-4 h-4" />
-                      Sign In as Trainer
-                    </button>
-                  )}
-                </div>
+                {NAV_LINKS.map(link => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => sound.playPop()}
+                    className={`block px-4 py-3 rounded-xl font-head text-sm font-bold transition-all ${
+                      isActive(link.href)
+                        ? 'bg-gradient-to-r from-orange-500 to-rose-500 text-white'
+                        : 'text-slate-300 hover:bg-slate-800'
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </motion.div>
             )}
           </AnimatePresence>
         </motion.div>
       </motion.header>
 
-      {/* Cart Drawer */}
       <CartDrawerNew />
     </>
   );
