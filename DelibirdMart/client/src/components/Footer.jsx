@@ -6,7 +6,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Twitter, Github, Mail, MapPin, Shield, Zap, Heart } from 'lucide-react';
+import { AtSign, Code2, Mail, MapPin, Shield, Zap, Heart } from 'lucide-react';
 
 const LINKS = {
   Marketplace: [
@@ -37,9 +37,9 @@ const ROADMAP = [
 ];
 
 const SOCIALS = [
-  { icon: Twitter, label: 'Twitter', href: '#' },
-  { icon: Github,  label: 'GitHub',  href: '#' },
-  { icon: Mail,    label: 'Email',   href: '#' },
+  { icon: AtSign, label: 'Twitter', href: '#' },
+  { icon: Code2,  label: 'GitHub',  href: '#' },
+  { icon: Mail,   label: 'Email',   href: '#' },
 ];
 
 export default function Footer() {
