@@ -1,6 +1,6 @@
 /**
  * CartDrawerNew.jsx
- * Slide-over cart drawer with HopeRise aesthetics and Web Audio feedback.
+ * Slide-over cart drawer with Red, Black and White theme styling.
  */
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -36,7 +36,7 @@ export default function CartDrawerNew() {
         <div className="fixed inset-0 z-[60] overflow-hidden">
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/70 backdrop-blur-md"
+            className="absolute inset-0 bg-black/80 backdrop-blur-md"
             onClick={() => {
               sound.playClick();
               setIsOpen(false);
@@ -48,13 +48,13 @@ export default function CartDrawerNew() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 220 }}
-            className="absolute right-0 top-0 h-full w-full max-w-md bg-slate-950 border-l border-white/15 flex flex-col shadow-2xl"
+            className="absolute right-0 top-0 h-full w-full max-w-md bg-black border-l border-red-600/30 flex flex-col shadow-2xl text-white"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-white/10 shrink-0 bg-slate-900/60">
+            <div className="flex items-center justify-between p-6 border-b border-white/10 shrink-0 bg-slate-950">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center">
-                  <ShoppingBag className="w-5 h-5 text-orange-400" />
+                <div className="w-10 h-10 rounded-xl bg-red-600/20 border border-red-600/40 flex items-center justify-center">
+                  <ShoppingBag className="w-5 h-5 text-red-500" />
                 </div>
                 <div>
                   <div className="font-head text-sm font-bold text-white">Trainer Adoption Bag</div>
@@ -66,7 +66,7 @@ export default function CartDrawerNew() {
                   sound.playPop();
                   setIsOpen(false);
                 }}
-                className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="p-2 rounded-xl bg-slate-900 text-slate-400 hover:text-white transition-colors cursor-pointer border border-white/10"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -76,8 +76,8 @@ export default function CartDrawerNew() {
             <div className="flex-1 overflow-y-auto p-5 space-y-3">
               {purchased ? (
                 <div className="h-full flex flex-col items-center justify-center gap-4 text-center py-12">
-                  <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-400 flex items-center justify-center">
-                    <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+                  <div className="w-16 h-16 rounded-full bg-red-600/20 border border-red-500 flex items-center justify-center">
+                    <CheckCircle2 className="w-8 h-8 text-red-500" />
                   </div>
                   <div>
                     <h3 className="font-head text-lg font-bold text-white">Adoption Finalized!</h3>
@@ -90,12 +90,12 @@ export default function CartDrawerNew() {
                 items.map(({ pokemon, quantity }) => (
                   <div
                     key={pokemon.id}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-slate-900 border border-white/10"
+                    className="flex items-center gap-3 p-3 rounded-xl bg-slate-950 border border-white/10"
                   >
-                    <img src={pokemon.image} alt={pokemon.name} className="w-14 h-14 object-contain bg-slate-950 p-1 rounded-lg border border-white/5" />
+                    <img src={pokemon.image} alt={pokemon.name} className="w-14 h-14 object-contain bg-black p-1 rounded-lg border border-white/10" />
                     <div className="flex-1 min-w-0">
                       <div className="font-head text-sm font-bold text-white truncate">{pokemon.name}</div>
-                      <div className="font-num text-xs font-bold text-orange-400 mt-0.5">{formatPrice(pokemon.price)}</div>
+                      <div className="font-num text-xs font-bold text-red-500 mt-0.5">{formatPrice(pokemon.price)}</div>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <button
@@ -103,7 +103,7 @@ export default function CartDrawerNew() {
                           sound.playPop();
                           updateQuantity(pokemon.id, quantity - 1);
                         }}
-                        className="w-7 h-7 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300 hover:text-white cursor-pointer"
+                        className="w-7 h-7 rounded-lg bg-slate-900 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white cursor-pointer"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
@@ -113,7 +113,7 @@ export default function CartDrawerNew() {
                           sound.playPop();
                           updateQuantity(pokemon.id, quantity + 1);
                         }}
-                        className="w-7 h-7 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300 hover:text-white cursor-pointer"
+                        className="w-7 h-7 rounded-lg bg-slate-900 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white cursor-pointer"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
@@ -122,7 +122,7 @@ export default function CartDrawerNew() {
                           sound.playPop();
                           removeFromCart(pokemon.id);
                         }}
-                        className="w-7 h-7 rounded-lg text-slate-400 hover:text-rose-400 cursor-pointer ml-1"
+                        className="w-7 h-7 rounded-lg text-slate-400 hover:text-red-500 cursor-pointer ml-1"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -139,10 +139,10 @@ export default function CartDrawerNew() {
 
             {/* Footer Checkout */}
             {items.length > 0 && !purchased && (
-              <div className="p-5 border-t border-white/10 space-y-4 bg-slate-900">
+              <div className="p-5 border-t border-white/10 space-y-4 bg-slate-950">
                 <div className="flex justify-between font-head text-sm font-bold text-white">
                   <span>Total Fee</span>
-                  <span className="font-num text-orange-400">{formatPrice(totalPrice)}</span>
+                  <span className="font-num text-red-500">{formatPrice(totalPrice)}</span>
                 </div>
                 <button
                   onClick={handleCheckout}

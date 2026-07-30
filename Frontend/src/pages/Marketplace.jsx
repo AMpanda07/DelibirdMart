@@ -1,17 +1,13 @@
 /**
  * Marketplace.jsx
- * HopeRise Inspired Browsing Interface
- * Features:
- *   – Sound synthesized audio effects on every filter toggle & page jump
- *   – High visibility filters (Type, Evolution Stage 1/2/3, Rarity, Region, Price)
- *   – Paginated infinite scroll via usePokemonInfinite
+ * Pokémon Red, Black and White Aesthetic Browsing Interface
  */
 import React, { useState, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   SlidersHorizontal, Search, X, ChevronDown, ChevronUp,
-  Filter, Loader2, AlertCircle, RefreshCw, Dna, Sparkles
+  Filter, Loader2, Dna, Sparkles
 } from 'lucide-react';
 import PokemonCard from '../components/PokemonCard';
 import PokemonCardSkeleton from '../components/PokemonCardSkeleton';
@@ -63,9 +59,9 @@ function FilterSection({ title, icon: Icon, children, defaultOpen = true }) {
           sound.playFilter();
           setOpen(o => !o);
         }}
-        className="w-full flex items-center gap-2 font-head text-xs font-bold text-slate-300 hover:text-orange-400 transition-colors cursor-pointer uppercase tracking-wider"
+        className="w-full flex items-center gap-2 font-head text-xs font-bold text-slate-300 hover:text-red-500 transition-colors cursor-pointer uppercase tracking-wider"
       >
-        {Icon && <Icon className="w-3.5 h-3.5 text-orange-400 shrink-0" />}
+        {Icon && <Icon className="w-3.5 h-3.5 text-red-500 shrink-0" />}
         <span className="flex-1 text-left">{title}</span>
         {open ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
       </button>
@@ -88,7 +84,7 @@ function FilterSection({ title, icon: Icon, children, defaultOpen = true }) {
 
 export default function Marketplace() {
   const [searchParams] = useSearchParams();
-  const { allPokemon, total, hasMore, loading, error, loadMore, reset } = usePokemonInfinite(20);
+  const { allPokemon, total, hasMore, loading, loadMore } = usePokemonInfinite(20);
 
   const [searchQuery,      setSearchQuery]      = useState('');
   const [selectedTypes,    setSelectedTypes]    = useState(() => {
@@ -101,7 +97,6 @@ export default function Marketplace() {
   const [selectedRegions,  setSelectedRegions]  = useState([]);
   const [maxPrice,         setMaxPrice]         = useState(MAX_PRICE);
   const [sortBy,           setSortBy]           = useState('featured');
-  const [sidebarOpen,      setSidebarOpen]      = useState(false);
 
   const filtered = useMemo(() => {
     const filters = {
@@ -142,7 +137,7 @@ export default function Marketplace() {
   };
 
   const SidebarContent = () => (
-    <div className="space-y-1">
+    <div className="space-y-1 text-white">
       {/* Type */}
       <FilterSection title="Pokémon Type">
         <div className="grid grid-cols-2 gap-1.5">
@@ -154,8 +149,8 @@ export default function Marketplace() {
                 onClick={() => toggleType(t.id)}
                 className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-head font-semibold border transition-all cursor-pointer ${
                   active
-                    ? `type-${t.id} border-orange-500/80 shadow-md`
-                    : 'bg-slate-900/80 border-white/10 text-slate-400 hover:text-white hover:border-white/20'
+                    ? `type-${t.id} border-red-500/80 shadow-md`
+                    : 'bg-black border-white/10 text-slate-400 hover:text-white hover:border-white/20'
                 }`}
               >
                 <span>{t.emoji}</span>
@@ -178,8 +173,8 @@ export default function Marketplace() {
                 onClick={() => toggleStage(value)}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-head font-bold border transition-all cursor-pointer ${
                   active
-                    ? 'bg-orange-500/20 border-orange-500 text-orange-300 shadow-md'
-                    : 'bg-slate-900/80 border-white/10 text-slate-400 hover:text-white'
+                    ? 'bg-red-600/20 border-red-500 text-white shadow-md'
+                    : 'bg-black border-white/10 text-slate-400 hover:text-white'
                 }`}
               >
                 <span>{label} <span className="text-[10px] font-normal text-slate-400">({description})</span></span>
@@ -201,8 +196,8 @@ export default function Marketplace() {
                 onClick={() => toggleRarity(r)}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-head font-bold border transition-all cursor-pointer ${
                   active
-                    ? 'bg-blue-600/30 border-blue-400 text-blue-200'
-                    : 'bg-slate-900/80 border-white/10 text-slate-400 hover:text-white'
+                    ? 'bg-red-600/30 border-red-500 text-white'
+                    : 'bg-black border-white/10 text-slate-400 hover:text-white'
                 }`}
               >
                 <span>{r}</span>
@@ -224,8 +219,8 @@ export default function Marketplace() {
               onClick={() => toggleRegion(gen)}
               className={`px-3 py-1 rounded-full text-xs font-head font-bold border transition-all cursor-pointer ${
                 selectedRegions.includes(gen)
-                  ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300'
-                  : 'bg-slate-900/80 border-white/10 text-slate-400 hover:text-white'
+                  ? 'bg-red-600/20 border-red-500 text-red-400'
+                  : 'bg-black border-white/10 text-slate-400 hover:text-white'
               }`}
             >
               {gen}
@@ -246,7 +241,7 @@ export default function Marketplace() {
           />
           <div className="flex justify-between font-num text-xs font-bold text-slate-400">
             <span>₹0</span>
-            <span className="text-orange-400">₹{maxPrice.toLocaleString('en-IN')}</span>
+            <span className="text-red-500">₹{maxPrice.toLocaleString('en-IN')}</span>
           </div>
         </div>
       </FilterSection>
@@ -255,7 +250,7 @@ export default function Marketplace() {
         <div className="pt-3">
           <button
             onClick={clearFilters}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 hover:bg-rose-500/30 text-xs font-head font-bold cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-600/20 border border-red-600/40 text-red-400 hover:bg-red-600/30 text-xs font-head font-bold cursor-pointer"
           >
             <X className="w-4 h-4" /> Reset Filters
           </button>
@@ -265,16 +260,16 @@ export default function Marketplace() {
   );
 
   return (
-    <main className="min-h-screen pt-28 pb-20 bg-lumiose">
+    <main className="min-h-screen pt-28 pb-20 bg-lumiose text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Page Header */}
         <div className="mb-8">
-          <span className="font-head text-xs font-bold text-orange-400 uppercase tracking-widest bg-orange-500/10 px-3.5 py-1.5 rounded-full border border-orange-500/20">
+          <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest bg-red-600/10 px-3.5 py-1.5 rounded-full border border-red-600/20">
             Lumiose Sanctuary Catalog
           </span>
           <h1 className="font-head text-3xl sm:text-4xl font-extrabold text-white mt-3">
-            Adopt a <span className="gradient-text">Companion</span>
+            Adopt a <span className="gradient-text-red">Companion</span>
           </h1>
           <p className="font-body text-slate-400 text-sm mt-1">
             {filtered.length} shown · {allPokemon.length} loaded of {total.toLocaleString()} PokéDex entries
@@ -290,18 +285,9 @@ export default function Marketplace() {
               placeholder="Search Pokémon by name, type, or region..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-900/90 border border-white/15 text-white placeholder-slate-400 font-body text-sm focus:outline-none focus:border-orange-500 transition-all"
+              className="w-full pl-10 pr-4 py-3 rounded-xl bg-black border border-white/15 text-white placeholder-slate-400 font-body text-sm focus:outline-none focus:border-red-600 transition-all"
             />
           </div>
-          <button
-            onClick={() => {
-              sound.playPop();
-              setSidebarOpen(o => !o);
-            }}
-            className="lg:hidden flex items-center gap-2 px-4 py-3 rounded-xl btn-ghost text-white font-head text-xs font-bold shrink-0"
-          >
-            <Filter className="w-4 h-4 text-orange-400" /> Filters
-          </button>
         </div>
 
         <div className="flex gap-8">
@@ -309,7 +295,7 @@ export default function Marketplace() {
           <aside className="hidden lg:block w-64 shrink-0">
             <div className="sticky top-28 pokemon-card-container rounded-2xl p-5 max-h-[calc(100vh-140px)] overflow-y-auto">
               <div className="flex items-center gap-2 mb-3 pb-3 border-b border-white/10">
-                <SlidersHorizontal className="w-4 h-4 text-orange-400" />
+                <SlidersHorizontal className="w-4 h-4 text-red-500" />
                 <span className="font-head text-sm font-bold text-white">Filter Directory</span>
               </div>
               <SidebarContent />
@@ -328,7 +314,7 @@ export default function Marketplace() {
                   sound.playFilter();
                   setSortBy(e.target.value);
                 }}
-                className="bg-slate-900 border border-white/15 rounded-xl px-4 py-2 text-xs font-head font-bold text-white focus:outline-none focus:border-orange-500"
+                className="bg-black border border-white/15 rounded-xl px-4 py-2 text-xs font-head font-bold text-white focus:outline-none focus:border-red-600"
               >
                 {SORT_OPTIONS.map(o => (
                   <option key={o.value} value={o.value}>{o.label}</option>

@@ -1,12 +1,12 @@
 /**
  * Footer.jsx
- * Dark, full-width footer with quick links, social icons,
- * region map context, and Phase 2 roadmap preview.
+ * Pokémon Red, Black and White theme footer with quick links, social icons,
+ * region map context, and platform roadmap preview.
  */
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { AtSign, Code2, Mail, MapPin, Shield, Zap, Heart } from 'lucide-react';
+import { AtSign, Code2, Mail, MapPin, Heart } from 'lucide-react';
+import PokeBallLogo from './PokeBallLogo';
 
 const LINKS = {
   Marketplace: [
@@ -18,11 +18,11 @@ const LINKS = {
   Trainers: [
     { label: 'Sign In',       href: '#' },
     { label: 'Create Account', href: '#' },
-    { label: 'Trainer Card',  href: '#' },
+    { label: 'Trainer Pass',  href: '#' },
     { label: 'My Adoptions',  href: '#' },
   ],
   Company: [
-    { label: 'About Us',       href: '/about' },
+    { label: 'About Us',       href: '#' },
     { label: 'Safety Policy',  href: '#' },
     { label: 'Pokémon Welfare', href: '#' },
     { label: 'Contact',        href: '#' },
@@ -31,7 +31,7 @@ const LINKS = {
 
 const ROADMAP = [
   { phase: 'Phase 1', label: 'Lumiose Launch',    done: true  },
-  { phase: 'Phase 2', label: 'Kalos Expansion',   done: false },
+  { phase: 'Phase 2', label: 'Kalos Expansion',   done: true },
   { phase: 'Phase 3', label: 'Multi-Region Trade', done: false },
   { phase: 'Phase 4', label: 'Pokémon Contests',  done: false },
 ];
@@ -44,10 +44,10 @@ const SOCIALS = [
 
 export default function Footer() {
   return (
-    <footer className="relative bg-[#040D1A] border-t border-white/6 overflow-hidden">
-      {/* Background glow */}
+    <footer className="relative bg-[#070709] border-t border-red-600/20 overflow-hidden text-white">
+      {/* Red ambient background glow */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-blue-600/6 rounded-full blur-[100px]" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[250px] bg-red-600/10 rounded-full blur-[120px]" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -58,22 +58,24 @@ export default function Footer() {
           {/* Brand col */}
           <div className="md:col-span-2 space-y-5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg">
-                <span className="text-xl">🐦</span>
-              </div>
+              <PokeBallLogo className="w-10 h-10" />
               <div>
-                <div className="font-head text-lg font-black text-white">Delibird Mart</div>
-                <div className="font-body text-xs text-blue-400/70 tracking-widest">LUMIOSE CITY · KALOS</div>
+                <div className="font-head text-xl font-black text-white tracking-tight">
+                  Delibird <span className="text-red-600">Mart</span>
+                </div>
+                <div className="font-body text-xs text-red-500 font-bold tracking-widest uppercase">
+                  LUMIOSE CITY · KALOS REGION
+                </div>
               </div>
             </div>
 
-            <p className="font-body text-sm text-white/45 leading-relaxed max-w-xs">
+            <p className="font-body text-sm text-slate-400 leading-relaxed max-w-xs">
               The Kalos Region's most trusted Pokémon adoption marketplace.
               Every Pokémon listed is health-checked and verified by licensed trainers.
             </p>
 
-            <div className="flex items-center gap-1.5 text-xs text-white/40 font-body">
-              <MapPin className="w-3.5 h-3.5 text-blue-400" />
+            <div className="flex items-center gap-1.5 text-xs text-slate-400 font-body">
+              <MapPin className="w-3.5 h-3.5 text-red-500" />
               <span>Prism Tower, Lumiose City, Kalos</span>
             </div>
 
@@ -84,7 +86,7 @@ export default function Footer() {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="w-9 h-9 rounded-xl glass flex items-center justify-center text-white/40 hover:text-white hover:border-blue-500/50 transition-all duration-200"
+                  className="w-9 h-9 rounded-xl bg-black border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-red-600/60 transition-all duration-200"
                 >
                   <Icon className="w-4 h-4" />
                 </a>
@@ -95,13 +97,13 @@ export default function Footer() {
           {/* Link cols */}
           {Object.entries(LINKS).map(([group, links]) => (
             <div key={group} className="space-y-4">
-              <h4 className="font-head text-xs font-bold text-white/70 uppercase tracking-widest">{group}</h4>
+              <h4 className="font-head text-xs font-bold text-white uppercase tracking-widest">{group}</h4>
               <ul className="space-y-2.5">
                 {links.map(link => (
                   <li key={link.label}>
                     <Link
                       to={link.href}
-                      className="font-body text-sm text-white/40 hover:text-white transition-colors duration-200 hover:translate-x-0.5 inline-block"
+                      className="font-body text-sm text-slate-400 hover:text-red-500 transition-colors duration-200 inline-block"
                     >
                       {link.label}
                     </Link>
@@ -113,20 +115,20 @@ export default function Footer() {
         </div>
 
         {/* ── Roadmap strip ─── */}
-        <div className="py-6 border-t border-white/6 space-y-4">
-          <div className="font-head text-xs font-bold text-white/40 uppercase tracking-widest">Platform Roadmap</div>
+        <div className="py-6 border-t border-white/10 space-y-4">
+          <div className="font-head text-xs font-bold text-slate-400 uppercase tracking-widest">Platform Roadmap</div>
           <div className="flex flex-wrap gap-3">
             {ROADMAP.map(({ phase, label, done }) => (
               <div
                 key={phase}
                 className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-body border ${
                   done
-                    ? 'bg-blue-500/15 border-blue-500/35 text-blue-300'
-                    : 'bg-white/4 border-white/8 text-white/30'
+                    ? 'bg-red-600/15 border-red-600/40 text-red-400'
+                    : 'bg-white/5 border-white/10 text-slate-400'
                 }`}
               >
-                <span className={`w-1.5 h-1.5 rounded-full ${done ? 'bg-blue-400' : 'bg-white/20'}`} />
-                <span className="font-semibold">{phase}:</span>
+                <span className={`w-1.5 h-1.5 rounded-full ${done ? 'bg-red-500 animate-pulse' : 'bg-slate-600'}`} />
+                <span className="font-bold">{phase}:</span>
                 <span>{label}</span>
               </div>
             ))}
@@ -134,13 +136,13 @@ export default function Footer() {
         </div>
 
         {/* ── Bottom copyright bar ─── */}
-        <div className="py-6 border-t border-white/6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="font-body text-xs text-white/25">
+        <div className="py-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="font-body text-xs text-slate-500">
             © {new Date().getFullYear()} Delibird Mart. Pokémon and related names are trademarks of Nintendo / Game Freak.
           </p>
-          <div className="flex items-center gap-1.5 font-body text-xs text-white/25">
+          <div className="flex items-center gap-1.5 font-body text-xs text-slate-400">
             <span>Made with</span>
-            <Heart className="w-3 h-3 text-red-400 fill-red-400" />
+            <Heart className="w-3.5 h-3.5 text-red-600 fill-red-600" />
             <span>in Lumiose City</span>
           </div>
         </div>

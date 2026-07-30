@@ -1,26 +1,23 @@
 @import "tailwindcss";
 
 /* ================================================================
-   DELIBIRD MART — DESIGN SYSTEM
-   Inspired by HopeRise Modern Editorial Aesthetic
-   Colors: Midnight Emerald/Dark Navy (#060D17), Vibrant Coral (#FF5A36),
-           Electric Cyan (#00E5FF), Royal Sapphire (#2B59FF), Warm Amber (#FFB800)
+   DELIBIRD MART — POKÉMON RED, BLACK & WHITE DESIGN SYSTEM
+   Official Pokémon Theme: Electric Red (#EE1515), Pitch Black (#0A0A0C),
+   Crisp White (#FFFFFF), Metallic Charcoal (#141418), Silver (#E2E8F0)
    ================================================================ */
 
 @layer base {
   :root {
     color-scheme: dark;
 
-    /* ── Brand Palette ── */
-    --c-bg:        #060D17;
-    --c-bg-card:   #0F1D2E;
-    --c-bg-card-hover: #14263D;
-    --c-primary:   #2B59FF;
-    --c-accent:    #FF5A36;
-    --c-emerald:   #10B981;
-    --c-gold:      #FFB800;
-    --c-border:    rgba(255, 255, 255, 0.12);
-    --c-border-glow: rgba(43, 89, 255, 0.35);
+    /* ── Pokémon Brand Palette ── */
+    --c-bg:             #0A0A0C;
+    --c-bg-card:        #141418;
+    --c-bg-card-hover:  #1C1C22;
+    --c-primary:        #EE1515;
+    --c-accent:         #FF2E2E;
+    --c-border:         rgba(255, 255, 255, 0.14);
+    --c-border-glow:    rgba(238, 21, 21, 0.45);
 
     /* ── Typography ── */
     --font-head: 'Poppins', system-ui, sans-serif;
@@ -34,8 +31,8 @@
   body {
     margin: 0;
     padding: 0;
-    background-color: var(--c-bg);
-    color: #F1F5F9;
+    background-color: #0A0A0C;
+    color: #FFFFFF;
     font-family: var(--font-body);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
@@ -43,8 +40,8 @@
   }
 
   ::selection {
-    background: rgba(255, 90, 54, 0.35);
-    color: #fff;
+    background: rgba(238, 21, 21, 0.4);
+    color: #FFFFFF;
   }
 }
 
@@ -53,83 +50,76 @@
 .font-body { font-family: 'Inter', sans-serif !important; }
 .font-num  { font-family: 'Space Grotesk', monospace !important; }
 
-/* ── Lumiose Background ─────────────────────────────────────────── */
+/* ── Pokémon Stadium / Sanctuary Background ────────────────────── */
 .bg-lumiose {
   background:
-    radial-gradient(ellipse 70% 50% at 50% -5%,  rgba(255, 90, 54, 0.14) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 85% 45%,  rgba(43, 89, 255, 0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 40% at 15% 85%,  rgba(16, 185, 129, 0.12) 0%, transparent 60%),
-    linear-gradient(180deg, #060D17 0%, #0A1524 50%, #060D17 100%);
+    radial-gradient(ellipse 75% 55% at 50% -10%, rgba(238, 21, 21, 0.22) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 85% 45%,  rgba(255, 255, 255, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 15% 85%,  rgba(238, 21, 21, 0.12) 0%, transparent 60%),
+    linear-gradient(180deg, #0A0A0C 0%, #121216 50%, #0A0A0C 100%);
 }
 
 .bg-city-grid {
   background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+    radial-gradient(circle, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
 /* ── Glassmorphism & Solid Card Visibility ────────────────────── */
 .glass {
-  background: rgba(15, 29, 46, 0.75);
+  background: rgba(20, 20, 24, 0.85);
   backdrop-filter: blur(20px) saturate(1.8);
   -webkit-backdrop-filter: blur(20px) saturate(1.8);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .glass-strong {
-  background: rgba(10, 21, 36, 0.92);
+  background: rgba(12, 12, 15, 0.95);
   backdrop-filter: blur(24px) saturate(1.8);
   -webkit-backdrop-filter: blur(24px) saturate(1.8);
-  border: 1px solid rgba(43, 89, 255, 0.3);
+  border: 1px solid rgba(238, 21, 21, 0.4);
 }
 
 /* HIGH-VISIBILITY POKEMON CARD STYLING */
 .pokemon-card-container {
-  background: linear-gradient(160deg, #0F1F33 0%, #0B1726 100%);
+  background: linear-gradient(160deg, #16161B 0%, #0E0E12 100%);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .pokemon-card-container:hover {
-  background: linear-gradient(160deg, #152842 0%, #0F1E33 100%);
-  border-color: rgba(255, 90, 54, 0.5);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65), 0 0 25px rgba(255, 90, 54, 0.25);
+  background: linear-gradient(160deg, #1F1F26 0%, #14141A 100%);
+  border-color: rgba(238, 21, 21, 0.65);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 25px rgba(238, 21, 21, 0.35);
   transform: translateY(-6px);
 }
 
 .glass-card {
-  background: linear-gradient(160deg, #0F1F33 0%, #0B1726 100%);
+  background: linear-gradient(160deg, #16161B 0%, #0E0E12 100%);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
 }
 .glass-card:hover {
-  border-color: rgba(43, 89, 255, 0.45);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(43, 89, 255, 0.2);
+  border-color: rgba(238, 21, 21, 0.5);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(238, 21, 21, 0.3);
 }
 
 /* ── Glow Effects ──────────────────────────────────────────────── */
-.glow-coral  { box-shadow: 0 0 30px rgba(255, 90, 54, 0.45); }
-.glow-blue   { box-shadow: 0 0 30px rgba(43, 89, 255, 0.45); }
-.glow-emerald{ box-shadow: 0 0 30px rgba(16, 185, 129, 0.45); }
+.glow-coral  { box-shadow: 0 0 30px rgba(238, 21, 21, 0.5); }
+.glow-red    { box-shadow: 0 0 35px rgba(238, 21, 21, 0.6); }
+.glow-white  { box-shadow: 0 0 30px rgba(255, 255, 255, 0.3); }
 
 /* ── Gradient Text ─────────────────────────────────────────────── */
 .gradient-text {
-  background: linear-gradient(135deg, #FF5A36 0%, #FFB800 50%, #00E5FF 100%);
+  background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 40%, #EE1515 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.gradient-text-coral {
-  background: linear-gradient(135deg, #FF7B54 0%, #FF5A36 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.gradient-text-blue {
-  background: linear-gradient(135deg, #60A5FA 0%, #2B59FF 100%);
+.gradient-text-red {
+  background: linear-gradient(135deg, #FF4D4D 0%, #EE1515 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -137,37 +127,39 @@
 
 /* ── Buttons ───────────────────────────────────────────────────── */
 .btn-primary {
-  background: linear-gradient(135deg, #FF5A36 0%, #E04322 100%);
-  border: 1px solid rgba(255, 90, 54, 0.6);
-  box-shadow: 0 8px 24px rgba(255, 90, 54, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, #EE1515 0%, #C40D0D 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(238, 21, 21, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 36px rgba(255, 90, 54, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg, #FF2E2E 0%, #D80F0F 100%);
+  box-shadow: 0 14px 36px rgba(238, 21, 21, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 .btn-primary:active { transform: translateY(0); }
 
 .btn-secondary {
-  background: linear-gradient(135deg, #2B59FF 0%, #1A42C9 100%);
-  border: 1px solid rgba(43, 89, 255, 0.5);
-  box-shadow: 0 8px 24px rgba(43, 89, 255, 0.35);
+  background: linear-gradient(135deg, #1C1C22 0%, #121215 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   transition: all 0.25s ease;
 }
 .btn-secondary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 36px rgba(43, 89, 255, 0.55);
+  border-color: rgba(238, 21, 21, 0.6);
+  box-shadow: 0 14px 36px rgba(238, 21, 21, 0.25);
 }
 
 .btn-ghost {
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(12px);
   transition: all 0.25s ease;
 }
 .btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 90, 54, 0.5);
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(238, 21, 21, 0.5);
 }
 
 /* ── Animations ────────────────────────────────────────────────── */
@@ -189,50 +181,50 @@
   100% { background-position:  200% center; }
 }
 .shimmer {
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
   background-size: 200% auto;
   animation: shimmer 3s linear infinite;
 }
 
 /* ── Type Badge Palette (High Contrast) ────────────────────────── */
-.type-fire     { background: rgba(239,68,68,0.28);   border: 1px solid rgba(239,68,68,0.6);  color: #FECACA; }
-.type-water    { background: rgba(59,130,246,0.28);  border: 1px solid rgba(59,130,246,0.6); color: #BFDBFE; }
-.type-grass    { background: rgba(34,197,94,0.28);   border: 1px solid rgba(34,197,94,0.6);  color: #BBF7D0; }
-.type-electric { background: rgba(234,179,8,0.30);   border: 1px solid rgba(234,179,8,0.65); color: #FEF08A; }
-.type-ice      { background: rgba(6,182,212,0.28);   border: 1px solid rgba(6,182,212,0.6);  color: #CFFAFE; }
-.type-fighting { background: rgba(220,38,38,0.28);   border: 1px solid rgba(220,38,38,0.6);  color: #FECACA; }
-.type-poison   { background: rgba(168,85,247,0.28);  border: 1px solid rgba(168,85,247,0.6); color: #E9D5FF; }
-.type-ground   { background: rgba(217,119,6,0.30);   border: 1px solid rgba(217,119,6,0.6);  color: #FDE68A; }
-.type-flying   { background: rgba(125,211,252,0.28); border: 1px solid rgba(125,211,252,0.6);color: #E0F2FE; }
-.type-psychic  { background: rgba(236,72,153,0.28);  border: 1px solid rgba(236,72,153,0.6); color: #FBCFE8; }
-.type-bug      { background: rgba(132,204,22,0.28);  border: 1px solid rgba(132,204,22,0.6); color: #ECFCCB; }
-.type-rock     { background: rgba(168,162,158,0.30); border: 1px solid rgba(168,162,158,0.6);color: #E7E5E4; }
-.type-ghost    { background: rgba(99,102,241,0.28);  border: 1px solid rgba(99,102,241,0.6); color: #E0E7FF; }
-.type-dragon   { background: rgba(99,102,241,0.32);  border: 1px solid rgba(99,102,241,0.65);color: #C7D2FE; }
-.type-dark     { background: rgba(51,65,85,0.70);    border: 1px solid rgba(148,163,184,0.6);color: #E2E8F0; }
-.type-steel    { background: rgba(100,116,139,0.32); border: 1px solid rgba(100,116,139,0.6);color: #E2E8F0; }
-.type-fairy    { background: rgba(244,114,182,0.28); border: 1px solid rgba(244,114,182,0.6);color: #FCE7F3; }
-.type-normal   { background: rgba(148,163,184,0.28); border: 1px solid rgba(148,163,184,0.5);color: #F1F5F9; }
+.type-fire     { background: rgba(239,68,68,0.32);   border: 1px solid rgba(239,68,68,0.7);  color: #FFFFFF; }
+.type-water    { background: rgba(59,130,246,0.32);  border: 1px solid rgba(59,130,246,0.7); color: #FFFFFF; }
+.type-grass    { background: rgba(34,197,94,0.32);   border: 1px solid rgba(34,197,94,0.7);  color: #FFFFFF; }
+.type-electric { background: rgba(234,179,8,0.35);   border: 1px solid rgba(234,179,8,0.75); color: #FFFFFF; }
+.type-ice      { background: rgba(6,182,212,0.32);   border: 1px solid rgba(6,182,212,0.7);  color: #FFFFFF; }
+.type-fighting { background: rgba(220,38,38,0.32);   border: 1px solid rgba(220,38,38,0.7);  color: #FFFFFF; }
+.type-poison   { background: rgba(168,85,247,0.32);  border: 1px solid rgba(168,85,247,0.7); color: #FFFFFF; }
+.type-ground   { background: rgba(217,119,6,0.35);   border: 1px solid rgba(217,119,6,0.7);  color: #FFFFFF; }
+.type-flying   { background: rgba(125,211,252,0.32); border: 1px solid rgba(125,211,252,0.7);color: #FFFFFF; }
+.type-psychic  { background: rgba(236,72,153,0.32);  border: 1px solid rgba(236,72,153,0.7); color: #FFFFFF; }
+.type-bug      { background: rgba(132,204,22,0.32);  border: 1px solid rgba(132,204,22,0.7); color: #FFFFFF; }
+.type-rock     { background: rgba(168,162,158,0.35); border: 1px solid rgba(168,162,158,0.7);color: #FFFFFF; }
+.type-ghost    { background: rgba(99,102,241,0.32);  border: 1px solid rgba(99,102,241,0.7); color: #FFFFFF; }
+.type-dragon   { background: rgba(99,102,241,0.35);  border: 1px solid rgba(99,102,241,0.75);color: #FFFFFF; }
+.type-dark     { background: rgba(30,30,36,0.85);    border: 1px solid rgba(255,255,255,0.4);color: #FFFFFF; }
+.type-steel    { background: rgba(100,116,139,0.35); border: 1px solid rgba(100,116,139,0.7);color: #FFFFFF; }
+.type-fairy    { background: rgba(244,114,182,0.32); border: 1px solid rgba(244,114,182,0.7);color: #FFFFFF; }
+.type-normal   { background: rgba(148,163,184,0.32); border: 1px solid rgba(148,163,184,0.6);color: #FFFFFF; }
 
 /* ── Rarity Badges ─────────────────────────────────────────────── */
-.rarity-common    { background: rgba(148,163,184,0.18); color: #E2E8F0; border: 1px solid rgba(148,163,184,0.5); }
-.rarity-uncommon  { background: rgba(16,185,129,0.22);  color: #6EE7B7; border: 1px solid rgba(16,185,129,0.6);  box-shadow: 0 0 12px rgba(16,185,129,0.3); }
-.rarity-rare      { background: rgba(59,130,246,0.22);  color: #93C5FD; border: 1px solid rgba(59,130,246,0.6);  box-shadow: 0 0 12px rgba(59,130,246,0.3); }
-.rarity-epic      { background: rgba(245,158,11,0.25);  color: #FDE047; border: 1px solid rgba(245,158,11,0.7);  box-shadow: 0 0 16px rgba(245,158,11,0.4); }
-.rarity-legendary { background: rgba(239,68,68,0.25);   color: #FCA5A5; border: 1px solid rgba(239,68,68,0.7);   box-shadow: 0 0 16px rgba(239,68,68,0.4); }
+.rarity-common    { background: rgba(148,163,184,0.2); color: #FFFFFF; border: 1px solid rgba(148,163,184,0.5); }
+.rarity-uncommon  { background: rgba(16,185,129,0.25); color: #A7F3D0; border: 1px solid rgba(16,185,129,0.7);  box-shadow: 0 0 12px rgba(16,185,129,0.35); }
+.rarity-rare      { background: rgba(59,130,246,0.25); color: #BAE6FD; border: 1px solid rgba(59,130,246,0.7);  box-shadow: 0 0 12px rgba(59,130,246,0.35); }
+.rarity-epic      { background: rgba(245,158,11,0.28); color: #FEF08A; border: 1px solid rgba(245,158,11,0.8);  box-shadow: 0 0 16px rgba(245,158,11,0.45); }
+.rarity-legendary { background: rgba(238,21,21,0.35);  color: #FFFFFF; border: 1px solid rgba(238,21,21,0.9);   box-shadow: 0 0 20px rgba(238,21,21,0.6); }
 
 /* ── Scrollbar ─────────────────────────────────────────────────── */
 ::-webkit-scrollbar       { width: 6px; }
-::-webkit-scrollbar-track { background: #060D17; }
-::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #FF5A36; }
+::-webkit-scrollbar-track { background: #0A0A0C; }
+::-webkit-scrollbar-thumb { background: #26262E; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #EE1515; }
 
 /* ── Range Input (Price Slider) ────────────────────────────────── */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   height: 6px;
-  background: linear-gradient(to right, #FF5A36 var(--val, 50%), rgba(255,255,255,0.15) 0);
+  background: linear-gradient(to right, #EE1515 var(--val, 50%), rgba(255,255,255,0.15) 0);
   border-radius: 3px;
   outline: none;
 }
@@ -241,8 +233,8 @@ input[type="range"]::-webkit-slider-thumb {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #FF5A36;
+  background: #EE1515;
   border: 2px solid white;
-  box-shadow: 0 0 10px rgba(255, 90, 54, 0.7);
+  box-shadow: 0 0 10px rgba(238, 21, 21, 0.8);
   cursor: pointer;
 }

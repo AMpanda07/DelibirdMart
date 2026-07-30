@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Menu, X, Shield, Award, User, LogOut } from 'lucide-react';
+import { ShoppingBag, Menu, X, Shield, Award, LogOut } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { sound } from '../utils/audio';
 import CartDrawerNew from './CartDrawerNew';
 import TrainerCardModal from './TrainerCardModal';
 import AuthModal from './AuthModal';
+import PokeBallLogo from './PokeBallLogo';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
@@ -56,34 +57,32 @@ export default function Navbar() {
           }}
           transition={{ duration: 0.3 }}
           className={`mx-4 mt-3 rounded-2xl transition-all duration-300 ${scrolled
-            ? 'glass-strong shadow-[0_12px_40px_rgba(0,0,0,0.7)]'
-            : 'glass shadow-[0_6px_30px_rgba(0,0,0,0.4)]'
+            ? 'glass-strong shadow-[0_12px_40px_rgba(0,0,0,0.85)] border-red-600/30'
+            : 'glass shadow-[0_6px_30px_rgba(0,0,0,0.6)]'
             }`}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-6">
 
-            {/* Logo */}
+            {/* Redesigned Pokémon Logo */}
             <Link
               to="/"
               onClick={() => sound.playClick()}
               className="flex items-center gap-3 shrink-0 group"
             >
-              <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 via-rose-500 to-blue-600 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
-                <span className="text-xl">🐦</span>
-                <div className="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
+              <PokeBallLogo className="w-10 h-10" />
               <div className="leading-none">
-                <div className="font-head text-base font-black text-white tracking-tight group-hover:text-amber-400 transition-colors">
-                  Delibird <span className="text-rose-500">Mart</span>
+                <div className="font-head text-lg font-black tracking-tight text-white group-hover:text-red-500 transition-colors flex items-center gap-1">
+                  Delibird <span className="text-red-600">Mart</span>
                 </div>
-                <div className="font-body text-[10px] text-slate-400 tracking-widest uppercase mt-0.5 font-semibold">
-                  Lumiose Sanctuary
+                <div className="font-body text-[10px] text-slate-400 tracking-widest uppercase mt-0.5 font-bold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-600 inline-block animate-ping" />
+                  Pokémon Sanctuary
                 </div>
               </div>
             </Link>
 
             {/* Nav Links (Desktop) */}
-            <nav className="hidden md:flex items-center gap-1 bg-slate-900/60 p-1.5 rounded-2xl border border-white/10">
+            <nav className="hidden md:flex items-center gap-1 bg-black/80 p-1.5 rounded-2xl border border-white/10">
               {NAV_LINKS.map(link => (
                 <Link
                   key={link.href}
@@ -97,7 +96,7 @@ export default function Navbar() {
                   {isActive(link.href) && (
                     <motion.div
                       layoutId="nav-pill"
-                      className="absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500 to-rose-500 shadow-md"
+                      className="absolute inset-0 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 shadow-[0_4px_16px_rgba(238,21,21,0.4)]"
                       transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
                     />
                   )}
@@ -109,10 +108,10 @@ export default function Navbar() {
             {/* Right Controls */}
             <div className="flex items-center gap-3 shrink-0">
 
-              {/* Lumiose Tag */}
-              <div className="hidden lg:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-xs font-body font-semibold text-emerald-400">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                <span>Lumiose City</span>
+              {/* Official Sanctuary Tag */}
+              <div className="hidden lg:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-600/10 border border-red-600/30 text-xs font-body font-bold text-red-500">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                <span>Lumiose League</span>
               </div>
 
               {/* Cart Drawer Button */}
@@ -122,9 +121,9 @@ export default function Navbar() {
                   sound.playPop();
                   setCartOpen(true);
                 }}
-                className="relative flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/80 border border-white/15 hover:border-orange-500/50 text-white font-head text-xs font-bold transition-all cursor-pointer shadow-md active:scale-95"
+                className="relative flex items-center gap-2 px-4 py-2 rounded-xl bg-black/80 border border-white/15 hover:border-red-600/60 text-white font-head text-xs font-bold transition-all cursor-pointer shadow-md active:scale-95"
               >
-                <ShoppingBag className="w-4 h-4 text-orange-400" />
+                <ShoppingBag className="w-4 h-4 text-red-500" />
                 <span className="hidden sm:inline">Bag</span>
                 <AnimatePresence>
                   {totalItems > 0 && (
@@ -133,7 +132,7 @@ export default function Navbar() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
-                      className="min-w-[20px] h-[20px] px-1 rounded-full bg-rose-500 text-white font-num text-[11px] font-bold flex items-center justify-center shadow-lg"
+                      className="min-w-[20px] h-[20px] px-1 rounded-full bg-red-600 text-white font-num text-[11px] font-bold flex items-center justify-center shadow-[0_0_12px_rgba(238,21,21,0.6)]"
                     >
                       {totalItems}
                     </motion.span>
@@ -150,20 +149,20 @@ export default function Navbar() {
                       setTrainerModalOpen(true);
                     }}
                     title="Click to view & edit Official Trainer Card"
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-amber-500/30 hover:border-amber-400 cursor-pointer transition-all group shadow-md active:scale-95"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/80 border border-red-600/40 hover:border-red-500 cursor-pointer transition-all group shadow-md active:scale-95"
                   >
                     <img
                       src={trainer.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${trainer.id}`}
                       alt={trainer.displayName || 'Trainer Avatar'}
-                      className="w-7 h-7 rounded-lg object-cover border border-amber-500/40"
+                      className="w-7 h-7 rounded-lg object-cover border border-red-600/50"
                     />
                     <div className="hidden sm:block leading-none text-left">
-                      <div className="font-head text-[11px] text-white font-bold group-hover:text-amber-400 transition-colors">
+                      <div className="font-head text-[11px] text-white font-bold group-hover:text-red-500 transition-colors">
                         {trainer.displayName}
                       </div>
-                      <div className="font-body text-[10px] text-amber-400 font-semibold flex items-center gap-1">
+                      <div className="font-body text-[10px] text-red-500 font-semibold flex items-center gap-1 mt-0.5">
                         <Award className="w-2.5 h-2.5" />
-                        {trainer.badge || 'Elite'}
+                        {trainer.badge || 'Explorer'}
                       </div>
                     </div>
                   </button>
@@ -174,7 +173,7 @@ export default function Navbar() {
                       logout();
                     }}
                     title="Sign Out"
-                    className="hidden sm:flex p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer border border-transparent hover:border-rose-500/30"
+                    className="hidden sm:flex p-2 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-600/10 transition-all cursor-pointer border border-transparent hover:border-red-600/30"
                   >
                     <LogOut className="w-4 h-4" />
                   </button>
@@ -199,7 +198,7 @@ export default function Navbar() {
                   sound.playPop();
                   setMobileOpen(o => !o);
                 }}
-                className="md:hidden p-2 rounded-xl bg-slate-800/80 border border-white/10 text-white/80 hover:text-white"
+                className="md:hidden p-2 rounded-xl bg-black/80 border border-white/10 text-white/80 hover:text-white"
               >
                 {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -213,7 +212,7 @@ export default function Navbar() {
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden md:hidden border-t border-white/10 mt-3 pt-2 px-4 pb-4 space-y-2"
+                className="overflow-hidden md:hidden border-t border-white/10 mt-3 pt-2 px-4 pb-4 space-y-2 bg-black/90 rounded-b-2xl"
               >
                 {NAV_LINKS.map(link => (
                   <Link
@@ -221,8 +220,8 @@ export default function Navbar() {
                     to={link.href}
                     onClick={() => sound.playPop()}
                     className={`block px-4 py-3 rounded-xl font-head text-sm font-bold transition-all ${isActive(link.href)
-                      ? 'bg-gradient-to-r from-orange-500 to-rose-500 text-white'
-                      : 'text-slate-300 hover:bg-slate-800'
+                      ? 'bg-gradient-to-r from-red-600 to-rose-700 text-white shadow-md'
+                      : 'text-slate-300 hover:bg-slate-900'
                       }`}
                   >
                     {link.label}
@@ -239,7 +238,7 @@ export default function Navbar() {
                           setMobileOpen(false);
                           setTrainerModalOpen(true);
                         }}
-                        className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-head text-sm font-bold"
+                        className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-red-600/10 border border-red-600/30 text-red-500 font-head text-sm font-bold"
                       >
                         <span className="flex items-center gap-2">
                           <img
@@ -258,7 +257,7 @@ export default function Navbar() {
                           setMobileOpen(false);
                           logout();
                         }}
-                        className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 font-head text-xs font-bold"
+                        className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-red-600/10 border border-red-600/30 text-red-400 font-head text-xs font-bold"
                       >
                         <span>Sign Out</span>
                         <LogOut className="w-4 h-4" />
