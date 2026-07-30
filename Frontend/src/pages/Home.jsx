@@ -1,14 +1,14 @@
 /**
  * Home.jsx
  * High-Editorial E-Commerce Homepage inspired by Stella Fashion Layout
- * Customized with Official Pokémon Red, Black & White Theme + Web Audio Feedback
+ * Customized with Official Pokémon Red, Black & White Theme + Light/Dark Theme System & Web Audio Feedback
  */
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, ArrowRight, Shield, Heart, CheckCircle,
-  Users, Star, Sparkles, Flame, Zap, Award, SlidersHorizontal, ArrowUpRight
+  Users, Star, Sparkles, Flame, Award, ArrowUpRight
 } from 'lucide-react';
 import PokemonCard from '../components/PokemonCard';
 import PokemonCardSkeleton from '../components/PokemonCardSkeleton';
@@ -35,11 +35,6 @@ const FEATURED_FILTERS = [
 ];
 
 const QUICK_TAGS = ['Charizard', 'Greninja', 'Lucario', 'Fire', 'Electric', 'Dragon'];
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
-};
 
 /* ── 1. Hero Section (Stella Editorial Style + Live Search) ─────────────── */
 function HeroSection() {
@@ -74,7 +69,7 @@ function HeroSection() {
   return (
     <section className="relative pt-32 pb-20 overflow-hidden bg-lumiose text-white">
       {/* Background Editorial Watermark */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[14vw] font-black text-white/[0.02] tracking-tighter uppercase pointer-events-none select-none">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[14vw] font-black text-slate-500/[0.04] tracking-tighter uppercase pointer-events-none select-none">
         DELIBIRD
       </div>
 
@@ -104,7 +99,7 @@ function HeroSection() {
               className="font-head text-4xl sm:text-6xl lg:text-[72px] font-black leading-[0.98] tracking-tight uppercase"
             >
               FIND YOUR <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-red-600">
+              <span className="gradient-text-red">
                 FAVORITE
               </span>{' '}
               COMPANION.
@@ -123,7 +118,7 @@ function HeroSection() {
                   placeholder="Search Pokémon by name, type, or region..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-black/90 border-2 border-white/20 rounded-2xl pl-12 pr-32 py-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-red-600 transition-all font-body shadow-2xl"
+                  className="w-full bg-black/80 border-2 border-white/20 rounded-2xl pl-12 pr-32 py-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-red-600 transition-all font-body shadow-2xl"
                 />
                 <button
                   type="submit"
@@ -147,7 +142,7 @@ function HeroSection() {
                       setSearchQuery(tag);
                       navigate(`/marketplace?search=${tag}`);
                     }}
-                    className="px-3 py-1 rounded-full bg-slate-900 border border-white/10 hover:border-red-600/60 hover:text-white transition-all cursor-pointer text-[11px]"
+                    className="px-3 py-1 rounded-full bg-black border border-white/10 hover:border-red-600/60 hover:text-white transition-all cursor-pointer text-[11px]"
                   >
                     #{tag}
                   </button>
@@ -389,7 +384,66 @@ function BrowseByType() {
   );
 }
 
-/* ── 5. Sanctuary Standards (Trust & Welfare Editorial) ─────────────────── */
+/* ── 5. PokéMail Trainer Club Subscription Banner (Stella Newsletter) ──── */
+function PokeMailNewsletter() {
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    sound.playSuccess();
+    if (email) {
+      setSubscribed(true);
+      setTimeout(() => {
+        setEmail('');
+        setSubscribed(false);
+      }, 4000);
+    }
+  };
+
+  return (
+    <section className="py-20 bg-lumiose text-white border-t border-white/10">
+      <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
+        <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest bg-red-600/10 px-4 py-1.5 rounded-full border border-red-600/30 inline-block">
+          JOIN THE TRAINER CLUB
+        </span>
+        <h2 className="font-head text-3xl sm:text-5xl font-black uppercase">
+          RECEIVE EXCLUSIVE <span className="gradient-text-red">ADOPTION ALERTS</span>
+        </h2>
+        <p className="font-body text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
+          Subscribe to Lumiose Sanctuary PokéMail for early access to rare & legendary Pokémon listings.
+        </p>
+
+        {subscribed ? (
+          <div className="p-4 rounded-2xl bg-red-600/20 border border-red-500 text-red-400 font-head text-sm font-bold flex items-center justify-center gap-2 max-w-md mx-auto">
+            <CheckCircle className="w-5 h-5 text-red-500" />
+            <span>Subscribed to Lumiose PokéMail! Check your inbox.</span>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your trainer email..."
+              className="w-full px-4 py-3.5 rounded-2xl bg-black border border-white/15 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-red-600 font-body"
+            />
+            <button
+              type="submit"
+              onClick={() => sound.playClick()}
+              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl btn-primary text-white font-head font-bold text-xs shrink-0 cursor-pointer shadow-lg"
+            >
+              Subscribe
+            </button>
+          </form>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ── 6. Sanctuary Standards (Trust & Welfare Editorial) ─────────────────── */
 function SanctuaryStandards() {
   const BENEFITS = [
     {
@@ -451,6 +505,7 @@ export default function Home() {
       <TickerMarquee />
       <FeaturedSection />
       <BrowseByType />
+      <PokeMailNewsletter />
       <SanctuaryStandards />
     </main>
   );

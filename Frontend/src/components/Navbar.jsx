@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Menu, X, Shield, Award, LogOut } from 'lucide-react';
+import { ShoppingBag, Menu, X, Shield, Award, LogOut, Sun, Moon } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { sound } from '../utils/audio';
 import CartDrawerNew from './CartDrawerNew';
 import TrainerCardModal from './TrainerCardModal';
@@ -24,6 +25,7 @@ export default function Navbar() {
 
   const { totalItems, setIsOpen: setCartOpen } = useCart();
   const { trainer, isAuthenticated, logout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
 
   useEffect(() => {
@@ -114,6 +116,18 @@ export default function Navbar() {
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
                 <span>Lumiose League</span>
               </div>
+
+              {/* Theme Switcher Toggle */}
+              <button
+                onClick={() => {
+                  sound.playPop();
+                  toggleTheme();
+                }}
+                title={isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+                className="p-2.5 rounded-xl glass hover:border-red-600/60 transition-all cursor-pointer shadow-md text-red-500 flex items-center justify-center active:scale-95"
+              >
+                {isDark ? <Sun className="w-4 h-4 text-red-500" /> : <Moon className="w-4 h-4 text-red-500" />}
+              </button>
 
               {/* Cart Drawer Button */}
               <button

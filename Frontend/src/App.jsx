@@ -17,6 +17,7 @@ import { useLocation } from 'react-router-dom';
 // ── Context providers ─────────────────────────────────────────────
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
 
 // ── Layout components ─────────────────────────────────────────────
@@ -123,26 +124,28 @@ function AnimatedRoutes() {
 /* ── Root export ─────────────────────────────────────────────────── */
 export default function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <div className="min-h-screen bg-[#07111F] text-slate-100">
-          <Navbar />
-          <AnimatedRoutes />
-          <Footer />
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              style: {
-                background: '#0F172A',
-                color: '#F8FAFC',
-                border: '1px solid rgba(245, 158, 11, 0.3)',
-                borderRadius: '0.75rem',
-                fontSize: '0.875rem'
-              }
-            }}
-          />
-        </div>
-      </CartProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <CartProvider>
+          <div className="min-h-screen bg-lumiose text-slate-100 transition-colors duration-300">
+            <Navbar />
+            <AnimatedRoutes />
+            <Footer />
+            <Toaster
+              position="bottom-right"
+              toastOptions={{
+                style: {
+                  background: '#0F172A',
+                  color: '#F8FAFC',
+                  border: '1px solid rgba(238, 21, 21, 0.4)',
+                  borderRadius: '0.75rem',
+                  fontSize: '0.875rem'
+                }
+              }}
+            />
+          </div>
+        </CartProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
