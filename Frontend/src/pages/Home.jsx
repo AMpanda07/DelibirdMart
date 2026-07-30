@@ -1,13 +1,14 @@
 /**
  * Home.jsx
- * Redesigned Pokémon Red, Black & White Aesthetic Landing Page
+ * High-Editorial E-Commerce Homepage inspired by Stella Fashion Layout
+ * Customized with Official Pokémon Red, Black & White Theme + Web Audio Feedback
  */
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ArrowRight, Shield, Heart, CheckCircle,
-  Users, Star, Sparkles, Flame, Zap, Award, Filter
+  Search, ArrowRight, Shield, Heart, CheckCircle,
+  Users, Star, Sparkles, Flame, Zap, Award, SlidersHorizontal, ArrowUpRight
 } from 'lucide-react';
 import PokemonCard from '../components/PokemonCard';
 import PokemonCardSkeleton from '../components/PokemonCardSkeleton';
@@ -26,28 +27,27 @@ const TYPES = [
 ];
 
 const FEATURED_FILTERS = [
-  { id: 'all',      label: '⚡ All Featured' },
+  { id: 'all',      label: 'All Companions' },
   { id: 'fire',     label: '🔥 Fire Specials' },
   { id: 'water',    label: '💧 Water Elite' },
   { id: 'electric', label: '⚡ High Energy' },
   { id: 'dragon',   label: '🐉 Dragon Rares' },
 ];
 
+const QUICK_TAGS = ['Charizard', 'Greninja', 'Lucario', 'Fire', 'Electric', 'Dragon'];
+
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   show:   { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
 };
 
-const stagger = (d = 0.1) => ({
-  hidden: {},
-  show:   { transition: { staggerChildren: d } },
-});
-
-/* ── Hero Section ─────────────────────────────────────────────── */
+/* ── 1. Hero Section (Stella Editorial Style + Live Search) ─────────────── */
 function HeroSection() {
   const [heroPokemon, setHeroPokemon] = useState([]);
   const [heroIndex, setHeroIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchHeroPokemon([658, 448, 149, 6])
@@ -63,90 +63,118 @@ function HeroSection() {
 
   const hero = heroPokemon[heroIndex];
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    sound.playClick();
+    if (searchQuery.trim()) {
+      navigate(`/marketplace?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-lumiose pt-28 pb-16">
-      <div className="absolute inset-0 bg-city-grid opacity-30 pointer-events-none" />
+    <section className="relative pt-32 pb-20 overflow-hidden bg-lumiose text-white">
+      {/* Background Editorial Watermark */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[14vw] font-black text-white/[0.02] tracking-tighter uppercase pointer-events-none select-none">
+        DELIBIRD
+      </div>
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
 
-          {/* Left Hero Content */}
-          <motion.div variants={stagger(0.1)} initial="hidden" animate="show" className="space-y-7">
-            <motion.div variants={fadeUp}>
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/10 border border-red-600/30 text-xs font-head font-bold text-red-500">
-                <Flame className="w-3.5 h-3.5 text-red-500 animate-pulse" />
-                Official Pokémon Sanctuary · Adoption League
-              </span>
-            </motion.div>
+        {/* Editorial Header Badge */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
+          <div className="flex items-center gap-2 text-xs font-head font-bold uppercase tracking-widest text-slate-400">
+            <span className="w-2 h-2 rounded-full bg-red-600 animate-ping" />
+            LUMIOSE SANCTUARY · AUTUMN / WINTER 2026
+          </div>
+          <div className="flex items-center gap-4 text-xs font-num text-slate-400">
+            <span>VERIFIED ADOPTION MARKETPLACE</span>
+            <span>·</span>
+            <span className="text-red-500 font-bold">1,240+ HOMED</span>
+          </div>
+        </div>
 
-            <motion.div variants={fadeUp}>
-              <h1 className="font-head text-4xl sm:text-5xl lg:text-[58px] font-black text-white leading-[1.08] tracking-tight">
-                Give a Loyal{' '}
-                <span className="gradient-text-red">Pokémon</span>
-                <br />
-                a Forever <span className="text-white">Home.</span>
-              </h1>
-            </motion.div>
+        {/* Main Title & Search Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
+          
+          {/* Big Bold Editorial Title (Stella Style) */}
+          <div className="lg:col-span-7 space-y-6">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="font-head text-4xl sm:text-6xl lg:text-[72px] font-black leading-[0.98] tracking-tight uppercase"
+            >
+              FIND YOUR <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-red-600">
+                FAVORITE
+              </span>{' '}
+              COMPANION.
+            </motion.h1>
 
-            <motion.p variants={fadeUp} className="font-body text-base sm:text-lg text-slate-300 leading-relaxed max-w-[480px]">
-              Every Pokémon listed in our Lumiose sanctuary is health-checked, temperament-verified, and cared for by certified Kalos trainers.
-            </motion.p>
+            <p className="font-body text-slate-300 text-sm sm:text-base max-w-lg leading-relaxed">
+              Discover health-checked, temperament-verified Pokémon from licensed Kalos caretakers. Complete with official holographic Poké Pass ID.
+            </p>
 
-            {/* Badges */}
-            <motion.div variants={fadeUp} className="flex flex-wrap gap-3">
-              {[
-                { label: '1,240+ Successful Adoptions', icon: '❤️' },
-                { label: 'Licensed Kalos Vets', icon: '🩺' },
-                { label: '4.9★ Sanctuary Rating', icon: '⭐' },
-              ].map(item => (
-                <div key={item.label} className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/80 border border-white/15 text-xs font-body font-semibold text-slate-200 shadow-sm">
-                  <span>{item.icon}</span>
-                  <span>{item.label}</span>
-                </div>
-              ))}
-            </motion.div>
-
-            {/* CTAs */}
-            <motion.div variants={fadeUp} className="flex flex-wrap gap-4 pt-2">
-              <Link
-                to="/marketplace"
-                onClick={() => sound.playSuccess()}
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl btn-primary text-white font-head font-bold text-sm shadow-xl"
-              >
-                Adopt a Companion
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                to="/marketplace"
-                onClick={() => sound.playClick()}
-                className="inline-flex items-center gap-2 px-6 py-4 rounded-2xl btn-ghost text-slate-200 font-head font-bold text-sm cursor-pointer"
-              >
-                <Shield className="w-4 h-4 text-red-500" />
-                Sanctuary Welfare
-              </Link>
-            </motion.div>
-          </motion.div>
-
-          {/* Right Hero Feature Box */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="relative flex items-center justify-center"
-          >
-            <div className="relative w-full max-w-[420px] aspect-square rounded-3xl pokemon-card-container p-6 flex flex-col items-center justify-between border-2 border-red-600/40">
-
-              <div className="w-full flex items-center justify-between z-10">
-                <span className="bg-red-600/20 border border-red-500/40 text-red-400 font-head text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-red-500" />
-                  Featured Adoption
-                </span>
-                <span className="font-num text-xs text-slate-400 font-bold">LUMIOSE #01</span>
+            {/* Interactive Search Bar */}
+            <form onSubmit={handleSearchSubmit} className="space-y-3 pt-2">
+              <div className="relative flex items-center">
+                <Search className="absolute left-4 w-5 h-5 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search Pokémon by name, type, or region..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-black/90 border-2 border-white/20 rounded-2xl pl-12 pr-32 py-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-red-600 transition-all font-body shadow-2xl"
+                />
+                <button
+                  type="submit"
+                  onClick={() => sound.playClick()}
+                  className="absolute right-2 px-6 py-2.5 rounded-xl btn-primary text-white text-xs font-head font-bold flex items-center gap-1.5 cursor-pointer shadow-lg"
+                >
+                  <span>Search</span>
+                  <ArrowUpRight className="w-4 h-4" />
+                </button>
               </div>
 
-              {/* Artwork Cycle */}
-              <div className="relative w-56 h-56 flex items-center justify-center">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-red-600/25 to-slate-100/10 blur-2xl animate-pulse" />
+              {/* Quick Tags */}
+              <div className="flex flex-wrap items-center gap-2 text-xs font-head font-semibold text-slate-400">
+                <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold">Trending:</span>
+                {QUICK_TAGS.map(tag => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => {
+                      sound.playPop();
+                      setSearchQuery(tag);
+                      navigate(`/marketplace?search=${tag}`);
+                    }}
+                    className="px-3 py-1 rounded-full bg-slate-900 border border-white/10 hover:border-red-600/60 hover:text-white transition-all cursor-pointer text-[11px]"
+                  >
+                    #{tag}
+                  </button>
+                ))}
+              </div>
+            </form>
+          </div>
+
+          {/* Right Hero Editorial Showcase Box */}
+          <div className="lg:col-span-5 flex justify-center lg:justify-end">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+              className="relative w-full max-w-[380px] rounded-3xl pokemon-card-container p-6 border-2 border-red-600/50 shadow-[0_0_60px_rgba(238,21,21,0.2)] flex flex-col justify-between"
+            >
+              <div className="flex items-center justify-between text-xs font-head font-bold z-10">
+                <span className="px-3 py-1 rounded-full bg-red-600/20 border border-red-500/40 text-red-400 flex items-center gap-1">
+                  <Flame className="w-3.5 h-3.5 text-red-500" />
+                  SPOTLIGHT #01
+                </span>
+                <span className="text-slate-400 font-num">LUMIOSE VET CERTIFIED</span>
+              </div>
+
+              {/* Centered Artwork Display */}
+              <div className="relative h-60 flex items-center justify-center my-4">
+                <div className="absolute w-44 h-44 rounded-full bg-red-600/20 blur-2xl animate-pulse" />
                 {loading ? (
                   <div className="w-40 h-40 rounded-full bg-slate-900 animate-pulse" />
                 ) : (
@@ -160,123 +188,60 @@ function HeroSection() {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                         transition={{ duration: 0.4 }}
-                        className="relative z-10 w-48 h-48 object-contain animate-float drop-shadow-[0_12px_24px_rgba(238,21,21,0.4)]"
+                        className="relative z-10 w-48 h-48 object-contain animate-float drop-shadow-[0_12px_24px_rgba(238,21,21,0.5)]"
                       />
                     )}
                   </AnimatePresence>
                 )}
               </div>
 
-              {/* Info Bottom Bar */}
+              {/* Bottom Details Card */}
               {hero && !loading && (
-                <div className="w-full bg-black/90 p-4 rounded-2xl border border-white/10 flex items-center justify-between">
+                <div className="bg-black/90 p-4 rounded-2xl border border-white/10 flex items-center justify-between">
                   <div>
-                    <h3 className="font-head text-lg font-black text-white">{hero.name}</h3>
+                    <h3 className="font-head text-base font-bold text-white">{hero.name}</h3>
                     <p className="font-body text-xs text-slate-400">{hero.subtitle}</p>
                   </div>
                   <div className="text-right">
-                    <span className="font-body text-[10px] text-slate-400 block uppercase font-bold">Adoption Fee</span>
+                    <span className="font-body text-[9px] text-slate-400 block uppercase font-bold">Adoption Fee</span>
                     <span className="font-num text-base font-bold text-red-500">₹{hero.price.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               )}
-            </div>
-          </motion.div>
-
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ── Stats Bar ─────────────────────────────────────────────────── */
-const STATS = [
-  { value: '1,240+', label: 'Successful Adoptions', icon: Heart },
-  { value: '340+',   label: 'Licensed Caretakers', icon: Users },
-  { value: '100%',   label: 'Health & Vet Certified', icon: CheckCircle },
-  { value: '4.9 ⭐', label: 'Lumiose Trust Score', icon: Star },
-];
-
-function StatsBar() {
-  return (
-    <section className="py-10 border-y border-white/10 bg-black/90">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {STATS.map(({ value, label, icon: Icon }, i) => (
-            <motion.div
-              key={label}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="flex flex-col items-center text-center p-3"
-            >
-              <Icon className="w-6 h-6 text-red-500 mb-2" />
-              <div className="font-num text-2xl sm:text-3xl font-black text-white">{value}</div>
-              <div className="font-body text-xs font-semibold text-slate-400 mt-1">{label}</div>
             </motion.div>
-          ))}
+          </div>
+
         </div>
+
       </div>
     </section>
   );
 }
 
-/* ── Redesigned Browse by Type (Futuristic Selection Grid) ─────────── */
-function BrowseByType() {
+/* ── 2. Editorial Ticker Marquee Bar ──────────────────────────────────────── */
+function TickerMarquee() {
   return (
-    <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-      <div className="text-center space-y-3 max-w-2xl mx-auto">
-        <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest bg-red-600/10 px-4 py-1.5 rounded-full border border-red-600/30">
-          Elemental Categories
-        </span>
-        <h2 className="font-head text-3xl sm:text-5xl font-black text-white tracking-tight">
-          Explore by <span className="gradient-text-red">Type</span>
-        </h2>
-        <p className="font-body text-xs sm:text-sm text-slate-400">
-          Select an elemental class to inspect available companions in our Lumiose Sanctuary
-        </p>
+    <div className="py-4 bg-red-600 text-white overflow-hidden border-y border-white/20 select-none">
+      <div className="flex whitespace-nowrap animate-spin-slow space-x-8 font-head text-xs font-black uppercase tracking-widest">
+        <span>⚡ LUMIOSE SANCTUARY ADOPTIONS</span>
+        <span>·</span>
+        <span>❤️ 1,240+ COMPANIONS HOMED</span>
+        <span>·</span>
+        <span>🩺 HEALTH CHECKED BY LICENSED VETS</span>
+        <span>·</span>
+        <span>✨ OFFICIAL POKÉ PASS PERSISTENCE</span>
+        <span>·</span>
+        <span>⚡ LUMIOSE SANCTUARY ADOPTIONS</span>
+        <span>·</span>
+        <span>❤️ 1,240+ COMPANIONS HOMED</span>
+        <span>·</span>
+        <span>🩺 HEALTH CHECKED BY LICENSED VETS</span>
       </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
-        {TYPES.map((type, i) => (
-          <motion.div
-            key={type.id}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.04 }}
-            whileHover={{ y: -8, scale: 1.05 }}
-          >
-            <Link
-              to={`/marketplace?type=${type.id}`}
-              onClick={() => sound.playPop()}
-              className="group relative flex flex-col items-center p-5 rounded-3xl bg-black border border-white/10 hover:border-red-600/70 transition-all duration-300 shadow-xl overflow-hidden cursor-pointer"
-            >
-              {/* LED Corner Glow */}
-              <div className="absolute top-0 right-0 w-12 h-12 bg-red-600/10 rounded-full blur-xl group-hover:bg-red-600/30 transition-all" />
-
-              <div className="relative w-16 h-16 rounded-2xl bg-slate-950 border border-white/10 flex items-center justify-center text-3xl group-hover:border-red-500 group-hover:shadow-[0_0_20px_rgba(238,21,21,0.4)] transition-all">
-                {type.emoji}
-              </div>
-
-              <div className="text-center mt-3 space-y-0.5">
-                <span className="font-head text-xs font-bold text-white group-hover:text-red-500 transition-colors block">
-                  {type.label}
-                </span>
-                <span className="font-num text-[10px] text-slate-500 block font-semibold">
-                  {type.count}
-                </span>
-              </div>
-            </Link>
-          </motion.div>
-        ))}
-      </div>
-    </section>
+    </div>
   );
 }
 
-/* ── Redesigned Featured Selection Options Grid ──────────────────────── */
+/* ── 3. Redesigned Featured Companion Options (Stella Grid Style) ────────── */
 function FeaturedSection() {
   const [pokemon, setPokemon] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -294,22 +259,22 @@ function FeaturedSection() {
   }, [pokemon, activeFilter]);
 
   return (
-    <section className="py-24 relative overflow-hidden bg-black/80 border-y border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+    <section className="py-24 bg-black border-b border-white/10 text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
 
-        {/* Header & Filter Switcher */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/10 pb-8">
           <div className="space-y-2">
-            <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest bg-red-600/10 px-4 py-1.5 rounded-full border border-red-600/30 inline-block">
-              Sanctuary Selection
+            <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest">
+              CURATED SELECTIONS · 2026
             </span>
-            <h2 className="font-head text-3xl sm:text-4xl font-black text-white">
-              Featured <span className="gradient-text-red">Companions</span>
+            <h2 className="font-head text-3xl sm:text-5xl font-black uppercase tracking-tight">
+              FEATURED <span className="gradient-text-red">COMPANIONS</span>
             </h2>
           </div>
 
-          {/* Interactive Selection Options Pill Bar */}
-          <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-slate-950 border border-white/10">
+          {/* Dribbble Stella Style Filter Pills */}
+          <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-slate-950 border border-white/15">
             {FEATURED_FILTERS.map(f => (
               <button
                 key={f.id}
@@ -317,7 +282,7 @@ function FeaturedSection() {
                   sound.playPop();
                   setActiveFilter(f.id);
                 }}
-                className={`px-4 py-2 rounded-xl font-head text-xs font-bold transition-all cursor-pointer ${
+                className={`px-5 py-2.5 rounded-xl font-head text-xs font-bold transition-all cursor-pointer ${
                   activeFilter === f.id
                     ? 'bg-red-600 text-white shadow-[0_4px_16px_rgba(238,21,21,0.5)]'
                     : 'text-slate-400 hover:text-white'
@@ -329,32 +294,32 @@ function FeaturedSection() {
           </div>
         </div>
 
-        {/* Product Cards Grid */}
+        {/* Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {loading ? (
             Array.from({ length: 8 }).map((_, i) => <PokemonCardSkeleton key={i} />)
           ) : filteredPokemon.length > 0 ? (
             filteredPokemon.map(p => <PokemonCard key={p.id} pokemon={p} />)
           ) : (
-            <div className="col-span-full py-12 text-center text-slate-400 space-y-2">
-              <p className="font-head text-sm font-bold">No companions available in this featured selection.</p>
+            <div className="col-span-full py-16 text-center text-slate-400 space-y-3">
+              <p className="font-head text-base font-bold">No companions available in this category.</p>
               <button
                 onClick={() => setActiveFilter('all')}
                 className="text-xs text-red-500 hover:underline font-bold"
               >
-                Reset Selection Filter
+                Reset Filter Selection
               </button>
             </div>
           )}
         </div>
 
-        <div className="text-center pt-4">
+        <div className="text-center pt-6">
           <Link
             to="/marketplace"
             onClick={() => sound.playClick()}
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl btn-ghost text-white font-head font-bold text-sm cursor-pointer border border-white/15 hover:border-red-600/60"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl btn-primary text-white font-head font-bold text-sm shadow-xl"
           >
-            Explore Complete Marketplace <ArrowRight className="w-4 h-4 text-red-500" />
+            Browse Full Marketplace <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
@@ -363,14 +328,130 @@ function FeaturedSection() {
   );
 }
 
-/* ── Home Export ───────────────────────────────────────────────── */
+/* ── 4. Editorial Element Showcase (Explore By Type) ──────────────────────── */
+function BrowseByType() {
+  return (
+    <section className="py-24 bg-lumiose text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-white/10 pb-6">
+          <div>
+            <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest">
+              ELEMENTAL CATEGORIES
+            </span>
+            <h2 className="font-head text-3xl sm:text-4xl font-black uppercase tracking-tight mt-1">
+              EXPLORE BY <span className="gradient-text-red">TYPE</span>
+            </h2>
+          </div>
+          <Link
+            to="/marketplace"
+            onClick={() => sound.playClick()}
+            className="text-xs font-head font-bold text-red-500 hover:text-red-400 flex items-center gap-1"
+          >
+            View All Types <ArrowUpRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+          {TYPES.map((type, i) => (
+            <motion.div
+              key={type.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.04 }}
+              whileHover={{ y: -8, scale: 1.05 }}
+            >
+              <Link
+                to={`/marketplace?type=${type.id}`}
+                onClick={() => sound.playPop()}
+                className="group relative flex flex-col items-center p-5 rounded-3xl bg-black border border-white/10 hover:border-red-600/70 transition-all duration-300 shadow-xl overflow-hidden cursor-pointer"
+              >
+                <div className="relative w-16 h-16 rounded-2xl bg-slate-950 border border-white/10 flex items-center justify-center text-3xl group-hover:border-red-500 group-hover:shadow-[0_0_20px_rgba(238,21,21,0.4)] transition-all">
+                  {type.emoji}
+                </div>
+
+                <div className="text-center mt-3 space-y-0.5">
+                  <span className="font-head text-xs font-bold text-white group-hover:text-red-500 transition-colors block">
+                    {type.label}
+                  </span>
+                  <span className="font-num text-[10px] text-slate-500 block font-semibold">
+                    {type.count}
+                  </span>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
+/* ── 5. Sanctuary Standards (Trust & Welfare Editorial) ─────────────────── */
+function SanctuaryStandards() {
+  const BENEFITS = [
+    {
+      title: 'Health & Vet Certified',
+      desc: 'Every companion undergoes a full medical evaluation by licensed Kalos veterinarians.',
+      icon: Shield
+    },
+    {
+      title: 'Holographic Poké Pass',
+      desc: 'Digital ownership credentials backed by MongoDB Atlas cloud architecture.',
+      icon: Award
+    },
+    {
+      title: 'Direct Companion Transfer',
+      desc: 'Instant PokéMail transfer to your adoption bag with real-time status updates.',
+      icon: CheckCircle
+    }
+  ];
+
+  return (
+    <section className="py-24 bg-black border-t border-white/10 text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div className="text-center max-w-2xl mx-auto space-y-2">
+          <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest">
+            SANCTUARY STANDARDS
+          </span>
+          <h2 className="font-head text-3xl sm:text-4xl font-black uppercase">
+            WHY TRAINERS TRUST <span className="gradient-text-red">DELIBIRD MART</span>
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {BENEFITS.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={item.title}
+                className="p-8 rounded-3xl pokemon-card-container border border-white/10 space-y-4 hover:border-red-600/50 transition-colors"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-red-600/20 border border-red-600/40 flex items-center justify-center text-red-500">
+                  <Icon className="w-6 h-6" />
+                </div>
+                <h3 className="font-head text-lg font-bold text-white">{item.title}</h3>
+                <p className="font-body text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── Home Page Export ─────────────────────────────────────────────────── */
 export default function Home() {
   return (
     <main>
       <HeroSection />
-      <StatsBar />
-      <BrowseByType />
+      <TickerMarquee />
       <FeaturedSection />
+      <BrowseByType />
+      <SanctuaryStandards />
     </main>
   );
 }

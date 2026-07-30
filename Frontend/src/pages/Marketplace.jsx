@@ -86,7 +86,7 @@ export default function Marketplace() {
   const [searchParams] = useSearchParams();
   const { allPokemon, total, hasMore, loading, loadMore } = usePokemonInfinite(20);
 
-  const [searchQuery,      setSearchQuery]      = useState('');
+  const [searchQuery,      setSearchQuery]      = useState(() => searchParams.get('search') || '');
   const [selectedTypes,    setSelectedTypes]    = useState(() => {
     const t = searchParams.get('type'); return t ? [t] : [];
   });
