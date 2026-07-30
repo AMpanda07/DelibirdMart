@@ -157,7 +157,7 @@ export default function Navbar() {
                 </div>
               </div>
 
-              {/* Sub-Navigation Bar Below Main Row (Home, Marketplace, About, and Interactive Account Menu Beside About) */}
+              {/* Sub-Navigation Bar Below Main Row (Home, Marketplace, About, and Interactive Icon Menu Beside About) */}
               <div className="flex items-center justify-center pt-1 border-t theme-border">
                 <nav className="flex items-center gap-1 sm:gap-2">
                   {NAV_LINKS.map(link => (
@@ -174,14 +174,15 @@ export default function Navbar() {
                     </Link>
                   ))}
 
-                  {/* Interactive Account Menu Button Placed Directly Beside About Button */}
+                  {/* Interactive Icon Menu Button Placed Directly Beside About Button (Clean Icon-Only Trigger) */}
                   <div className="relative" ref={menuRef}>
                     <button
                       onClick={() => {
                         sound.playPop();
                         setUserMenuOpen(o => !o);
                       }}
-                      className="flex items-center gap-1.5 px-3 sm:px-4 py-1 rounded-xl theme-card border theme-border hover:border-red-600/60 transition-all cursor-pointer shadow-sm text-xs font-head font-bold theme-text"
+                      title="User Settings & Theme Menu"
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl theme-card border theme-border hover:border-red-600/60 transition-all cursor-pointer shadow-sm text-xs font-head font-bold theme-text"
                     >
                       {isAuthenticated ? (
                         <img
@@ -192,11 +193,10 @@ export default function Navbar() {
                       ) : (
                         <User className="w-3.5 h-3.5 text-red-500" />
                       )}
-                      <span>{isAuthenticated ? trainer?.displayName || 'Trainer' : 'Account'}</span>
                       <ChevronDown className={`w-3.5 h-3.5 theme-muted transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`} />
                     </button>
 
-                    {/* Hidden Menu Popover Placed Directly Below Account Button */}
+                    {/* Hidden Menu Popover Placed Directly Below Trigger Button */}
                     <AnimatePresence>
                       {userMenuOpen && (
                         <motion.div
