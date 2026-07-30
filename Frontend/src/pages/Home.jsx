@@ -2,14 +2,14 @@
  * Home.jsx
  * High-Editorial E-Commerce Homepage inspired by Stella Layout
  * Official Pokémon Red Theme + Dual Light/Dark System & Web Audio Feedback
- * Spotlight Section: Floating Pokémon artwork on right (no card background)
+ * Spotlight Section: Floating Pokémon artwork on right side of hero text (first on mobile screens)
  */
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Search, ArrowRight, Shield, Heart, CheckCircle,
-  Users, Star, Sparkles, Flame, Award, ArrowUpRight, ShoppingBag
+  ArrowRight, Shield, CheckCircle,
+  Award, ArrowUpRight, ShoppingBag, Flame
 } from 'lucide-react';
 import PokemonCard from '../components/PokemonCard';
 import PokemonCardSkeleton from '../components/PokemonCardSkeleton';
@@ -36,15 +36,11 @@ const FEATURED_FILTERS = [
   { id: 'dragon',   label: '🐉 Dragon Rares' },
 ];
 
-const QUICK_TAGS = ['Charizard', 'Greninja', 'Lucario', 'Fire', 'Electric', 'Dragon'];
-
-/* ── 1. Hero Section (Stella Editorial Style + Floating Right Spotlight) ──── */
+/* ── 1. Hero Section (Spotlight on Right of Hero Text, First on Mobile) ──── */
 function HeroSection() {
   const [heroPokemon, setHeroPokemon] = useState([]);
   const [heroIndex, setHeroIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const navigate = useNavigate();
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -60,14 +56,6 @@ function HeroSection() {
   }, [heroPokemon.length]);
 
   const hero = heroPokemon[heroIndex];
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    sound.playClick();
-    if (searchQuery.trim()) {
-      navigate(`/marketplace?search=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
 
   return (
     <section className="relative pt-32 pb-20 overflow-hidden theme-bg theme-text">
@@ -91,71 +79,11 @@ function HeroSection() {
           </div>
         </div>
 
-        {/* Main Title & Search Layout */}
+        {/* Main Hero Grid: Spotlight First on Mobile (order-first lg:order-last) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
-          {/* Big Bold Editorial Title (Left Side) */}
-          <div className="lg:col-span-7 space-y-6">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="font-head text-4xl sm:text-6xl lg:text-[70px] font-black leading-[0.98] tracking-tight uppercase theme-text"
-            >
-              FIND YOUR <br />
-              <span className="gradient-text-red">
-                FAVORITE
-              </span>{' '}
-              COMPANION.
-            </motion.h1>
 
-            <p className="font-body theme-muted text-sm sm:text-base max-w-lg leading-relaxed">
-              Discover health-checked, temperament-verified Pokémon from licensed Kalos caretakers. Complete with official holographic Poké Pass ID.
-            </p>
-
-            {/* Interactive Search Bar */}
-            <form onSubmit={handleSearchSubmit} className="space-y-3 pt-2">
-              <div className="relative flex items-center">
-                <Search className="absolute left-4 w-5 h-5 theme-muted" />
-                <input
-                  type="text"
-                  placeholder="Search Pokémon by name, type, or region..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full theme-input border-2 theme-border rounded-2xl pl-12 pr-32 py-4 text-sm placeholder-slate-400 focus:outline-none focus:border-red-600 transition-all font-body shadow-xl"
-                />
-                <button
-                  type="submit"
-                  onClick={() => sound.playClick()}
-                  className="absolute right-2 px-6 py-2.5 rounded-xl btn-primary text-white text-xs font-head font-bold flex items-center gap-1.5 cursor-pointer shadow-lg"
-                >
-                  <span>Search</span>
-                  <ArrowUpRight className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Quick Tags */}
-              <div className="flex flex-wrap items-center gap-2 text-xs font-head font-semibold theme-muted">
-                <span className="text-[11px] uppercase tracking-wider font-bold">Trending:</span>
-                {QUICK_TAGS.map(tag => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => {
-                      sound.playPop();
-                      setSearchQuery(tag);
-                      navigate(`/marketplace?search=${tag}`);
-                    }}
-                    className="px-3 py-1 rounded-full theme-card border theme-border hover:border-red-600 hover:text-red-500 transition-all cursor-pointer text-[11px]"
-                  >
-                    #{tag}
-                  </button>
-                ))}
-              </div>
-            </form>
-          </div>
-
-          {/* Right Side: FLOATING SPOTLIGHT SHOWCASE (NO CARD/BOX BACKGROUND) */}
-          <div className="lg:col-span-5 flex flex-col items-center justify-center relative">
+          {/* RIGHT SPOTLIGHT SHOWCASE (Mobile: First | Desktop: Right Side) */}
+          <div className="order-first lg:order-last lg:col-span-5 flex flex-col items-center justify-center relative">
             
             {/* Ambient Background Spotlight Ring (No Card Container) */}
             <div className="absolute w-72 h-72 sm:w-80 sm:h-80 rounded-full bg-red-600/20 blur-3xl animate-pulse pointer-events-none" />
@@ -188,7 +116,7 @@ function HeroSection() {
               )}
             </div>
 
-            {/* Floating Minimal Details Underneath (No Card Box) */}
+            {/* Floating Minimal Details Underneath */}
             {hero && !loading && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -218,6 +146,36 @@ function HeroSection() {
 
           </div>
 
+          {/* LEFT SIDE: Big Bold Editorial Title (Desktop Left Side) */}
+          <div className="order-last lg:order-first lg:col-span-7 space-y-6">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="font-head text-4xl sm:text-6xl lg:text-[70px] font-black leading-[0.98] tracking-tight uppercase theme-text"
+            >
+              FIND YOUR <br />
+              <span className="gradient-text-red">
+                FAVORITE
+              </span>{' '}
+              COMPANION.
+            </motion.h1>
+
+            <p className="font-body theme-muted text-sm sm:text-base max-w-lg leading-relaxed">
+              Discover health-checked, temperament-verified Pokémon from licensed Kalos caretakers. Complete with official holographic Poké Pass ID.
+            </p>
+
+            <div className="flex flex-wrap gap-4 pt-2">
+              <Link
+                to="/marketplace"
+                onClick={() => sound.playSuccess()}
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl btn-primary text-white font-head font-bold text-sm shadow-xl"
+              >
+                Explore Marketplace
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -225,30 +183,7 @@ function HeroSection() {
   );
 }
 
-/* ── 2. Editorial Ticker Marquee Bar ──────────────────────────────────────── */
-function TickerMarquee() {
-  return (
-    <div className="py-4 bg-red-600 text-white overflow-hidden border-y border-white/20 select-none">
-      <div className="flex whitespace-nowrap animate-spin-slow space-x-8 font-head text-xs font-black uppercase tracking-widest">
-        <span>⚡ LUMIOSE SANCTUARY ADOPTIONS</span>
-        <span>·</span>
-        <span>❤️ 1,240+ COMPANIONS HOMED</span>
-        <span>·</span>
-        <span>🩺 HEALTH CHECKED BY LICENSED VETS</span>
-        <span>·</span>
-        <span>✨ OFFICIAL POKÉ PASS PERSISTENCE</span>
-        <span>·</span>
-        <span>⚡ LUMIOSE SANCTUARY ADOPTIONS</span>
-        <span>·</span>
-        <span>❤️ 1,240+ COMPANIONS HOMED</span>
-        <span>·</span>
-        <span>🩺 HEALTH CHECKED BY LICENSED VETS</span>
-      </div>
-    </div>
-  );
-}
-
-/* ── 3. Redesigned Featured Companion Options (Stella Grid Style) ────────── */
+/* ── 2. Redesigned Featured Companion Options ────────────────────────────── */
 function FeaturedSection() {
   const [pokemon, setPokemon] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -335,7 +270,7 @@ function FeaturedSection() {
   );
 }
 
-/* ── 4. Editorial Element Showcase (Explore By Type) ──────────────────────── */
+/* ── 3. Editorial Element Showcase (Explore By Type) ──────────────────────── */
 function BrowseByType() {
   return (
     <section className="py-24 bg-lumiose theme-text">
@@ -396,7 +331,7 @@ function BrowseByType() {
   );
 }
 
-/* ── 5. PokéMail Trainer Club Subscription Banner (Stella Newsletter) ──── */
+/* ── 4. PokéMail Trainer Club Subscription Banner ───────────────────────── */
 function PokeMailNewsletter() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
@@ -455,7 +390,7 @@ function PokeMailNewsletter() {
   );
 }
 
-/* ── 6. Sanctuary Standards (Trust & Welfare Editorial) ─────────────────── */
+/* ── 5. Sanctuary Standards (Trust & Welfare Editorial) ─────────────────── */
 function SanctuaryStandards() {
   const BENEFITS = [
     {
@@ -514,7 +449,6 @@ export default function Home() {
   return (
     <main>
       <HeroSection />
-      <TickerMarquee />
       <FeaturedSection />
       <BrowseByType />
       <PokeMailNewsletter />
