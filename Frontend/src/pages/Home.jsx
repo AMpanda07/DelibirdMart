@@ -2,7 +2,7 @@
  * Home.jsx
  * High-Editorial E-Commerce Homepage inspired by Stella Layout
  * Official Pokémon Red Theme + Dual Light/Dark System & Web Audio Feedback
- * Spotlight Section: Floating Pokémon artwork on right side of hero text (first on mobile screens)
+ * Features: Rolling Text Advertisement Bar & Mobile-First Floating Spotlight Artwork
  */
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -58,24 +58,36 @@ function HeroSection() {
   const hero = heroPokemon[heroIndex];
 
   return (
-    <section className="relative pt-32 pb-20 overflow-hidden theme-bg theme-text">
+    <section className="relative pt-36 pb-20 overflow-hidden theme-bg theme-text">
       {/* Background Editorial Watermark */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[14vw] font-black opacity-[0.03] tracking-tighter uppercase pointer-events-none select-none">
         DELIBIRD
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
 
-        {/* Editorial Header Badge */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b theme-border pb-6">
-          <div className="flex items-center gap-2 text-xs font-head font-bold uppercase tracking-widest theme-muted">
-            <span className="w-2 h-2 rounded-full bg-red-600 animate-ping" />
-            LUMIOSE SANCTUARY · AUTUMN / WINTER 2026
-          </div>
-          <div className="flex items-center gap-4 text-xs font-num theme-muted">
-            <span>VERIFIED ADOPTION MARKETPLACE</span>
+        {/* Rolling Text Advertisement Bar */}
+        <div className="py-2.5 px-4 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white overflow-hidden shadow-lg border border-red-500/40 select-none">
+          <div className="flex whitespace-nowrap animate-spin-slow space-x-8 font-head text-xs font-black uppercase tracking-wider items-center">
+            <span className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+              🔥 SPECIAL ADOPTION EVENT LIVE IN KALOS
+            </span>
             <span>·</span>
-            <span className="text-red-500 font-bold">1,240+ HOMED</span>
+            <span>✨ 1,240+ COMPANIONS HOMED</span>
+            <span>·</span>
+            <span>🩺 HEALTH CHECKED BY LICENSED VETS</span>
+            <span>·</span>
+            <span>👑 OFFICIAL HOLOGRAPHIC POKÉ PASS PERSISTENCE</span>
+            <span>·</span>
+            <span className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+              🔥 SPECIAL ADOPTION EVENT LIVE IN KALOS
+            </span>
+            <span>·</span>
+            <span>✨ 1,240+ COMPANIONS HOMED</span>
+            <span>·</span>
+            <span>🩺 HEALTH CHECKED BY LICENSED VETS</span>
           </div>
         </div>
 
