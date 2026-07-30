@@ -4,10 +4,14 @@ import axios from 'axios';
  * Centralized Axios HTTP Client
  * 
  * Pre-configured with base URL, timeout, headers, and request/response interceptors.
+ * Supports Vercel environment variable VITE_API_BASE_URL.
  */
+const rawBaseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1';
+const baseURL = rawBaseURL.endsWith('/') ? rawBaseURL.slice(0, -1) : rawBaseURL;
+
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1',
-  timeout: 10000,
+  baseURL,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },
