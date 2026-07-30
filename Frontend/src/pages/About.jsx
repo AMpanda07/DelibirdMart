@@ -9,7 +9,7 @@ const CREATOR = {
   handle: 'ErrorGeko',
   role: 'Founder & Full-Stack Architect',
   company: 'CWAN',
-  avatar: 'https://api.dicebear.com/7.x/pixel-art/svg?seed=AyushmanPanda&clothingColor=ee1515&skinColor=f8d25c',
+  avatar: '/avatar.png',
   bio: 'Passionate software engineer and creator of Delibird Mart. Building high-performance, futuristic web experiences with modern full-stack architectures.',
   socials: [
     {
