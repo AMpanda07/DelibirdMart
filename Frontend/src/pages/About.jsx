@@ -47,7 +47,7 @@ const TECH_STACK = [
 
 export default function About() {
   return (
-    <main className="min-h-screen pt-28 pb-20 bg-lumiose text-white">
+    <main className="min-h-screen pt-28 pb-20 bg-lumiose theme-text">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
 
         {/* ── Page Header ── */}
@@ -61,11 +61,11 @@ export default function About() {
             Lumiose Sanctuary Project · CWAN Ecosystem
           </motion.div>
 
-          <h1 className="font-head text-4xl sm:text-5xl font-black tracking-tight">
+          <h1 className="font-head text-4xl sm:text-5xl font-black tracking-tight theme-text">
             About <span className="gradient-text-red">Delibird Mart</span>
           </h1>
-          <p className="font-body text-slate-300 text-base sm:text-lg leading-relaxed">
-            A next-generation Pokémon adoption platform built by <strong className="text-white">CWAN</strong> and architected by <strong className="text-red-500">ErrorGeko (Ayushman Panda)</strong>. Dedicated to connecting Pokémon trainers across the Kalos region with health-certified, verified companions.
+          <p className="font-body theme-muted text-base sm:text-lg leading-relaxed">
+            A next-generation Pokémon adoption platform built by <strong className="theme-text">CWAN</strong> and architected by <strong className="text-red-500">ErrorGeko (Ayushman Panda)</strong>. Dedicated to connecting Pokémon trainers across the Kalos region with health-certified, verified companions.
           </p>
         </div>
 
@@ -86,7 +86,7 @@ export default function About() {
               <div className="flex flex-col items-center text-center space-y-3">
                 <div className="relative group">
                   <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-red-600 to-rose-600 blur-xl opacity-60 group-hover:opacity-100 transition-opacity" />
-                  <div className="relative w-36 h-36 rounded-3xl p-1 bg-black border-2 border-red-600 overflow-hidden shadow-2xl flex items-center justify-center">
+                  <div className="relative w-36 h-36 rounded-3xl p-1 theme-bg border-2 border-red-600 overflow-hidden shadow-2xl flex items-center justify-center">
                     <img
                       src={CREATOR.avatar}
                       alt={CREATOR.name}
@@ -99,7 +99,7 @@ export default function About() {
                 </div>
 
                 <div>
-                  <h3 className="font-head text-xl font-black text-white">{CREATOR.name}</h3>
+                  <h3 className="font-head text-xl font-black theme-text">{CREATOR.name}</h3>
                   <p className="font-head text-xs font-bold text-red-500">@{CREATOR.handle}</p>
                 </div>
               </div>
@@ -107,21 +107,21 @@ export default function About() {
               {/* Creator Bio & Info */}
               <div className="md:col-span-2 space-y-6">
                 <div className="space-y-2">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-black border border-white/10 text-xs font-head font-bold text-slate-300">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl theme-card border theme-border text-xs font-head font-bold theme-text">
                     <Globe className="w-3.5 h-3.5 text-red-500" />
-                    <span>Company: <strong className="text-white">{CREATOR.company}</strong></span>
+                    <span>Company: <strong className="text-red-500">{CREATOR.company}</strong></span>
                   </div>
-                  <h2 className="font-head text-2xl font-bold text-white tracking-wide">
+                  <h2 className="font-head text-2xl font-bold theme-text tracking-wide">
                     {CREATOR.role}
                   </h2>
-                  <p className="font-body text-sm text-slate-300 leading-relaxed">
+                  <p className="font-body text-sm theme-muted leading-relaxed">
                     {CREATOR.bio}
                   </p>
                 </div>
 
                 {/* Social Channels List */}
                 <div className="space-y-3 pt-2">
-                  <h4 className="font-head text-xs font-bold text-slate-400 uppercase tracking-widest">
+                  <h4 className="font-head text-xs font-bold theme-muted uppercase tracking-widest">
                     Official Contact Channels
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -134,22 +134,22 @@ export default function About() {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={() => sound.playPop()}
-                          className="flex items-center justify-between p-3 rounded-2xl bg-black/80 border border-white/10 hover:border-red-600/60 transition-all duration-300 group cursor-pointer shadow-md hover:translate-y-[-2px]"
+                          className="flex items-center justify-between p-3 rounded-2xl theme-card border theme-border hover:border-red-600 transition-all duration-300 group cursor-pointer shadow-md hover:translate-y-[-2px]"
                         >
                           <div className="flex items-center gap-2.5 min-w-0">
                             <div className={`p-2 rounded-xl bg-gradient-to-br ${social.color} text-white shadow-md`}>
                               <Icon className="w-4 h-4" />
                             </div>
                             <div className="min-w-0">
-                              <span className="font-head text-xs font-bold text-white block group-hover:text-red-500 transition-colors">
+                              <span className="font-head text-xs font-bold theme-text block group-hover:text-red-500 transition-colors">
                                 {social.name}
                               </span>
-                              <span className="font-body text-[10px] text-slate-400 truncate block">
+                              <span className="font-body text-[10px] theme-muted truncate block">
                                 {social.handle}
                               </span>
                             </div>
                           </div>
-                          <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-red-500 transition-colors shrink-0 ml-1" />
+                          <ExternalLink className="w-3.5 h-3.5 theme-muted group-hover:text-red-500 transition-colors shrink-0 ml-1" />
                         </a>
                       );
                     })}
@@ -163,22 +163,22 @@ export default function About() {
 
         {/* ── Company Mission & Architecture ── */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          <div className="pokemon-card-container rounded-3xl p-7 border border-white/10 space-y-4">
+          <div className="pokemon-card-container rounded-3xl p-7 border theme-border space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-red-600/20 border border-red-600/40 flex items-center justify-center text-red-500">
               <PokeBallLogo className="w-8 h-8" />
             </div>
-            <h3 className="font-head text-xl font-bold text-white">CWAN Mission Statement</h3>
-            <p className="font-body text-sm text-slate-300 leading-relaxed">
+            <h3 className="font-head text-xl font-bold theme-text">CWAN Mission Statement</h3>
+            <p className="font-body text-sm theme-muted leading-relaxed">
               CWAN strives to deliver innovative, high-impact web and application ecosystems. Delibird Mart showcases an editorial Pokémon experience, combining Web Audio interaction, real-time database persistence, and a custom Red & Obsidian design system.
             </p>
           </div>
 
-          <div className="pokemon-card-container rounded-3xl p-7 border border-white/10 space-y-4">
+          <div className="pokemon-card-container rounded-3xl p-7 border theme-border space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-red-600/20 border border-red-600/40 flex items-center justify-center text-red-500">
               <Shield className="w-6 h-6" />
             </div>
-            <h3 className="font-head text-xl font-bold text-white">Verified Companion Welfare</h3>
-            <p className="font-body text-sm text-slate-300 leading-relaxed">
+            <h3 className="font-head text-xl font-bold theme-text">Verified Companion Welfare</h3>
+            <p className="font-body text-sm theme-muted leading-relaxed">
               Every Pokémon listed in our Lumiose Sanctuary undergoes mandatory health evaluations by certified Poké-Vets. Trainers are issued official holographic Trainer Pass Cards linked to MongoDB Atlas.
             </p>
           </div>
@@ -187,29 +187,29 @@ export default function About() {
         {/* ── Tech Stack Grid ── */}
         <section className="max-w-5xl mx-auto space-y-6">
           <div className="text-center">
-            <h3 className="font-head text-2xl font-bold text-white">Architecture & Technology</h3>
-            <p className="font-body text-xs text-slate-400 mt-1">Built with modern web standards and high performance tooling</p>
+            <h3 className="font-head text-2xl font-bold theme-text">Architecture & Technology</h3>
+            <p className="font-body text-xs theme-muted mt-1">Built with modern web standards and high performance tooling</p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {TECH_STACK.map((tech) => (
               <div
                 key={tech.name}
-                className="p-4 rounded-2xl bg-black/80 border border-white/10 flex flex-col justify-between hover:border-red-600/50 transition-colors"
+                className="p-4 rounded-2xl theme-card border theme-border flex flex-col justify-between hover:border-red-600 transition-colors"
               >
-                <div className="font-head text-sm font-bold text-white flex items-center gap-1.5">
+                <div className="font-head text-sm font-bold theme-text flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-red-600" />
                   {tech.name}
                 </div>
-                <div className="font-body text-xs text-slate-400 mt-1">{tech.desc}</div>
+                <div className="font-body text-xs theme-muted mt-1">{tech.desc}</div>
               </div>
             ))}
           </div>
         </section>
 
         {/* ── Footer Quote ── */}
-        <div className="text-center pt-8 border-t border-white/10">
-          <p className="font-body text-xs text-slate-500 flex items-center justify-center gap-1.5">
+        <div className="text-center pt-8 border-t theme-border">
+          <p className="font-body text-xs theme-muted flex items-center justify-center gap-1.5">
             <span>Crafted with</span>
             <Heart className="w-3.5 h-3.5 text-red-600 fill-red-600" />
             <span>by ErrorGeko (Ayushman Panda) · CWAN © {new Date().getFullYear()}</span>

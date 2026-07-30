@@ -1,13 +1,14 @@
 /**
  * Marketplace.jsx
  * Pokémon Red, Black and White Aesthetic Browsing Interface
+ * Complete Dual Light/Dark Theme Visibility Fix
  */
 import React, { useState, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   SlidersHorizontal, Search, X, ChevronDown, ChevronUp,
-  Filter, Loader2, Dna, Sparkles
+  Loader2, Dna, Sparkles
 } from 'lucide-react';
 import PokemonCard from '../components/PokemonCard';
 import PokemonCardSkeleton from '../components/PokemonCardSkeleton';
@@ -53,17 +54,17 @@ const MAX_PRICE = 260000;
 function FilterSection({ title, icon: Icon, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-white/10 py-3.5">
+    <div className="border-b theme-border py-3.5">
       <button
         onClick={() => {
           sound.playFilter();
           setOpen(o => !o);
         }}
-        className="w-full flex items-center gap-2 font-head text-xs font-bold text-slate-300 hover:text-red-500 transition-colors cursor-pointer uppercase tracking-wider"
+        className="w-full flex items-center gap-2 font-head text-xs font-bold theme-text hover:text-red-500 transition-colors cursor-pointer uppercase tracking-wider"
       >
         {Icon && <Icon className="w-3.5 h-3.5 text-red-500 shrink-0" />}
         <span className="flex-1 text-left">{title}</span>
-        {open ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+        {open ? <ChevronUp className="w-3.5 h-3.5 theme-muted" /> : <ChevronDown className="w-3.5 h-3.5 theme-muted" />}
       </button>
       <AnimatePresence initial={false}>
         {open && (
@@ -137,7 +138,7 @@ export default function Marketplace() {
   };
 
   const SidebarContent = () => (
-    <div className="space-y-1 text-white">
+    <div className="space-y-1 theme-text">
       {/* Type */}
       <FilterSection title="Pokémon Type">
         <div className="grid grid-cols-2 gap-1.5">
@@ -150,7 +151,7 @@ export default function Marketplace() {
                 className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-head font-semibold border transition-all cursor-pointer ${
                   active
                     ? `type-${t.id} border-red-500/80 shadow-md`
-                    : 'bg-black border-white/10 text-slate-400 hover:text-white hover:border-white/20'
+                    : 'theme-card border theme-border theme-muted hover:theme-text'
                 }`}
               >
                 <span>{t.emoji}</span>
@@ -173,12 +174,12 @@ export default function Marketplace() {
                 onClick={() => toggleStage(value)}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-head font-bold border transition-all cursor-pointer ${
                   active
-                    ? 'bg-red-600/20 border-red-500 text-white shadow-md'
-                    : 'bg-black border-white/10 text-slate-400 hover:text-white'
+                    ? 'bg-red-600/20 border-red-500 theme-text shadow-md'
+                    : 'theme-card border theme-border theme-muted hover:theme-text'
                 }`}
               >
-                <span>{label} <span className="text-[10px] font-normal text-slate-400">({description})</span></span>
-                <span className="font-num text-xs text-slate-400">{count}</span>
+                <span>{label} <span className="text-[10px] font-normal theme-muted">({description})</span></span>
+                <span className="font-num text-xs theme-muted">{count}</span>
               </button>
             );
           })}
@@ -196,12 +197,12 @@ export default function Marketplace() {
                 onClick={() => toggleRarity(r)}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-head font-bold border transition-all cursor-pointer ${
                   active
-                    ? 'bg-red-600/30 border-red-500 text-white'
-                    : 'bg-black border-white/10 text-slate-400 hover:text-white'
+                    ? 'bg-red-600/30 border-red-500 theme-text'
+                    : 'theme-card border theme-border theme-muted hover:theme-text'
                 }`}
               >
                 <span>{r}</span>
-                <span className="font-num text-xs text-slate-400">
+                <span className="font-num text-xs theme-muted">
                   {allPokemon.filter(p => p.rarity === r).length}
                 </span>
               </button>
@@ -219,8 +220,8 @@ export default function Marketplace() {
               onClick={() => toggleRegion(gen)}
               className={`px-3 py-1 rounded-full text-xs font-head font-bold border transition-all cursor-pointer ${
                 selectedRegions.includes(gen)
-                  ? 'bg-red-600/20 border-red-500 text-red-400'
-                  : 'bg-black border-white/10 text-slate-400 hover:text-white'
+                  ? 'bg-red-600/20 border-red-500 text-red-500'
+                  : 'theme-card border theme-border theme-muted hover:theme-text'
               }`}
             >
               {gen}
@@ -239,7 +240,7 @@ export default function Marketplace() {
             className="w-full"
             style={{ '--val': `${(maxPrice / MAX_PRICE) * 100}%` }}
           />
-          <div className="flex justify-between font-num text-xs font-bold text-slate-400">
+          <div className="flex justify-between font-num text-xs font-bold theme-muted">
             <span>₹0</span>
             <span className="text-red-500">₹{maxPrice.toLocaleString('en-IN')}</span>
           </div>
@@ -250,7 +251,7 @@ export default function Marketplace() {
         <div className="pt-3">
           <button
             onClick={clearFilters}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-600/20 border border-red-600/40 text-red-400 hover:bg-red-600/30 text-xs font-head font-bold cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-600/20 border border-red-600/40 text-red-500 hover:bg-red-600/30 text-xs font-head font-bold cursor-pointer"
           >
             <X className="w-4 h-4" /> Reset Filters
           </button>
@@ -260,7 +261,7 @@ export default function Marketplace() {
   );
 
   return (
-    <main className="min-h-screen pt-28 pb-20 bg-lumiose text-white">
+    <main className="min-h-screen pt-28 pb-20 bg-lumiose theme-text">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Page Header */}
@@ -268,24 +269,24 @@ export default function Marketplace() {
           <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest bg-red-600/10 px-3.5 py-1.5 rounded-full border border-red-600/20">
             Lumiose Sanctuary Catalog
           </span>
-          <h1 className="font-head text-3xl sm:text-4xl font-extrabold text-white mt-3">
+          <h1 className="font-head text-3xl sm:text-4xl font-extrabold theme-text mt-3">
             Adopt a <span className="gradient-text-red">Companion</span>
           </h1>
-          <p className="font-body text-slate-400 text-sm mt-1">
+          <p className="font-body theme-muted text-sm mt-1">
             {filtered.length} shown · {allPokemon.length} loaded of {total.toLocaleString()} PokéDex entries
           </p>
         </div>
 
-        {/* Search */}
+        {/* Search Input */}
         <div className="flex items-center gap-3 mb-6">
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 theme-muted" />
             <input
               type="text"
               placeholder="Search Pokémon by name, type, or region..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-xl bg-black border border-white/15 text-white placeholder-slate-400 font-body text-sm focus:outline-none focus:border-red-600 transition-all"
+              className="w-full pl-10 pr-4 py-3 rounded-xl theme-input border theme-border theme-text placeholder-slate-400 font-body text-sm focus:outline-none focus:border-red-600 transition-all shadow-inner"
             />
           </div>
         </div>
@@ -294,9 +295,9 @@ export default function Marketplace() {
           {/* Desktop Sidebar */}
           <aside className="hidden lg:block w-64 shrink-0">
             <div className="sticky top-28 pokemon-card-container rounded-2xl p-5 max-h-[calc(100vh-140px)] overflow-y-auto">
-              <div className="flex items-center gap-2 mb-3 pb-3 border-b border-white/10">
+              <div className="flex items-center gap-2 mb-3 pb-3 border-b theme-border">
                 <SlidersHorizontal className="w-4 h-4 text-red-500" />
-                <span className="font-head text-sm font-bold text-white">Filter Directory</span>
+                <span className="font-head text-sm font-bold theme-text">Filter Directory</span>
               </div>
               <SidebarContent />
             </div>
@@ -305,7 +306,7 @@ export default function Marketplace() {
           {/* Grid */}
           <div className="flex-1 min-w-0 space-y-6">
             <div className="flex items-center justify-between">
-              <span className="font-body text-sm font-bold text-slate-300">
+              <span className="font-body text-sm font-bold theme-text">
                 Showing {filtered.length} Pokémon
               </span>
               <select
@@ -314,7 +315,7 @@ export default function Marketplace() {
                   sound.playFilter();
                   setSortBy(e.target.value);
                 }}
-                className="bg-black border border-white/15 rounded-xl px-4 py-2 text-xs font-head font-bold text-white focus:outline-none focus:border-red-600"
+                className="theme-input border theme-border rounded-xl px-4 py-2 text-xs font-head font-bold theme-text focus:outline-none focus:border-red-600"
               >
                 {SORT_OPTIONS.map(o => (
                   <option key={o.value} value={o.value}>{o.label}</option>
@@ -333,8 +334,8 @@ export default function Marketplace() {
             ) : (
               <div className="pokemon-card-container rounded-2xl p-12 text-center space-y-4">
                 <div className="text-5xl">🔎</div>
-                <h3 className="font-head text-lg font-bold text-white">No Matching Pokémon</h3>
-                <p className="font-body text-xs text-slate-400 max-w-xs mx-auto">
+                <h3 className="font-head text-lg font-bold theme-text">No Matching Pokémon</h3>
+                <p className="font-body text-xs theme-muted max-w-xs mx-auto">
                   Try broadening your search filters to find available Pokémon.
                 </p>
                 <button onClick={clearFilters} className="px-5 py-2.5 rounded-xl btn-primary text-white font-head text-xs font-bold cursor-pointer">

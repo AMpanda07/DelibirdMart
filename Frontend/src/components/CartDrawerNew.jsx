@@ -1,6 +1,7 @@
 /**
  * CartDrawerNew.jsx
  * Slide-over cart drawer with Red, Black and White theme styling.
+ * Seamless Light and Dark mode text contrast.
  */
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -48,17 +49,17 @@ export default function CartDrawerNew() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 220 }}
-            className="absolute right-0 top-0 h-full w-full max-w-md bg-black border-l border-red-600/30 flex flex-col shadow-2xl text-white"
+            className="absolute right-0 top-0 h-full w-full max-w-md theme-card border-l border-red-600/30 flex flex-col shadow-2xl theme-text"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-white/10 shrink-0 bg-slate-950">
+            <div className="flex items-center justify-between p-6 border-b theme-border shrink-0 theme-card">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-red-600/20 border border-red-600/40 flex items-center justify-center">
                   <ShoppingBag className="w-5 h-5 text-red-500" />
                 </div>
                 <div>
-                  <div className="font-head text-sm font-bold text-white">Trainer Adoption Bag</div>
-                  <div className="font-body text-xs text-slate-400">{totalItems} Pokémon selected</div>
+                  <div className="font-head text-sm font-bold theme-text">Trainer Adoption Bag</div>
+                  <div className="font-body text-xs theme-muted">{totalItems} Pokémon selected</div>
                 </div>
               </div>
               <button
@@ -66,7 +67,7 @@ export default function CartDrawerNew() {
                   sound.playPop();
                   setIsOpen(false);
                 }}
-                className="p-2 rounded-xl bg-slate-900 text-slate-400 hover:text-white transition-colors cursor-pointer border border-white/10"
+                className="p-2 rounded-xl theme-bg text-slate-400 hover:theme-text transition-colors cursor-pointer border theme-border"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -80,8 +81,8 @@ export default function CartDrawerNew() {
                     <CheckCircle2 className="w-8 h-8 text-red-500" />
                   </div>
                   <div>
-                    <h3 className="font-head text-lg font-bold text-white">Adoption Finalized!</h3>
-                    <p className="font-body text-xs text-slate-400 mt-1 max-w-xs">
+                    <h3 className="font-head text-lg font-bold theme-text">Adoption Finalized!</h3>
+                    <p className="font-body text-xs theme-muted mt-1 max-w-xs">
                       Your companions are now being transferred to your PokéMail in Lumiose Sanctuary.
                     </p>
                   </div>
@@ -90,11 +91,11 @@ export default function CartDrawerNew() {
                 items.map(({ pokemon, quantity }) => (
                   <div
                     key={pokemon.id}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-slate-950 border border-white/10"
+                    className="flex items-center gap-3 p-3 rounded-xl theme-bg border theme-border"
                   >
-                    <img src={pokemon.image} alt={pokemon.name} className="w-14 h-14 object-contain bg-black p-1 rounded-lg border border-white/10" />
+                    <img src={pokemon.image} alt={pokemon.name} className="w-14 h-14 object-contain theme-card p-1 rounded-lg border theme-border" />
                     <div className="flex-1 min-w-0">
-                      <div className="font-head text-sm font-bold text-white truncate">{pokemon.name}</div>
+                      <div className="font-head text-sm font-bold theme-text truncate">{pokemon.name}</div>
                       <div className="font-num text-xs font-bold text-red-500 mt-0.5">{formatPrice(pokemon.price)}</div>
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -103,17 +104,17 @@ export default function CartDrawerNew() {
                           sound.playPop();
                           updateQuantity(pokemon.id, quantity - 1);
                         }}
-                        className="w-7 h-7 rounded-lg bg-slate-900 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white cursor-pointer"
+                        className="w-7 h-7 rounded-lg theme-card border theme-border flex items-center justify-center theme-text hover:border-red-600 cursor-pointer"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="w-5 text-center font-num text-xs font-bold text-white">{quantity}</span>
+                      <span className="w-5 text-center font-num text-xs font-bold theme-text">{quantity}</span>
                       <button
                         onClick={() => {
                           sound.playPop();
                           updateQuantity(pokemon.id, quantity + 1);
                         }}
-                        className="w-7 h-7 rounded-lg bg-slate-900 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white cursor-pointer"
+                        className="w-7 h-7 rounded-lg theme-card border theme-border flex items-center justify-center theme-text hover:border-red-600 cursor-pointer"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
@@ -122,7 +123,7 @@ export default function CartDrawerNew() {
                           sound.playPop();
                           removeFromCart(pokemon.id);
                         }}
-                        className="w-7 h-7 rounded-lg text-slate-400 hover:text-red-500 cursor-pointer ml-1"
+                        className="w-7 h-7 rounded-lg theme-muted hover:text-red-500 cursor-pointer ml-1"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -130,8 +131,8 @@ export default function CartDrawerNew() {
                   </div>
                 ))
               ) : (
-                <div className="h-full flex flex-col items-center justify-center gap-3 text-center py-16 text-slate-500">
-                  <ShoppingBag className="w-12 h-12 text-slate-700" />
+                <div className="h-full flex flex-col items-center justify-center gap-3 text-center py-16 theme-muted">
+                  <ShoppingBag className="w-12 h-12 theme-muted" />
                   <p className="font-head text-xs font-bold">Your adoption bag is currently empty.</p>
                 </div>
               )}
@@ -139,8 +140,8 @@ export default function CartDrawerNew() {
 
             {/* Footer Checkout */}
             {items.length > 0 && !purchased && (
-              <div className="p-5 border-t border-white/10 space-y-4 bg-slate-950">
-                <div className="flex justify-between font-head text-sm font-bold text-white">
+              <div className="p-5 border-t theme-border space-y-4 theme-card">
+                <div className="flex justify-between font-head text-sm font-bold theme-text">
                   <span>Total Fee</span>
                   <span className="font-num text-red-500">{formatPrice(totalPrice)}</span>
                 </div>

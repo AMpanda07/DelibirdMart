@@ -63,7 +63,7 @@ export default function TrainerCardModal({ isOpen, onClose }) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
         <div
           className="absolute inset-0"
           onClick={() => { sound.playClick(); onClose(); }}
@@ -73,10 +73,10 @@ export default function TrainerCardModal({ isOpen, onClose }) {
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          className="relative max-w-lg w-full rounded-3xl overflow-hidden glass-strong border border-red-600/40 z-10 shadow-[0_0_80px_rgba(238,21,21,0.2)] text-white"
+          className="relative max-w-lg w-full rounded-3xl overflow-hidden theme-card border border-red-600/40 z-10 shadow-2xl theme-text"
         >
           {/* Header Banner */}
-          <div className="relative h-28 bg-gradient-to-r from-black via-red-950/60 to-black p-6 flex items-center justify-between border-b border-red-600/30">
+          <div className="relative h-28 theme-card p-6 flex items-center justify-between border-b theme-border">
             {/* Holographic Watermark */}
             <div className="absolute top-0 right-0 translate-x-6 -translate-y-6 w-32 h-32 rounded-full bg-red-600/10 blur-2xl pointer-events-none" />
 
@@ -88,7 +88,7 @@ export default function TrainerCardModal({ isOpen, onClose }) {
                 <span className="font-head text-[10px] uppercase tracking-widest text-red-500 font-bold block">
                   OFFICIAL TRAINER PASS
                 </span>
-                <h3 className="font-head text-lg text-white font-bold tracking-wide">
+                <h3 className="font-head text-lg theme-text font-bold tracking-wide">
                   DELIBIRD MART ID
                 </h3>
               </div>
@@ -96,7 +96,7 @@ export default function TrainerCardModal({ isOpen, onClose }) {
 
             <button
               onClick={() => { sound.playClick(); onClose(); }}
-              className="z-10 p-2 rounded-xl bg-black/80 border border-white/10 text-slate-400 hover:text-white hover:border-white/30 transition-all cursor-pointer"
+              className="z-10 p-2 rounded-xl theme-bg border theme-border theme-muted hover:theme-text transition-all cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -105,7 +105,7 @@ export default function TrainerCardModal({ isOpen, onClose }) {
           {/* Trainer Body */}
           <div className="p-6 sm:p-8 space-y-6">
             {/* Identity Card Section */}
-            <div className="flex flex-col sm:flex-row items-center gap-5 p-4 rounded-2xl bg-black/70 border border-white/10 relative">
+            <div className="flex flex-col sm:flex-row items-center gap-5 p-4 rounded-2xl theme-bg border theme-border relative">
               <div className="relative">
                 <img
                   src={trainer.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${trainer.id}`}
@@ -119,13 +119,13 @@ export default function TrainerCardModal({ isOpen, onClose }) {
               </div>
 
               <div className="flex-1 text-center sm:text-left space-y-1">
-                <h4 className="font-head text-xl font-bold text-white tracking-wide">
+                <h4 className="font-head text-xl font-bold theme-text tracking-wide">
                   {trainer.displayName || 'Trainer'}
                 </h4>
-                <p className="font-body text-xs text-slate-400">
+                <p className="font-body text-xs theme-muted">
                   {trainer.email || 'Registered Trainer'}
                 </p>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-600/10 border border-red-600/30 text-red-400 text-xs font-head font-semibold mt-1">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-600/10 border border-red-600/30 text-red-500 text-xs font-head font-semibold mt-1">
                   <Award className="w-3.5 h-3.5" />
                   {formData.profession}
                 </div>
@@ -135,7 +135,7 @@ export default function TrainerCardModal({ isOpen, onClose }) {
             {/* Editable Profile Details */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h5 className="font-head text-xs uppercase tracking-wider text-slate-400 font-bold flex items-center gap-1.5">
+                <h5 className="font-head text-xs uppercase tracking-wider theme-muted font-bold flex items-center gap-1.5">
                   <User className="w-3.5 h-3.5 text-red-500" />
                   Trainer Statistics & Details
                 </h5>
@@ -144,7 +144,7 @@ export default function TrainerCardModal({ isOpen, onClose }) {
                     sound.playClick();
                     setIsEditing(!isEditing);
                   }}
-                  className="px-3 py-1 rounded-xl bg-black border border-white/10 hover:border-red-600/50 text-xs font-head font-bold text-slate-300 hover:text-red-500 transition-all flex items-center gap-1 cursor-pointer"
+                  className="px-3 py-1 rounded-xl theme-card border theme-border text-xs font-head font-bold theme-text hover:text-red-500 transition-all flex items-center gap-1 cursor-pointer"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
                   {isEditing ? 'Cancel Edit' : 'Edit Profile'}
@@ -152,28 +152,28 @@ export default function TrainerCardModal({ isOpen, onClose }) {
               </div>
 
               {isEditing ? (
-                <div className="space-y-3 p-4 rounded-2xl bg-black/80 border border-red-600/40">
+                <div className="space-y-3 p-4 rounded-2xl theme-card border border-red-600/40">
                   <div>
-                    <label className="block text-[11px] font-head text-slate-400 uppercase font-bold mb-1">
+                    <label className="block text-[11px] font-head theme-muted uppercase font-bold mb-1">
                       Trainer Name
                     </label>
                     <input
                       type="text"
                       value={formData.displayName}
                       onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/10 text-white text-sm focus:outline-none focus:border-red-600/60"
+                      className="w-full px-3 py-2 rounded-xl theme-input border theme-border text-sm focus:outline-none focus:border-red-600"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] font-head text-slate-400 uppercase font-bold mb-1">
+                      <label className="block text-[11px] font-head theme-muted uppercase font-bold mb-1">
                         Profession
                       </label>
                       <select
                         value={formData.profession}
                         onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/10 text-white text-xs focus:outline-none focus:border-red-600/60"
+                        className="w-full px-3 py-2 rounded-xl theme-input border theme-border text-xs focus:outline-none focus:border-red-600"
                       >
                         {PROFESSIONS.map(p => (
                           <option key={p} value={p}>{p}</option>
@@ -182,13 +182,13 @@ export default function TrainerCardModal({ isOpen, onClose }) {
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-head text-slate-400 uppercase font-bold mb-1">
+                      <label className="block text-[11px] font-head theme-muted uppercase font-bold mb-1">
                         Home Region
                       </label>
                       <select
                         value={formData.region}
                         onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/10 text-white text-xs focus:outline-none focus:border-red-600/60"
+                        className="w-full px-3 py-2 rounded-xl theme-input border theme-border text-xs focus:outline-none focus:border-red-600"
                       >
                         {REGIONS.map(r => (
                           <option key={r} value={r}>{r}</option>
@@ -198,7 +198,7 @@ export default function TrainerCardModal({ isOpen, onClose }) {
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-head text-slate-400 uppercase font-bold mb-1">
+                    <label className="block text-[11px] font-head theme-muted uppercase font-bold mb-1">
                       Age
                     </label>
                     <input
@@ -207,7 +207,7 @@ export default function TrainerCardModal({ isOpen, onClose }) {
                       max="99"
                       value={formData.age}
                       onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/10 text-white text-xs focus:outline-none focus:border-red-600/60"
+                      className="w-full px-3 py-2 rounded-xl theme-input border theme-border text-xs focus:outline-none focus:border-red-600"
                     />
                   </div>
 
@@ -221,50 +221,50 @@ export default function TrainerCardModal({ isOpen, onClose }) {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1">
-                    <span className="text-[10px] font-head text-slate-400 uppercase font-bold flex items-center gap-1">
+                  <div className="p-3.5 rounded-2xl theme-card border theme-border space-y-1">
+                    <span className="text-[10px] font-head theme-muted uppercase font-bold flex items-center gap-1">
                       <MapPin className="w-3 h-3 text-red-500" />
                       Home Region
                     </span>
-                    <p className="font-head text-sm font-bold text-white">{trainer.region || 'Kalos'}</p>
+                    <p className="font-head text-sm font-bold theme-text">{trainer.region || 'Kalos'}</p>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1">
-                    <span className="text-[10px] font-head text-slate-400 uppercase font-bold flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-red-400" />
+                  <div className="p-3.5 rounded-2xl theme-card border theme-border space-y-1">
+                    <span className="text-[10px] font-head theme-muted uppercase font-bold flex items-center gap-1">
+                      <Calendar className="w-3 h-3 text-red-500" />
                       Member Since
                     </span>
-                    <p className="font-head text-sm font-bold text-white">{formattedJoinDate}</p>
+                    <p className="font-head text-sm font-bold theme-text">{formattedJoinDate}</p>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1">
-                    <span className="text-[10px] font-head text-slate-400 uppercase font-bold flex items-center gap-1">
+                  <div className="p-3.5 rounded-2xl theme-card border theme-border space-y-1">
+                    <span className="text-[10px] font-head theme-muted uppercase font-bold flex items-center gap-1">
                       <Heart className="w-3 h-3 text-red-500" />
                       Adoptions
                     </span>
                     <p className="font-head text-sm font-bold text-red-500">{trainer.adoptions || 0} Companions</p>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1">
-                    <span className="text-[10px] font-head text-slate-400 uppercase font-bold flex items-center gap-1">
-                      <Shield className="w-3 h-3 text-red-400" />
+                  <div className="p-3.5 rounded-2xl theme-card border theme-border space-y-1">
+                    <span className="text-[10px] font-head theme-muted uppercase font-bold flex items-center gap-1">
+                      <Shield className="w-3 h-3 text-red-500" />
                       Trainer Age
                     </span>
-                    <p className="font-head text-sm font-bold text-white">{trainer.age || 18} Years</p>
+                    <p className="font-head text-sm font-bold theme-text">{trainer.age || 18} Years</p>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Footer Action */}
-            <div className="pt-2 flex items-center justify-between border-t border-white/10">
+            <div className="pt-2 flex items-center justify-between border-t theme-border">
               <button
                 onClick={() => {
                   sound.playPop();
                   onClose();
                   logout();
                 }}
-                className="px-4 py-2.5 rounded-xl bg-red-600/10 border border-red-600/30 hover:bg-red-600/20 text-red-400 text-xs font-head font-bold flex items-center gap-2 transition-all cursor-pointer"
+                className="px-4 py-2.5 rounded-xl bg-red-600/10 border border-red-600/30 hover:bg-red-600/20 text-red-500 text-xs font-head font-bold flex items-center gap-2 transition-all cursor-pointer"
               >
                 <LogOut className="w-4 h-4" />
                 Sign Out
@@ -272,7 +272,7 @@ export default function TrainerCardModal({ isOpen, onClose }) {
 
               <button
                 onClick={() => { sound.playClick(); onClose(); }}
-                className="px-5 py-2.5 rounded-xl bg-black border border-white/10 hover:border-white/30 text-white text-xs font-head font-bold cursor-pointer"
+                className="px-5 py-2.5 rounded-xl theme-bg border theme-border hover:border-red-600 text-xs font-head font-bold theme-text cursor-pointer"
               >
                 Close Pass
               </button>

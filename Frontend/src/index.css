@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 /* ================================================================
-   DELIBIRD MART — HIGH-VISIBILITY DUAL THEME DESIGN SYSTEM
+   DELIBIRD MART — HIGH-CONTRAST DUAL THEME SYSTEM
    Official Pokémon Palette: Electric Red (#EE1515)
    Dark Mode: Pitch Obsidian (#0A0A0C) & Charcoal (#141418)
-   Light Mode: Soft Pearl Slate (#F1F5F9) & Crisp White (#FFFFFF)
+   Light Mode: Snow Pearl (#F8FAFC) & Pure White (#FFFFFF)
    ================================================================ */
 
 @layer base {
@@ -14,14 +14,14 @@
     /* ── Dark Theme Tokens ── */
     --bg-main:          #0A0A0C;
     --bg-card:          #141418;
-    --bg-card-hover:    #1E1E24;
+    --bg-card-hover:    #1C1C24;
     --bg-input:         #121216;
 
     --text-primary:     #FFFFFF;
-    --text-secondary:   #CBD5E1;
-    --text-muted:       #94A3B8;
+    --text-secondary:   #E2E8F0;
+    --text-muted:       #A0AEC0;
 
-    --border-subtle:    rgba(255, 255, 255, 0.12);
+    --border-subtle:    rgba(255, 255, 255, 0.16);
     --border-accent:    rgba(238, 21, 21, 0.45);
     --border-focus:     #EE1515;
 
@@ -38,17 +38,17 @@
   html.light {
     color-scheme: light;
 
-    --bg-main:          #F1F5F9;
+    --bg-main:          #F8FAFC;
     --bg-card:          #FFFFFF;
-    --bg-card-hover:    #F8FAFC;
+    --bg-card-hover:    #F1F5F9;
     --bg-input:         #FFFFFF;
 
     --text-primary:     #0F172A;
-    --text-secondary:   #334155;
-    --text-muted:       #64748B;
+    --text-secondary:   #1E293B;
+    --text-muted:       #475569;
 
-    --border-subtle:    rgba(15, 23, 42, 0.12);
-    --border-accent:    rgba(238, 21, 21, 0.35);
+    --border-subtle:    rgba(15, 23, 42, 0.15);
+    --border-accent:    rgba(238, 21, 21, 0.4);
     --border-focus:     #EE1515;
 
     --red-primary:      #EE1515;
@@ -81,11 +81,12 @@
 .font-body { font-family: 'Inter', sans-serif !important; }
 .font-num  { font-family: 'Space Grotesk', monospace !important; }
 
-/* ── Universal Theme Classes ────────────────────────────────────── */
+/* ── Universal Theme Utility Classes ────────────────────────────── */
 .theme-bg       { background-color: var(--bg-main) !important; }
 .theme-card     { background-color: var(--bg-card) !important; }
 .theme-input    { background-color: var(--bg-input) !important; color: var(--text-primary) !important; }
 .theme-text     { color: var(--text-primary) !important; }
+.theme-secondary{ color: var(--text-secondary) !important; }
 .theme-muted    { color: var(--text-muted) !important; }
 .theme-border   { border-color: var(--border-subtle) !important; }
 
@@ -179,20 +180,6 @@
   background: rgba(238, 21, 21, 0.18);
   border-color: rgba(238, 21, 21, 0.55);
 }
-
-/* ── Animations ────────────────────────────────────────────────── */
-@keyframes floatY {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33%       { transform: translateY(-14px) rotate(1.2deg); }
-  66%       { transform: translateY(-7px) rotate(-0.8deg); }
-}
-.animate-float { animation: floatY 5s ease-in-out infinite; }
-
-@keyframes spinSlow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-.animate-spin-slow { animation: spinSlow 22s linear infinite; }
 
 /* ── Type Badges ───────────────────────────────────────────────── */
 .type-fire     { background: rgba(239,68,68,0.2);   border: 1px solid rgba(239,68,68,0.6);  color: #EE1515; }
