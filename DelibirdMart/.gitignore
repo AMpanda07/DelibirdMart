@@ -1,18 +1,18 @@
 # Dependencies
 node_modules/
-client/node_modules/
-server/node_modules/
+Frontend/node_modules/
+Backend/node_modules/
 
 # Environment Variables
 .env
 .env.local
-server/.env
-client/.env
+Backend/.env
+Frontend/.env
 
 # Build outputs
 dist/
 build/
-client/dist/
+Frontend/dist/
 
 # Logs
 npm-debug.log*

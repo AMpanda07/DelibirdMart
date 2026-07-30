@@ -1,8 +1,10 @@
 # Dependencies
 node_modules/
 DelibirdMart/node_modules/
-DelibirdMart/client/node_modules/
-DelibirdMart/server/node_modules/
+DelibirdMart/Frontend/node_modules/
+DelibirdMart/Backend/node_modules/
+Frontend/node_modules/
+Backend/node_modules/
 
 # Environment Variables
 .env

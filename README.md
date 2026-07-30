@@ -154,7 +154,7 @@ Media Storage
 delibird-mart/
 
 │
-├── client/
+├── Frontend/
 │
 │   ├── public/
 │   ├── src/
@@ -184,7 +184,7 @@ delibird-mart/
 │   ├── utils/
 │   └── App.jsx
 │
-├── server/
+├── Backend/
 │
 │   ├── config/
 │   ├── controllers/

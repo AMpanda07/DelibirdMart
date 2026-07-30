@@ -4,7 +4,7 @@
 - Initialize root `package.json` with concurrent scripts to launch frontend and backend simultaneously.
 - Set up workspace `.gitignore` file.
 
-## 2. Backend Initialization (`server/`)
+## 2. Backend Initialization (`Backend/`)
 - Layered MVC Architecture + Repository Pattern setup.
 - Dependencies: `express`, `mongoose`, `dotenv`, `cors`, `nodemon`.
 - Directory Structure:
@@ -19,7 +19,7 @@
   - `utils/`: `appError.js`, `asyncHandler.js`
 - Entry Point: `server.js`
 
-## 3. Frontend Initialization (`client/`)
+## 3. Frontend Initialization (`Frontend/`)
 - React + Vite + Tailwind CSS + Framer Motion + Axios + React Router DOM.
 - Directory Structure:
   - `assets/`: Static assets & icons
