@@ -124,7 +124,7 @@ export default function Navbar() {
                       placeholder="Search..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-20 sm:w-36 md:w-52 theme-input border theme-border rounded-xl pl-7 sm:pl-8 pr-2 py-1.5 text-xs placeholder-slate-400 focus:outline-none focus:border-red-600 font-body shadow-inner transition-all"
+                      className="w-24 sm:w-40 md:w-56 theme-input border theme-border rounded-xl pl-7 sm:pl-8 pr-2 py-1.5 text-xs placeholder-slate-400 focus:outline-none focus:border-red-600 font-body shadow-inner transition-all"
                     />
                   </form>
 
@@ -154,35 +154,10 @@ export default function Navbar() {
                     </AnimatePresence>
                   </button>
 
-                  {/* User Account / Menu Trigger */}
-                  <div className="relative shrink-0" ref={menuRef}>
-                    <button
-                      onClick={() => {
-                        sound.playPop();
-                        setUserMenuOpen(o => !o);
-                      }}
-                      className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl theme-card border theme-border hover:border-red-600/60 transition-all cursor-pointer shadow-md"
-                    >
-                      {isAuthenticated ? (
-                        <img
-                          src={trainer?.avatar || '/avatar.png'}
-                          alt="Trainer"
-                          className="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover border border-red-500"
-                        />
-                      ) : (
-                        <User className="w-4 h-4 text-red-500" />
-                      )}
-                      <span className="hidden sm:inline font-head text-xs font-bold theme-text max-w-[80px] truncate">
-                        {isAuthenticated ? trainer?.displayName || 'Trainer' : 'Account'}
-                      </span>
-                      <ChevronDown className={`w-3.5 h-3.5 theme-muted transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`} />
-                    </button>
-                  </div>
-
                 </div>
               </div>
 
-              {/* Sub-Navigation Bar Below Main Row (Home, Marketplace, About) */}
+              {/* Sub-Navigation Bar Below Main Row (Home, Marketplace, About, and Interactive Account Menu Beside About) */}
               <div className="flex items-center justify-center pt-1 border-t theme-border">
                 <nav className="flex items-center gap-1 sm:gap-2">
                   {NAV_LINKS.map(link => (
@@ -190,7 +165,7 @@ export default function Navbar() {
                       key={link.href}
                       to={link.href}
                       onClick={() => sound.playPop()}
-                      className={`px-3 sm:px-6 py-1 rounded-xl font-head text-xs font-bold transition-all ${isActive(link.href)
+                      className={`px-3 sm:px-5 py-1 rounded-xl font-head text-xs font-bold transition-all ${isActive(link.href)
                         ? 'bg-red-600 text-white shadow-[0_4px_16px_rgba(238,21,21,0.4)]'
                         : 'theme-muted hover:theme-text hover:bg-slate-500/10'
                         }`}
@@ -198,89 +173,113 @@ export default function Navbar() {
                       {link.label}
                     </Link>
                   ))}
+
+                  {/* Interactive Account Menu Button Placed Directly Beside About Button */}
+                  <div className="relative" ref={menuRef}>
+                    <button
+                      onClick={() => {
+                        sound.playPop();
+                        setUserMenuOpen(o => !o);
+                      }}
+                      className="flex items-center gap-1.5 px-3 sm:px-4 py-1 rounded-xl theme-card border theme-border hover:border-red-600/60 transition-all cursor-pointer shadow-sm text-xs font-head font-bold theme-text"
+                    >
+                      {isAuthenticated ? (
+                        <img
+                          src={trainer?.avatar || '/avatar.png'}
+                          alt="Trainer"
+                          className="w-4 h-4 rounded-full object-cover border border-red-500"
+                        />
+                      ) : (
+                        <User className="w-3.5 h-3.5 text-red-500" />
+                      )}
+                      <span>{isAuthenticated ? trainer?.displayName || 'Trainer' : 'Account'}</span>
+                      <ChevronDown className={`w-3.5 h-3.5 theme-muted transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {/* Hidden Menu Popover Placed Directly Below Account Button */}
+                    <AnimatePresence>
+                      {userMenuOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                          transition={{ duration: 0.2 }}
+                          className="absolute right-0 sm:left-1/2 sm:-translate-x-1/2 mt-2 w-56 rounded-2xl theme-card border border-red-600/40 p-2.5 shadow-2xl z-50 space-y-1.5 theme-text backdrop-blur-xl"
+                        >
+                          <div className="px-3 py-1.5 border-b theme-border">
+                            <span className="font-head text-[10px] uppercase tracking-widest text-red-500 font-bold block">
+                              {isAuthenticated ? 'TRAINER SESSION' : 'GUEST SESSION'}
+                            </span>
+                            <p className="font-body text-xs font-bold theme-text truncate">
+                              {isAuthenticated ? trainer?.displayName || 'Logged Trainer' : 'Welcome to Delibird Mart'}
+                            </p>
+                          </div>
+
+                          {/* Theme Switcher Button */}
+                          <button
+                            onClick={() => {
+                              sound.playPop();
+                              toggleTheme();
+                            }}
+                            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-red-600/10 text-xs font-head font-bold theme-text transition-colors cursor-pointer"
+                          >
+                            <div className="flex items-center gap-2">
+                              {isDark ? <Sun className="w-4 h-4 text-red-500" /> : <Moon className="w-4 h-4 text-red-500" />}
+                              <span>{isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}</span>
+                            </div>
+                            <span className="text-[10px] theme-muted uppercase">{isDark ? 'Dark' : 'Light'}</span>
+                          </button>
+
+                          {/* Trainer Pass / Sign In Button */}
+                          {isAuthenticated ? (
+                            <>
+                              <button
+                                onClick={() => {
+                                  sound.playClick();
+                                  setUserMenuOpen(false);
+                                  setTrainerModalOpen(true);
+                                }}
+                                className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-red-600/10 text-xs font-head font-bold theme-text transition-colors cursor-pointer"
+                              >
+                                <Award className="w-4 h-4 text-red-500" />
+                                <span>View Holographic Pass</span>
+                              </button>
+
+                              <button
+                                onClick={() => {
+                                  sound.playPop();
+                                  setUserMenuOpen(false);
+                                  logout();
+                                }}
+                                className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-red-600/10 text-xs font-head font-bold text-red-500 transition-colors cursor-pointer"
+                              >
+                                <LogOut className="w-4 h-4" />
+                                <span>Sign Out</span>
+                              </button>
+                            </>
+                          ) : (
+                            <button
+                              onClick={() => {
+                                sound.playClick();
+                                setUserMenuOpen(false);
+                                setAuthModalOpen(true);
+                              }}
+                              className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl btn-primary text-white text-xs font-head font-bold cursor-pointer shadow-md"
+                            >
+                              <Shield className="w-4 h-4 text-white" />
+                              <span>Sign In / Register</span>
+                            </button>
+                          )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </nav>
               </div>
 
             </div>
           </motion.div>
 
-          {/* Hidden Menu Placed Directly Below Navbar Bar */}
-          <AnimatePresence>
-            {userMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className="absolute right-3 sm:right-6 top-[calc(100%+8px)] w-56 rounded-2xl theme-card border border-red-600/40 p-2.5 shadow-2xl z-50 space-y-1.5 theme-text backdrop-blur-xl"
-              >
-                <div className="px-3 py-1.5 border-b theme-border">
-                  <span className="font-head text-[10px] uppercase tracking-widest text-red-500 font-bold block">
-                    {isAuthenticated ? 'TRAINER SETTINGS' : 'GUEST SESSION'}
-                  </span>
-                  <p className="font-body text-xs font-bold theme-text truncate">
-                    {isAuthenticated ? trainer?.displayName || 'Logged Trainer' : 'Welcome to Delibird Mart'}
-                  </p>
-                </div>
-
-                {/* Theme Switcher Button */}
-                <button
-                  onClick={() => {
-                    sound.playPop();
-                    toggleTheme();
-                  }}
-                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-red-600/10 text-xs font-head font-bold theme-text transition-colors cursor-pointer"
-                >
-                  <div className="flex items-center gap-2">
-                    {isDark ? <Sun className="w-4 h-4 text-red-500" /> : <Moon className="w-4 h-4 text-red-500" />}
-                    <span>{isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}</span>
-                  </div>
-                  <span className="text-[10px] theme-muted uppercase">{isDark ? 'Dark' : 'Light'}</span>
-                </button>
-
-                {/* Trainer Pass / Sign In Button */}
-                {isAuthenticated ? (
-                  <>
-                    <button
-                      onClick={() => {
-                        sound.playClick();
-                        setUserMenuOpen(false);
-                        setTrainerModalOpen(true);
-                      }}
-                      className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-red-600/10 text-xs font-head font-bold theme-text transition-colors cursor-pointer"
-                    >
-                      <Award className="w-4 h-4 text-red-500" />
-                      <span>View Holographic Pass</span>
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        sound.playPop();
-                        setUserMenuOpen(false);
-                        logout();
-                      }}
-                      className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-red-600/10 text-xs font-head font-bold text-red-500 transition-colors cursor-pointer"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      <span>Sign Out</span>
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    onClick={() => {
-                      sound.playClick();
-                      setUserMenuOpen(false);
-                      setAuthModalOpen(true);
-                    }}
-                    className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl btn-primary text-white text-xs font-head font-bold cursor-pointer shadow-md"
-                  >
-                    <Shield className="w-4 h-4 text-white" />
-                    <span>Sign In / Register</span>
-                  </button>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </motion.header>
 
