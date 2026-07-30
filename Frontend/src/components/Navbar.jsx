@@ -1,26 +1,29 @@
 /**
  * Navbar.jsx
- * Sticky HopeRise inspired glassmorphic navbar with audio interaction.
+ * Sticky HopeRise inspired glassmorphic navbar with audio interaction, Firebase Auth & Trainer Pass Card.
  */
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Menu, X, MapPin, Shield, Sparkles, Heart } from 'lucide-react';
+import { ShoppingBag, Menu, X, Shield, Award } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { sound } from '../utils/audio';
 import CartDrawerNew from './CartDrawerNew';
+import TrainerCardModal from './TrainerCardModal';
 
 const NAV_LINKS = [
-  { href: '/',            label: 'Home' },
+  { href: '/', label: 'Home' },
   { href: '/marketplace', label: 'Marketplace' },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [trainerModalOpen, setTrainerModalOpen] = useState(false);
+
   const { totalItems, setIsOpen: setCartOpen } = useCart();
-  const { trainer, isAuthenticated } = useAuth();
+  const { trainer, isAuthenticated, login } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
@@ -46,7 +49,7 @@ export default function Navbar() {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 right-0 z-50"
+        className="fixed top-0 left-0 right-0 z-40"
       >
         <motion.div
           animate={{
@@ -54,11 +57,10 @@ export default function Navbar() {
             paddingBottom: scrolled ? '10px' : '16px',
           }}
           transition={{ duration: 0.3 }}
-          className={`mx-4 mt-3 rounded-2xl transition-all duration-300 ${
-            scrolled
-              ? 'glass-strong shadow-[0_12px_40px_rgba(0,0,0,0.7)]'
-              : 'glass shadow-[0_6px_30px_rgba(0,0,0,0.4)]'
-          }`}
+          className={`mx-4 mt-3 rounded-2xl transition-all duration-300 ${scrolled
+            ? 'glass-strong shadow-[0_12px_40px_rgba(0,0,0,0.7)]'
+            : 'glass shadow-[0_6px_30px_rgba(0,0,0,0.4)]'
+            }`}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-6">
 
@@ -89,11 +91,10 @@ export default function Navbar() {
                   key={link.href}
                   to={link.href}
                   onClick={() => sound.playPop()}
-                  className={`relative px-5 py-2 rounded-xl font-head text-xs font-bold transition-all duration-200 ${
-                    isActive(link.href)
-                      ? 'text-white'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
+                  className={`relative px-5 py-2 rounded-xl font-head text-xs font-bold transition-all duration-200 ${isActive(link.href)
+                    ? 'text-white'
+                    : 'text-slate-400 hover:text-white'
+                    }`}
                 >
                   {isActive(link.href) && (
                     <motion.div
@@ -142,23 +143,38 @@ export default function Navbar() {
                 </AnimatePresence>
               </button>
 
-              {/* Trainer Card / Sign In */}
+              {/* Trainer Pass Card / Sign In */}
               {isAuthenticated ? (
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-white/10 cursor-pointer">
+                <button
+                  onClick={() => {
+                    sound.playPop();
+                    setTrainerModalOpen(true);
+                  }}
+                  title="Click to view & edit Official Trainer Card"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-amber-500/30 hover:border-amber-400 cursor-pointer transition-all group shadow-md active:scale-95"
+                >
                   <img
-                    src={trainer.avatar}
-                    alt={trainer.displayName}
-                    className="w-7 h-7 rounded-lg"
+                    src={trainer.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${trainer.id}`}
+                    alt={trainer.displayName || 'Trainer Avatar'}
+                    className="w-7 h-7 rounded-lg object-cover border border-amber-500/40"
                   />
-                  <div className="hidden sm:block leading-none">
-                    <div className="font-head text-[11px] text-white font-bold">{trainer.displayName}</div>
-                    <div className="font-body text-[10px] text-amber-400 font-semibold">{trainer.badge}</div>
+                  <div className="hidden sm:block leading-none text-left">
+                    <div className="font-head text-[11px] text-white font-bold group-hover:text-amber-400 transition-colors">
+                      {trainer.displayName}
+                    </div>
+                    <div className="font-body text-[10px] text-amber-400 font-semibold flex items-center gap-1">
+                      <Award className="w-2.5 h-2.5" />
+                      {trainer.badge || 'Elite'}
+                    </div>
                   </div>
-                </div>
+                </button>
               ) : (
                 <button
                   id="signin-btn"
-                  onClick={() => sound.playClick()}
+                  onClick={() => {
+                    sound.playClick();
+                    login();
+                  }}
                   className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl btn-primary text-white text-xs font-head font-bold cursor-pointer"
                 >
                   <Shield className="w-3.5 h-3.5" />
@@ -193,20 +209,59 @@ export default function Navbar() {
                     key={link.href}
                     to={link.href}
                     onClick={() => sound.playPop()}
-                    className={`block px-4 py-3 rounded-xl font-head text-sm font-bold transition-all ${
-                      isActive(link.href)
-                        ? 'bg-gradient-to-r from-orange-500 to-rose-500 text-white'
-                        : 'text-slate-300 hover:bg-slate-800'
-                    }`}
+                    className={`block px-4 py-3 rounded-xl font-head text-sm font-bold transition-all ${isActive(link.href)
+                      ? 'bg-gradient-to-r from-orange-500 to-rose-500 text-white'
+                      : 'text-slate-300 hover:bg-slate-800'
+                      }`}
                   >
                     {link.label}
                   </Link>
                 ))}
+
+                {/* Mobile Authentication Controls */}
+                <div className="pt-2 border-t border-white/10 sm:hidden">
+                  {isAuthenticated ? (
+                    <button
+                      onClick={() => {
+                        sound.playPop();
+                        setTrainerModalOpen(true);
+                      }}
+                      className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-head text-sm font-bold"
+                    >
+                      <span className="flex items-center gap-2">
+                        <img
+                          src={trainer.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${trainer.id}`}
+                          alt={trainer.displayName || 'Avatar'}
+                          className="w-6 h-6 rounded-md object-cover"
+                        />
+                        Trainer Pass ({trainer.displayName})
+                      </span>
+                      <Award className="w-4 h-4" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        sound.playClick();
+                        login();
+                      }}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl btn-primary text-white font-head text-sm font-bold"
+                    >
+                      <Shield className="w-4 h-4" />
+                      Sign In with Google
+                    </button>
+                  )}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
         </motion.div>
       </motion.header>
+
+      {/* Trainer Pass Card Modal */}
+      <TrainerCardModal
+        isOpen={trainerModalOpen}
+        onClose={() => setTrainerModalOpen(false)}
+      />
 
       <CartDrawerNew />
     </>
