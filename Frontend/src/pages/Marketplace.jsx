@@ -1,18 +1,19 @@
 /**
  * Marketplace.jsx
  * Pokémon Red, Black and White Aesthetic Browsing Interface
- * Complete Dual Light/Dark Theme Visibility Fix
+ * Mandatory Sign-In Protection for Marketplace Access
  */
-import React, { useState, useMemo, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   SlidersHorizontal, Search, X, ChevronDown, ChevronUp,
-  Loader2, Dna, Sparkles
+  Loader2, Dna, Sparkles, Shield, Lock, LogIn
 } from 'lucide-react';
 import PokemonCard from '../components/PokemonCard';
 import PokemonCardSkeleton from '../components/PokemonCardSkeleton';
 import { usePokemonInfinite } from '../hooks/usePokemon';
+import { useAuth } from '../context/AuthContext';
 import {
   applyFilters, sortPokemon,
   EVOLUTION_STAGES, GENERATIONS, RARITIES,
@@ -85,6 +86,7 @@ function FilterSection({ title, icon: Icon, children, defaultOpen = true }) {
 
 export default function Marketplace() {
   const [searchParams] = useSearchParams();
+  const { isAuthenticated } = useAuth();
   const { allPokemon, total, hasMore, loading, loadMore } = usePokemonInfinite(20);
 
   const [searchQuery,      setSearchQuery]      = useState(() => searchParams.get('search') || '');
@@ -98,6 +100,13 @@ export default function Marketplace() {
   const [selectedRegions,  setSelectedRegions]  = useState([]);
   const [maxPrice,         setMaxPrice]         = useState(MAX_PRICE);
   const [sortBy,           setSortBy]           = useState('featured');
+
+  // Trigger Auth Modal automatically if accessing marketplace while unauthenticated
+  useEffect(() => {
+    if (!isAuthenticated) {
+      window.dispatchEvent(new CustomEvent('open-auth-modal'));
+    }
+  }, [isAuthenticated]);
 
   const filtered = useMemo(() => {
     const filters = {
@@ -136,6 +145,39 @@ export default function Marketplace() {
     setSearchQuery('');
     setSortBy('featured');
   };
+
+  if (!isAuthenticated) {
+    return (
+      <main className="min-h-screen pt-36 pb-20 bg-lumiose theme-text flex items-center justify-center px-4">
+        <div className="max-w-md w-full pokemon-card-container rounded-3xl p-8 text-center space-y-6 shadow-2xl border-2 border-red-600/40">
+          <div className="w-16 h-16 rounded-3xl bg-red-600/20 border border-red-600/50 flex items-center justify-center text-red-500 mx-auto">
+            <Lock className="w-8 h-8" />
+          </div>
+          <div className="space-y-2">
+            <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest">
+              RESTRICTED DIRECTORY
+            </span>
+            <h2 className="font-head text-2xl font-black theme-text uppercase">
+              TRAINER SIGN IN <span className="gradient-text-red">REQUIRED</span>
+            </h2>
+            <p className="font-body text-xs theme-muted leading-relaxed">
+              Accessing the Lumiose Sanctuary Pokémon Marketplace requires an official verified Trainer Pass account.
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              sound.playClick();
+              window.dispatchEvent(new CustomEvent('open-auth-modal'));
+            }}
+            className="w-full py-3.5 rounded-2xl btn-primary text-white font-head font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-xl"
+          >
+            <LogIn className="w-4 h-4" />
+            Sign In / Register Pass
+          </button>
+        </div>
+      </main>
+    );
+  }
 
   const SidebarContent = () => (
     <div className="space-y-1 theme-text">
@@ -261,7 +303,7 @@ export default function Marketplace() {
   );
 
   return (
-    <main className="min-h-screen pt-28 pb-20 bg-lumiose theme-text">
+    <main className="min-h-screen pt-36 pb-20 bg-lumiose theme-text">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Page Header */}
@@ -294,7 +336,7 @@ export default function Marketplace() {
         <div className="flex gap-8">
           {/* Desktop Sidebar */}
           <aside className="hidden lg:block w-64 shrink-0">
-            <div className="sticky top-28 pokemon-card-container rounded-2xl p-5 max-h-[calc(100vh-140px)] overflow-y-auto">
+            <div className="sticky top-36 pokemon-card-container rounded-2xl p-5 max-h-[calc(100vh-160px)] overflow-y-auto">
               <div className="flex items-center gap-2 mb-3 pb-3 border-b theme-border">
                 <SlidersHorizontal className="w-4 h-4 text-red-500" />
                 <span className="font-head text-sm font-bold theme-text">Filter Directory</span>
