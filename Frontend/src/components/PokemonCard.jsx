@@ -1,6 +1,7 @@
 /**
  * PokemonCard.jsx
  * High-visibility Pokémon card with Red, Black and White theme.
+ * Seamless Light/Dark Mode text visibility.
  */
 import React, { useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
@@ -49,10 +50,10 @@ const RARITY_CONFIG = {
 
 /* ── Evolution Stage Config ───────────────────────────────────── */
 const EVO_CONFIG = {
-  1: { label: 'Stage 1', cls: 'bg-black/80 border-slate-600/50 text-slate-200' },
+  1: { label: 'Stage 1', cls: 'bg-slate-900/80 border-slate-600/50 text-slate-200' },
   2: { label: 'Stage 2', cls: 'bg-red-950/80 border-red-500/60 text-red-200' },
   3: { label: 'Stage 3', cls: 'bg-red-900/90 border-red-400/80 text-white' },
-  'Base':    { label: 'Stage 1', cls: 'bg-black/80 border-slate-600/50 text-slate-200' },
+  'Base':    { label: 'Stage 1', cls: 'bg-slate-900/80 border-slate-600/50 text-slate-200' },
   'Stage 1': { label: 'Stage 2', cls: 'bg-red-950/80 border-red-500/60 text-red-200' },
   'Stage 2': { label: 'Stage 3', cls: 'bg-red-900/90 border-red-400/80 text-white' },
 };
@@ -73,8 +74,8 @@ function getTypeAccent(type) {
 function StatBar({ label, value, max = 160, color }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="font-body text-[10px] font-semibold text-slate-400 w-6 shrink-0">{label}</span>
-      <div className="flex-1 h-1.5 rounded-full bg-slate-900/90 border border-white/5 overflow-hidden">
+      <span className="font-body text-[10px] font-semibold theme-muted w-6 shrink-0">{label}</span>
+      <div className="flex-1 h-1.5 rounded-full theme-bg border theme-border overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           whileInView={{ width: `${Math.min((value / max) * 100, 100)}%` }}
@@ -84,7 +85,7 @@ function StatBar({ label, value, max = 160, color }) {
           style={{ background: color }}
         />
       </div>
-      <span className="font-num text-[10px] font-bold text-slate-300 w-6 text-right shrink-0">{value}</span>
+      <span className="font-num text-[10px] font-bold theme-text w-6 text-right shrink-0">{value}</span>
     </div>
   );
 }
@@ -166,9 +167,9 @@ export default function PokemonCard({ pokemon, compact = false }) {
         {/* Wishlist Button */}
         <button
           onClick={toggleWishlist}
-          className="w-8 h-8 rounded-full bg-black/80 border border-white/20 flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md"
+          className="w-8 h-8 rounded-full theme-bg border theme-border flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md"
         >
-          <Heart className={`w-4 h-4 transition-colors ${liked ? 'text-red-500 fill-red-500' : 'text-slate-400'}`} />
+          <Heart className={`w-4 h-4 transition-colors ${liked ? 'text-red-500 fill-red-500' : 'theme-muted'}`} />
         </button>
       </div>
 
@@ -180,7 +181,7 @@ export default function PokemonCard({ pokemon, compact = false }) {
           style={{ background: accent }}
         />
         <div
-          className="absolute w-36 h-36 rounded-full border border-white/10 opacity-40 animate-pulse"
+          className="absolute w-36 h-36 rounded-full border theme-border opacity-40 animate-pulse"
         />
 
         {/* Pokémon Image */}
@@ -197,28 +198,28 @@ export default function PokemonCard({ pokemon, compact = false }) {
 
         {/* Pokédex Number Tag */}
         {pokemon.pokedexId && (
-          <div className="absolute bottom-1 right-4 font-num text-[11px] font-bold text-slate-400 bg-black/80 px-2 py-0.5 rounded-md border border-white/10">
+          <div className="absolute bottom-1 right-4 font-num text-[11px] font-bold theme-muted theme-bg px-2 py-0.5 rounded-md border theme-border">
             #{String(pokemon.pokedexId).padStart(3, '0')}
           </div>
         )}
       </div>
 
       {/* ── Content Section ── */}
-      <div className="p-4 pt-2 bg-black/60 border-t border-white/10 flex-1 flex flex-col justify-between space-y-3">
+      <div className="p-4 pt-2 theme-card border-t theme-border flex-1 flex flex-col justify-between space-y-3">
         {/* Title & Rating */}
         <div>
           <div className="flex items-center justify-between gap-2">
-            <h3 className="font-head text-base font-bold text-white tracking-wide group-hover:text-red-500 transition-colors">
+            <h3 className="font-head text-base font-bold theme-text tracking-wide group-hover:text-red-500 transition-colors">
               {pokemon.name}
             </h3>
             {pokemon.rating && (
               <div className="flex items-center gap-1 bg-red-600/10 border border-red-600/30 px-2 py-0.5 rounded-full shrink-0">
                 <Star className="w-3 h-3 text-red-500 fill-red-500" />
-                <span className="font-num text-xs font-bold text-red-400">{pokemon.rating}</span>
+                <span className="font-num text-xs font-bold text-red-500">{pokemon.rating}</span>
               </div>
             )}
           </div>
-          <p className="font-body text-[11px] text-slate-400 mt-0.5">{pokemon.subtitle || 'Verified Companion'}</p>
+          <p className="font-body text-[11px] theme-muted mt-0.5">{pokemon.subtitle || 'Verified Companion'}</p>
         </div>
 
         {/* Type Badges */}
@@ -232,7 +233,7 @@ export default function PokemonCard({ pokemon, compact = false }) {
             );
           })}
           {pokemon.region && (
-            <span className="ml-auto font-body text-[10px] text-slate-300 font-semibold bg-slate-900/80 px-2 py-0.5 rounded-md border border-white/10">
+            <span className="ml-auto font-body text-[10px] theme-text font-semibold theme-bg px-2 py-0.5 rounded-md border theme-border">
               {pokemon.region}
             </span>
           )}
@@ -240,7 +241,7 @@ export default function PokemonCard({ pokemon, compact = false }) {
 
         {/* Stat Bars (non-compact mode) */}
         {!compact && pokemon.stats && (
-          <div className="space-y-1.5 py-2 border-y border-white/10 bg-black/50 px-2.5 rounded-xl">
+          <div className="space-y-1.5 py-2 border-y theme-border theme-bg px-2.5 rounded-xl">
             <StatBar label="ATK" value={pokemon.stats.attack} color={accent} />
             <StatBar label="DEF" value={pokemon.stats.defense} color={accent} />
             <StatBar label="SPD" value={pokemon.stats.speed} color={accent} />
@@ -250,8 +251,8 @@ export default function PokemonCard({ pokemon, compact = false }) {
         {/* Price & Adopt Button */}
         <div className="flex items-center justify-between pt-1">
           <div>
-            <div className="font-body text-[9px] text-slate-400 uppercase tracking-widest font-semibold">Adoption Fee</div>
-            <div className="font-num text-lg font-bold text-white tracking-tight">
+            <div className="font-body text-[9px] theme-muted uppercase tracking-widest font-semibold">Adoption Fee</div>
+            <div className="font-num text-lg font-bold theme-text tracking-tight">
               {fmt(pokemon.price)}
             </div>
           </div>

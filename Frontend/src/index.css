@@ -1,26 +1,32 @@
 @import "tailwindcss";
 
 /* ================================================================
-   DELIBIRD MART — DUAL THEME DESIGN SYSTEM (DARK & LIGHT MODE)
-   Official Pokémon Palette: Electric Red (#EE1515) Accent
+   DELIBIRD MART — HIGH-VISIBILITY DUAL THEME DESIGN SYSTEM
+   Official Pokémon Palette: Electric Red (#EE1515)
    Dark Mode: Pitch Obsidian (#0A0A0C) & Charcoal (#141418)
-   Light Mode: Pure Snow White (#F8FAFC) & Pristine (#FFFFFF)
+   Light Mode: Soft Pearl Slate (#F1F5F9) & Crisp White (#FFFFFF)
    ================================================================ */
 
 @layer base {
   :root {
     color-scheme: dark;
 
-    /* Default Dark Tokens */
-    --c-bg:             #0A0A0C;
-    --c-bg-card:        #141418;
-    --c-bg-card-hover:  #1C1C22;
-    --c-primary:        #EE1515;
-    --c-accent:         #FF2E2E;
-    --c-text:           #FFFFFF;
-    --c-text-muted:     #94A3B8;
-    --c-border:         rgba(255, 255, 255, 0.14);
-    --c-border-glow:    rgba(238, 21, 21, 0.45);
+    /* ── Dark Theme Tokens ── */
+    --bg-main:          #0A0A0C;
+    --bg-card:          #141418;
+    --bg-card-hover:    #1E1E24;
+    --bg-input:         #121216;
+
+    --text-primary:     #FFFFFF;
+    --text-secondary:   #CBD5E1;
+    --text-muted:       #94A3B8;
+
+    --border-subtle:    rgba(255, 255, 255, 0.12);
+    --border-accent:    rgba(238, 21, 21, 0.45);
+    --border-focus:     #EE1515;
+
+    --red-primary:      #EE1515;
+    --red-glow:         rgba(238, 21, 21, 0.35);
 
     /* ── Typography ── */
     --font-head: 'Poppins', system-ui, sans-serif;
@@ -28,18 +34,25 @@
     --font-num:  'Space Grotesk', monospace;
   }
 
-  /* ── Light Mode Token Overrides ── */
+  /* ── Light Theme Tokens ── */
   html.light {
     color-scheme: light;
-    --c-bg:             #F8FAFC;
-    --c-bg-card:        #FFFFFF;
-    --c-bg-card-hover:  #F1F5F9;
-    --c-primary:        #EE1515;
-    --c-accent:         #DC2626;
-    --c-text:           #0F172A;
-    --c-text-muted:     #475569;
-    --c-border:         rgba(15, 23, 42, 0.12);
-    --c-border-glow:    rgba(238, 21, 21, 0.35);
+
+    --bg-main:          #F1F5F9;
+    --bg-card:          #FFFFFF;
+    --bg-card-hover:    #F8FAFC;
+    --bg-input:         #FFFFFF;
+
+    --text-primary:     #0F172A;
+    --text-secondary:   #334155;
+    --text-muted:       #64748B;
+
+    --border-subtle:    rgba(15, 23, 42, 0.12);
+    --border-accent:    rgba(238, 21, 21, 0.35);
+    --border-focus:     #EE1515;
+
+    --red-primary:      #EE1515;
+    --red-glow:         rgba(238, 21, 21, 0.25);
   }
 
   *, *::before, *::after { box-sizing: border-box; }
@@ -48,8 +61,8 @@
   body {
     margin: 0;
     padding: 0;
-    background-color: var(--c-bg);
-    color: var(--c-text);
+    background-color: var(--bg-main);
+    color: var(--text-primary);
     font-family: var(--font-body);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
@@ -63,23 +76,24 @@
   }
 }
 
-/* ── Font Utilities ─────────────────────────────────────────────── */
+/* ── Typography Helpers ─────────────────────────────────────────── */
 .font-head { font-family: 'Poppins', sans-serif !important; }
 .font-body { font-family: 'Inter', sans-serif !important; }
 .font-num  { font-family: 'Space Grotesk', monospace !important; }
 
-/* ── Theme Background Gradients ──────────────────────────────────── */
-.bg-lumiose {
-  background:
-    radial-gradient(ellipse 75% 55% at 50% -10%, rgba(238, 21, 21, 0.22) 0%, transparent 65%),
-    radial-gradient(ellipse 50% 40% at 85% 45%,  rgba(255, 255, 255, 0.05) 0%, transparent 60%),
-    linear-gradient(180deg, var(--c-bg) 0%, var(--c-bg-card) 50%, var(--c-bg) 100%);
-}
+/* ── Universal Theme Classes ────────────────────────────────────── */
+.theme-bg       { background-color: var(--bg-main) !important; }
+.theme-card     { background-color: var(--bg-card) !important; }
+.theme-input    { background-color: var(--bg-input) !important; color: var(--text-primary) !important; }
+.theme-text     { color: var(--text-primary) !important; }
+.theme-muted    { color: var(--text-muted) !important; }
+.theme-border   { border-color: var(--border-subtle) !important; }
 
-html.light .bg-lumiose {
-  background:
-    radial-gradient(ellipse 75% 55% at 50% -10%, rgba(238, 21, 21, 0.12) 0%, transparent 65%),
-    linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 50%, #F8FAFC 100%);
+/* ── Background Layout Styles ───────────────────────────────────── */
+.bg-lumiose {
+  background-color: var(--bg-main);
+  background-image:
+    radial-gradient(ellipse 75% 55% at 50% -10%, rgba(238, 21, 21, 0.15) 0%, transparent 65%);
 }
 
 .bg-city-grid {
@@ -88,50 +102,37 @@ html.light .bg-lumiose {
   background-size: 32px 32px;
 }
 
-/* ── Glassmorphism & Solid Card Visibility ────────────────────── */
+/* ── Glassmorphism & Card Surfaces ────────────────────────────── */
 .glass {
-  background: var(--c-bg-card);
-  backdrop-filter: blur(20px) saturate(1.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8);
-  border: 1px solid var(--c-border);
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
 }
 
 .glass-strong {
-  background: var(--c-bg-card);
-  backdrop-filter: blur(24px) saturate(1.8);
-  -webkit-backdrop-filter: blur(24px) saturate(1.8);
-  border: 1px solid rgba(238, 21, 21, 0.4);
+  background: var(--bg-card);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-accent);
 }
 
-/* HIGH-VISIBILITY POKEMON CARD STYLING */
+/* HIGH-VISIBILITY POKEMON CARD CONTAINERS */
 .pokemon-card-container {
-  background: var(--c-bg-card);
-  border: 1px solid var(--c-border);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .pokemon-card-container:hover {
-  background: var(--c-bg-card-hover);
+  background-color: var(--bg-card-hover);
   border-color: rgba(238, 21, 21, 0.65);
   box-shadow: 0 20px 45px rgba(238, 21, 21, 0.2);
   transform: translateY(-6px);
 }
 
-.glass-card {
-  background: var(--c-bg-card);
-  border: 1px solid var(--c-border);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
-}
-.glass-card:hover {
-  border-color: rgba(238, 21, 21, 0.5);
-  box-shadow: 0 16px 40px rgba(238, 21, 21, 0.25);
-}
-
-/* ── Glow Effects ──────────────────────────────────────────────── */
-.glow-red    { box-shadow: 0 0 35px rgba(238, 21, 21, 0.6); }
-
-/* ── Gradient Text ─────────────────────────────────────────────── */
+/* ── Glow & Text Accent ────────────────────────────────────────── */
 .gradient-text-red {
   background: linear-gradient(135deg, #EE1515 0%, #C40D0D 100%);
   -webkit-background-clip: text;
@@ -144,7 +145,7 @@ html.light .bg-lumiose {
   background: linear-gradient(135deg, #EE1515 0%, #C40D0D 100%);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #FFFFFF !important;
-  box-shadow: 0 8px 24px rgba(238, 21, 21, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 24px rgba(238, 21, 21, 0.4);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .btn-primary:hover {
@@ -155,28 +156,28 @@ html.light .bg-lumiose {
 .btn-primary:active { transform: translateY(0); }
 
 .btn-secondary {
-  background: var(--c-bg-card);
-  border: 1px solid var(--c-border);
-  color: var(--c-text);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   transition: all 0.25s ease;
 }
 .btn-secondary:hover {
   transform: translateY(-2px);
   border-color: rgba(238, 21, 21, 0.6);
-  box-shadow: 0 14px 36px rgba(238, 21, 21, 0.2);
+  box-shadow: 0 14px 36px rgba(238, 21, 21, 0.18);
 }
 
 .btn-ghost {
   background: rgba(238, 21, 21, 0.08);
-  border: 1px solid rgba(238, 21, 21, 0.2);
-  color: var(--c-text);
+  border: 1px solid rgba(238, 21, 21, 0.25);
+  color: var(--text-primary);
   backdrop-filter: blur(12px);
   transition: all 0.25s ease;
 }
 .btn-ghost:hover {
-  background: rgba(238, 21, 21, 0.16);
-  border-color: rgba(238, 21, 21, 0.5);
+  background: rgba(238, 21, 21, 0.18);
+  border-color: rgba(238, 21, 21, 0.55);
 }
 
 /* ── Animations ────────────────────────────────────────────────── */
@@ -193,16 +194,16 @@ html.light .bg-lumiose {
 }
 .animate-spin-slow { animation: spinSlow 22s linear infinite; }
 
-/* ── Type Badge Palette ────────────────────────────────────────── */
-.type-fire     { background: rgba(239,68,68,0.32);   border: 1px solid rgba(239,68,68,0.7);  color: #EE1515; }
-.type-water    { background: rgba(59,130,246,0.32);  border: 1px solid rgba(59,130,246,0.7); color: #2563EB; }
-.type-grass    { background: rgba(34,197,94,0.32);   border: 1px solid rgba(34,197,94,0.7);  color: #16A34A; }
-.type-electric { background: rgba(234,179,8,0.35);   border: 1px solid rgba(234,179,8,0.75); color: #CA8A04; }
-.type-psychic  { background: rgba(236,72,153,0.32);  border: 1px solid rgba(236,72,153,0.7); color: #DB2777; }
-.type-dragon   { background: rgba(99,102,241,0.35);  border: 1px solid rgba(99,102,241,0.75);color: #4F46E5; }
-.type-normal   { background: rgba(148,163,184,0.32); border: 1px solid rgba(148,163,184,0.6);color: #475569; }
+/* ── Type Badges ───────────────────────────────────────────────── */
+.type-fire     { background: rgba(239,68,68,0.2);   border: 1px solid rgba(239,68,68,0.6);  color: #EE1515; }
+.type-water    { background: rgba(59,130,246,0.2);  border: 1px solid rgba(59,130,246,0.6); color: #2563EB; }
+.type-grass    { background: rgba(34,197,94,0.2);   border: 1px solid rgba(34,197,94,0.6);  color: #16A34A; }
+.type-electric { background: rgba(234,179,8,0.22);  border: 1px solid rgba(234,179,8,0.65); color: #CA8A04; }
+.type-psychic  { background: rgba(236,72,153,0.2);  border: 1px solid rgba(236,72,153,0.6); color: #DB2777; }
+.type-dragon   { background: rgba(99,102,241,0.22); border: 1px solid rgba(99,102,241,0.65);color: #4F46E5; }
+.type-normal   { background: rgba(148,163,184,0.2); border: 1px solid rgba(148,163,184,0.5);color: #475569; }
 
 /* ── Scrollbar ─────────────────────────────────────────────────── */
 ::-webkit-scrollbar       { width: 6px; }
-::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-track { background: var(--bg-main); }
 ::-webkit-scrollbar-thumb { background: #EE1515; border-radius: 4px; }

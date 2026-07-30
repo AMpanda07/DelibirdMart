@@ -1,18 +1,20 @@
 /**
  * Home.jsx
- * High-Editorial E-Commerce Homepage inspired by Stella Fashion Layout
- * Customized with Official Pokémon Red, Black & White Theme + Light/Dark Theme System & Web Audio Feedback
+ * High-Editorial E-Commerce Homepage inspired by Stella Layout
+ * Official Pokémon Red Theme + Dual Light/Dark System & Web Audio Feedback
+ * Spotlight Section: Floating Pokémon artwork on right (no card background)
  */
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, ArrowRight, Shield, Heart, CheckCircle,
-  Users, Star, Sparkles, Flame, Award, ArrowUpRight
+  Users, Star, Sparkles, Flame, Award, ArrowUpRight, ShoppingBag
 } from 'lucide-react';
 import PokemonCard from '../components/PokemonCard';
 import PokemonCardSkeleton from '../components/PokemonCardSkeleton';
 import { fetchHeroPokemon, fetchPokemonPage } from '../services/pokemonService';
+import { useCart } from '../context/CartContext';
 import { sound } from '../utils/audio';
 
 const TYPES = [
@@ -36,13 +38,14 @@ const FEATURED_FILTERS = [
 
 const QUICK_TAGS = ['Charizard', 'Greninja', 'Lucario', 'Fire', 'Electric', 'Dragon'];
 
-/* ── 1. Hero Section (Stella Editorial Style + Live Search) ─────────────── */
+/* ── 1. Hero Section (Stella Editorial Style + Floating Right Spotlight) ──── */
 function HeroSection() {
   const [heroPokemon, setHeroPokemon] = useState([]);
   const [heroIndex, setHeroIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     fetchHeroPokemon([658, 448, 149, 6])
@@ -67,21 +70,21 @@ function HeroSection() {
   };
 
   return (
-    <section className="relative pt-32 pb-20 overflow-hidden bg-lumiose text-white">
+    <section className="relative pt-32 pb-20 overflow-hidden theme-bg theme-text">
       {/* Background Editorial Watermark */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[14vw] font-black text-slate-500/[0.04] tracking-tighter uppercase pointer-events-none select-none">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[14vw] font-black opacity-[0.03] tracking-tighter uppercase pointer-events-none select-none">
         DELIBIRD
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
 
         {/* Editorial Header Badge */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
-          <div className="flex items-center gap-2 text-xs font-head font-bold uppercase tracking-widest text-slate-400">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b theme-border pb-6">
+          <div className="flex items-center gap-2 text-xs font-head font-bold uppercase tracking-widest theme-muted">
             <span className="w-2 h-2 rounded-full bg-red-600 animate-ping" />
             LUMIOSE SANCTUARY · AUTUMN / WINTER 2026
           </div>
-          <div className="flex items-center gap-4 text-xs font-num text-slate-400">
+          <div className="flex items-center gap-4 text-xs font-num theme-muted">
             <span>VERIFIED ADOPTION MARKETPLACE</span>
             <span>·</span>
             <span className="text-red-500 font-bold">1,240+ HOMED</span>
@@ -89,14 +92,14 @@ function HeroSection() {
         </div>
 
         {/* Main Title & Search Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
-          {/* Big Bold Editorial Title (Stella Style) */}
+          {/* Big Bold Editorial Title (Left Side) */}
           <div className="lg:col-span-7 space-y-6">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="font-head text-4xl sm:text-6xl lg:text-[72px] font-black leading-[0.98] tracking-tight uppercase"
+              className="font-head text-4xl sm:text-6xl lg:text-[70px] font-black leading-[0.98] tracking-tight uppercase theme-text"
             >
               FIND YOUR <br />
               <span className="gradient-text-red">
@@ -105,20 +108,20 @@ function HeroSection() {
               COMPANION.
             </motion.h1>
 
-            <p className="font-body text-slate-300 text-sm sm:text-base max-w-lg leading-relaxed">
+            <p className="font-body theme-muted text-sm sm:text-base max-w-lg leading-relaxed">
               Discover health-checked, temperament-verified Pokémon from licensed Kalos caretakers. Complete with official holographic Poké Pass ID.
             </p>
 
             {/* Interactive Search Bar */}
             <form onSubmit={handleSearchSubmit} className="space-y-3 pt-2">
               <div className="relative flex items-center">
-                <Search className="absolute left-4 w-5 h-5 text-slate-400" />
+                <Search className="absolute left-4 w-5 h-5 theme-muted" />
                 <input
                   type="text"
                   placeholder="Search Pokémon by name, type, or region..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-black/80 border-2 border-white/20 rounded-2xl pl-12 pr-32 py-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-red-600 transition-all font-body shadow-2xl"
+                  className="w-full theme-input border-2 theme-border rounded-2xl pl-12 pr-32 py-4 text-sm placeholder-slate-400 focus:outline-none focus:border-red-600 transition-all font-body shadow-xl"
                 />
                 <button
                   type="submit"
@@ -131,8 +134,8 @@ function HeroSection() {
               </div>
 
               {/* Quick Tags */}
-              <div className="flex flex-wrap items-center gap-2 text-xs font-head font-semibold text-slate-400">
-                <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold">Trending:</span>
+              <div className="flex flex-wrap items-center gap-2 text-xs font-head font-semibold theme-muted">
+                <span className="text-[11px] uppercase tracking-wider font-bold">Trending:</span>
                 {QUICK_TAGS.map(tag => (
                   <button
                     key={tag}
@@ -142,7 +145,7 @@ function HeroSection() {
                       setSearchQuery(tag);
                       navigate(`/marketplace?search=${tag}`);
                     }}
-                    className="px-3 py-1 rounded-full bg-black border border-white/10 hover:border-red-600/60 hover:text-white transition-all cursor-pointer text-[11px]"
+                    className="px-3 py-1 rounded-full theme-card border theme-border hover:border-red-600 hover:text-red-500 transition-all cursor-pointer text-[11px]"
                   >
                     #{tag}
                   </button>
@@ -151,59 +154,68 @@ function HeroSection() {
             </form>
           </div>
 
-          {/* Right Hero Editorial Showcase Box */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6 }}
-              className="relative w-full max-w-[380px] rounded-3xl pokemon-card-container p-6 border-2 border-red-600/50 shadow-[0_0_60px_rgba(238,21,21,0.2)] flex flex-col justify-between"
-            >
-              <div className="flex items-center justify-between text-xs font-head font-bold z-10">
-                <span className="px-3 py-1 rounded-full bg-red-600/20 border border-red-500/40 text-red-400 flex items-center gap-1">
-                  <Flame className="w-3.5 h-3.5 text-red-500" />
-                  SPOTLIGHT #01
-                </span>
-                <span className="text-slate-400 font-num">LUMIOSE VET CERTIFIED</span>
-              </div>
+          {/* Right Side: FLOATING SPOTLIGHT SHOWCASE (NO CARD/BOX BACKGROUND) */}
+          <div className="lg:col-span-5 flex flex-col items-center justify-center relative">
+            
+            {/* Ambient Background Spotlight Ring (No Card Container) */}
+            <div className="absolute w-72 h-72 sm:w-80 sm:h-80 rounded-full bg-red-600/20 blur-3xl animate-pulse pointer-events-none" />
 
-              {/* Centered Artwork Display */}
-              <div className="relative h-60 flex items-center justify-center my-4">
-                <div className="absolute w-44 h-44 rounded-full bg-red-600/20 blur-2xl animate-pulse" />
-                {loading ? (
-                  <div className="w-40 h-40 rounded-full bg-slate-900 animate-pulse" />
-                ) : (
-                  <AnimatePresence mode="wait">
-                    {hero && (
-                      <motion.img
-                        key={hero.id}
-                        src={hero.image}
-                        alt={hero.name}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.4 }}
-                        className="relative z-10 w-48 h-48 object-contain animate-float drop-shadow-[0_12px_24px_rgba(238,21,21,0.5)]"
-                      />
-                    )}
-                  </AnimatePresence>
-                )}
-              </div>
+            {/* Spotlight Top Floating Pill */}
+            <div className="mb-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/10 border border-red-600/40 text-red-500 font-head text-xs font-bold shadow-md z-10">
+              <Flame className="w-4 h-4 text-red-500 animate-bounce" />
+              <span>SPOTLIGHT COMPANION #01</span>
+            </div>
 
-              {/* Bottom Details Card */}
-              {hero && !loading && (
-                <div className="bg-black/90 p-4 rounded-2xl border border-white/10 flex items-center justify-between">
-                  <div>
-                    <h3 className="font-head text-base font-bold text-white">{hero.name}</h3>
-                    <p className="font-body text-xs text-slate-400">{hero.subtitle}</p>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-body text-[9px] text-slate-400 block uppercase font-bold">Adoption Fee</span>
-                    <span className="font-num text-base font-bold text-red-500">₹{hero.price.toLocaleString('en-IN')}</span>
-                  </div>
-                </div>
+            {/* Floating Pokémon Image Only (NO Card Frame) */}
+            <div className="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center z-10">
+              {loading ? (
+                <div className="w-48 h-48 rounded-full bg-slate-400/20 animate-pulse" />
+              ) : (
+                <AnimatePresence mode="wait">
+                  {hero && (
+                    <motion.img
+                      key={hero.id}
+                      src={hero.image}
+                      alt={hero.name}
+                      initial={{ opacity: 0, scale: 0.85, y: 15 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.85, y: -15 }}
+                      transition={{ duration: 0.5 }}
+                      className="w-full h-full object-contain animate-float drop-shadow-[0_20px_35px_rgba(238,21,21,0.45)]"
+                    />
+                  )}
+                </AnimatePresence>
               )}
-            </motion.div>
+            </div>
+
+            {/* Floating Minimal Details Underneath (No Card Box) */}
+            {hero && !loading && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-2 text-center space-y-3 z-10"
+              >
+                <div>
+                  <h3 className="font-head text-2xl font-black theme-text tracking-wide">{hero.name}</h3>
+                  <p className="font-body text-xs theme-muted uppercase font-semibold">{hero.subtitle} · Kalos Sanctuary</p>
+                </div>
+
+                <div className="flex items-center justify-center gap-4">
+                  <span className="font-num text-xl font-bold text-red-500">₹{hero.price.toLocaleString('en-IN')}</span>
+                  <button
+                    onClick={() => {
+                      sound.playSuccess();
+                      addToCart(hero);
+                    }}
+                    className="px-5 py-2.5 rounded-xl btn-primary text-white font-head font-bold text-xs flex items-center gap-2 cursor-pointer shadow-lg"
+                  >
+                    <ShoppingBag className="w-4 h-4" />
+                    Adopt Companion
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
           </div>
 
         </div>
@@ -254,22 +266,22 @@ function FeaturedSection() {
   }, [pokemon, activeFilter]);
 
   return (
-    <section className="py-24 bg-black border-b border-white/10 text-white">
+    <section className="py-24 theme-bg border-b theme-border theme-text">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
 
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/10 pb-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b theme-border pb-8">
           <div className="space-y-2">
             <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest">
               CURATED SELECTIONS · 2026
             </span>
-            <h2 className="font-head text-3xl sm:text-5xl font-black uppercase tracking-tight">
+            <h2 className="font-head text-3xl sm:text-5xl font-black uppercase tracking-tight theme-text">
               FEATURED <span className="gradient-text-red">COMPANIONS</span>
             </h2>
           </div>
 
           {/* Dribbble Stella Style Filter Pills */}
-          <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-slate-950 border border-white/15">
+          <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl theme-card border theme-border">
             {FEATURED_FILTERS.map(f => (
               <button
                 key={f.id}
@@ -280,7 +292,7 @@ function FeaturedSection() {
                 className={`px-5 py-2.5 rounded-xl font-head text-xs font-bold transition-all cursor-pointer ${
                   activeFilter === f.id
                     ? 'bg-red-600 text-white shadow-[0_4px_16px_rgba(238,21,21,0.5)]'
-                    : 'text-slate-400 hover:text-white'
+                    : 'theme-muted hover:theme-text'
                 }`}
               >
                 {f.label}
@@ -296,7 +308,7 @@ function FeaturedSection() {
           ) : filteredPokemon.length > 0 ? (
             filteredPokemon.map(p => <PokemonCard key={p.id} pokemon={p} />)
           ) : (
-            <div className="col-span-full py-16 text-center text-slate-400 space-y-3">
+            <div className="col-span-full py-16 text-center theme-muted space-y-3">
               <p className="font-head text-base font-bold">No companions available in this category.</p>
               <button
                 onClick={() => setActiveFilter('all')}
@@ -326,15 +338,15 @@ function FeaturedSection() {
 /* ── 4. Editorial Element Showcase (Explore By Type) ──────────────────────── */
 function BrowseByType() {
   return (
-    <section className="py-24 bg-lumiose text-white">
+    <section className="py-24 bg-lumiose theme-text">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-white/10 pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b theme-border pb-6">
           <div>
             <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest">
               ELEMENTAL CATEGORIES
             </span>
-            <h2 className="font-head text-3xl sm:text-4xl font-black uppercase tracking-tight mt-1">
+            <h2 className="font-head text-3xl sm:text-4xl font-black uppercase tracking-tight mt-1 theme-text">
               EXPLORE BY <span className="gradient-text-red">TYPE</span>
             </h2>
           </div>
@@ -360,17 +372,17 @@ function BrowseByType() {
               <Link
                 to={`/marketplace?type=${type.id}`}
                 onClick={() => sound.playPop()}
-                className="group relative flex flex-col items-center p-5 rounded-3xl bg-black border border-white/10 hover:border-red-600/70 transition-all duration-300 shadow-xl overflow-hidden cursor-pointer"
+                className="group relative flex flex-col items-center p-5 rounded-3xl theme-card border theme-border hover:border-red-600 transition-all duration-300 shadow-xl overflow-hidden cursor-pointer"
               >
-                <div className="relative w-16 h-16 rounded-2xl bg-slate-950 border border-white/10 flex items-center justify-center text-3xl group-hover:border-red-500 group-hover:shadow-[0_0_20px_rgba(238,21,21,0.4)] transition-all">
+                <div className="relative w-16 h-16 rounded-2xl theme-bg border theme-border flex items-center justify-center text-3xl group-hover:border-red-500 group-hover:shadow-[0_0_20px_rgba(238,21,21,0.4)] transition-all">
                   {type.emoji}
                 </div>
 
                 <div className="text-center mt-3 space-y-0.5">
-                  <span className="font-head text-xs font-bold text-white group-hover:text-red-500 transition-colors block">
+                  <span className="font-head text-xs font-bold theme-text group-hover:text-red-500 transition-colors block">
                     {type.label}
                   </span>
-                  <span className="font-num text-[10px] text-slate-500 block font-semibold">
+                  <span className="font-num text-[10px] theme-muted block font-semibold">
                     {type.count}
                   </span>
                 </div>
@@ -402,15 +414,15 @@ function PokeMailNewsletter() {
   };
 
   return (
-    <section className="py-20 bg-lumiose text-white border-t border-white/10">
+    <section className="py-20 bg-lumiose theme-text border-t theme-border">
       <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
         <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest bg-red-600/10 px-4 py-1.5 rounded-full border border-red-600/30 inline-block">
           JOIN THE TRAINER CLUB
         </span>
-        <h2 className="font-head text-3xl sm:text-5xl font-black uppercase">
+        <h2 className="font-head text-3xl sm:text-5xl font-black uppercase theme-text">
           RECEIVE EXCLUSIVE <span className="gradient-text-red">ADOPTION ALERTS</span>
         </h2>
-        <p className="font-body text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
+        <p className="font-body text-xs sm:text-sm theme-muted max-w-md mx-auto">
           Subscribe to Lumiose Sanctuary PokéMail for early access to rare & legendary Pokémon listings.
         </p>
 
@@ -427,7 +439,7 @@ function PokeMailNewsletter() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your trainer email..."
-              className="w-full px-4 py-3.5 rounded-2xl bg-black border border-white/15 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-red-600 font-body"
+              className="w-full px-4 py-3.5 rounded-2xl theme-input border theme-border text-xs focus:outline-none focus:border-red-600 font-body shadow-sm"
             />
             <button
               type="submit"
@@ -464,13 +476,13 @@ function SanctuaryStandards() {
   ];
 
   return (
-    <section className="py-24 bg-black border-t border-white/10 text-white">
+    <section className="py-24 theme-bg border-t theme-border theme-text">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest">
             SANCTUARY STANDARDS
           </span>
-          <h2 className="font-head text-3xl sm:text-4xl font-black uppercase">
+          <h2 className="font-head text-3xl sm:text-4xl font-black uppercase theme-text">
             WHY TRAINERS TRUST <span className="gradient-text-red">DELIBIRD MART</span>
           </h2>
         </div>
@@ -481,13 +493,13 @@ function SanctuaryStandards() {
             return (
               <div
                 key={item.title}
-                className="p-8 rounded-3xl pokemon-card-container border border-white/10 space-y-4 hover:border-red-600/50 transition-colors"
+                className="p-8 rounded-3xl pokemon-card-container border theme-border space-y-4 hover:border-red-600 transition-colors"
               >
                 <div className="w-12 h-12 rounded-2xl bg-red-600/20 border border-red-600/40 flex items-center justify-center text-red-500">
                   <Icon className="w-6 h-6" />
                 </div>
-                <h3 className="font-head text-lg font-bold text-white">{item.title}</h3>
-                <p className="font-body text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+                <h3 className="font-head text-lg font-bold theme-text">{item.title}</h3>
+                <p className="font-body text-xs theme-muted leading-relaxed">{item.desc}</p>
               </div>
             );
           })}
