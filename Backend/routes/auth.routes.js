@@ -1,5 +1,5 @@
 const express = require('express');
-const { register, login, getMe, updateProfile } = require('../controllers/auth.controller');
+const { register, login, getMe, updateProfile, resetPassword } = require('../controllers/auth.controller');
 
 const router = express.Router();
 
@@ -8,6 +8,9 @@ router.post('/register', register);
 
 // Route: POST /api/v1/auth/login
 router.post('/login', login);
+
+// Route: POST /api/v1/auth/reset-password
+router.post('/reset-password', resetPassword);
 
 // Route: GET /api/v1/auth/me
 router.get('/me', getMe);

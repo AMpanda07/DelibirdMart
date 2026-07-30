@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Lock, User, LogIn, Shield, UserPlus } from 'lucide-react';
+import { X, Mail, Lock, User, LogIn, Shield, UserPlus, KeyRound, ArrowLeft, CheckCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { sound } from '../utils/audio';
 
@@ -25,7 +25,7 @@ const REGIONS = [
 ];
 
 export default function AuthModal({ isOpen, onClose }) {
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [viewMode, setViewMode] = useState('signin'); // 'signin' | 'signup' | 'forgot'
   const [signInData, setSignInData] = useState({
     identifier: '',
     password: ''
@@ -39,8 +39,13 @@ export default function AuthModal({ isOpen, onClose }) {
     region: 'Kalos',
     age: 18
   });
+  const [resetData, setResetData] = useState({
+    identifier: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
 
-  const { loginWithEmail, signupWithEmail, isLoading } = useAuth();
+  const { loginWithEmail, signupWithEmail, resetPassword, isLoading } = useAuth();
 
   if (!isOpen) return null;
 
@@ -52,7 +57,7 @@ export default function AuthModal({ isOpen, onClose }) {
       sound.playPop();
       onClose();
     } catch (err) {
-      // Errors toast notification handled in AuthContext
+      // Errors handled by toast in AuthContext
     }
   };
 
@@ -64,7 +69,27 @@ export default function AuthModal({ isOpen, onClose }) {
       sound.playPop();
       onClose();
     } catch (err) {
-      // Errors toast notification handled in AuthContext
+      // Errors handled by toast in AuthContext
+    }
+  };
+
+  const handleResetSubmit = async (e) => {
+    e.preventDefault();
+    sound.playClick();
+    if (resetData.newPassword !== resetData.confirmPassword) {
+      alert('Passwords do not match. Please verify your new password.');
+      return;
+    }
+    try {
+      const success = await resetPassword(resetData.identifier, resetData.newPassword);
+      if (success) {
+        sound.playSuccess();
+        setViewMode('signin');
+        setSignInData(prev => ({ ...prev, identifier: resetData.identifier }));
+        setResetData({ identifier: '', newPassword: '', confirmPassword: '' });
+      }
+    } catch (err) {
+      // Errors handled by toast in AuthContext
     }
   };
 
@@ -92,47 +117,56 @@ export default function AuthModal({ isOpen, onClose }) {
             </button>
 
             <div className="inline-flex p-3 rounded-2xl bg-red-600/20 border border-red-600/40 text-red-500 mb-2">
-              <Shield size={24} />
+              {viewMode === 'forgot' ? <KeyRound size={24} /> : <Shield size={24} />}
             </div>
-            <h2 className="text-xl font-bold font-head tracking-wide theme-text">
-              {isSignUp ? 'REGISTER TRAINER PASS' : 'TRAINER SIGN IN'}
+
+            <h2 className="text-xl font-bold font-head tracking-wide theme-text uppercase">
+              {viewMode === 'signup'
+                ? 'REGISTER TRAINER PASS'
+                : viewMode === 'forgot'
+                ? 'RESET TRAINER PASSWORD'
+                : 'TRAINER SIGN IN'}
             </h2>
             <p className="text-xs font-body theme-muted mt-0.5">
-              {isSignUp
+              {viewMode === 'signup'
                 ? 'Create your Lumiose Sanctuary credentials'
+                : viewMode === 'forgot'
+                ? 'Enter your account details to update your password'
                 : 'Access your official Pokémon Trainer account'}
             </p>
 
             {/* Mode Switcher Tabs */}
-            <div className="grid grid-cols-2 gap-1 p-1 theme-bg rounded-xl border theme-border mt-4">
-              <button
-                type="button"
-                onClick={() => { sound.playPop(); setIsSignUp(false); }}
-                className={`py-2 rounded-lg font-head text-xs font-bold transition-all cursor-pointer ${
-                  !isSignUp
-                    ? 'bg-red-600 text-white shadow-[0_4px_16px_rgba(238,21,21,0.5)]'
-                    : 'theme-muted hover:theme-text'
-                }`}
-              >
-                Sign In
-              </button>
-              <button
-                type="button"
-                onClick={() => { sound.playPop(); setIsSignUp(true); }}
-                className={`py-2 rounded-lg font-head text-xs font-bold transition-all cursor-pointer ${
-                  isSignUp
-                    ? 'bg-red-600 text-white shadow-[0_4px_16px_rgba(238,21,21,0.5)]'
-                    : 'theme-muted hover:theme-text'
-                }`}
-              >
-                Register
-              </button>
-            </div>
+            {viewMode !== 'forgot' && (
+              <div className="grid grid-cols-2 gap-1 p-1 theme-bg rounded-xl border theme-border mt-4">
+                <button
+                  type="button"
+                  onClick={() => { sound.playPop(); setViewMode('signin'); }}
+                  className={`py-2 rounded-lg font-head text-xs font-bold transition-all cursor-pointer ${
+                    viewMode === 'signin'
+                      ? 'bg-red-600 text-white shadow-[0_4px_16px_rgba(238,21,21,0.5)]'
+                      : 'theme-muted hover:theme-text'
+                  }`}
+                >
+                  Sign In
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { sound.playPop(); setViewMode('signup'); }}
+                  className={`py-2 rounded-lg font-head text-xs font-bold transition-all cursor-pointer ${
+                    viewMode === 'signup'
+                      ? 'bg-red-600 text-white shadow-[0_4px_16px_rgba(238,21,21,0.5)]'
+                      : 'theme-muted hover:theme-text'
+                  }`}
+                >
+                  Register
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Form Body */}
           <div className="p-6 space-y-4 max-h-[75vh] overflow-y-auto custom-scrollbar">
-            {!isSignUp ? (
+            {viewMode === 'signin' && (
               /* Sign In Form */
               <form onSubmit={handleSignInSubmit} className="space-y-4">
                 <div>
@@ -153,9 +187,18 @@ export default function AuthModal({ isOpen, onClose }) {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-head font-bold uppercase theme-muted mb-1">
-                    Password
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-[11px] font-head font-bold uppercase theme-muted">
+                      Password
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => { sound.playPop(); setViewMode('forgot'); }}
+                      className="text-[11px] font-head font-bold text-red-500 hover:underline cursor-pointer"
+                    >
+                      Forgot Password?
+                    </button>
+                  </div>
                   <div className="relative">
                     <Lock className="absolute left-3.5 top-3 theme-muted" size={16} />
                     <input
@@ -178,7 +221,9 @@ export default function AuthModal({ isOpen, onClose }) {
                   {isLoading ? 'Verifying...' : 'Sign In as Trainer'}
                 </button>
               </form>
-            ) : (
+            )}
+
+            {viewMode === 'signup' && (
               /* Register Form */
               <form onSubmit={handleSignUpSubmit} className="space-y-3.5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -286,6 +331,83 @@ export default function AuthModal({ isOpen, onClose }) {
                   <UserPlus size={16} />
                   {isLoading ? 'Creating Pass...' : 'Register Trainer Pass'}
                 </button>
+              </form>
+            )}
+
+            {viewMode === 'forgot' && (
+              /* Reset Password Form */
+              <form onSubmit={handleResetSubmit} className="space-y-3.5">
+                <div>
+                  <label className="block text-[11px] font-head font-bold uppercase theme-muted mb-1">
+                    Username or Email
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3.5 top-3 theme-muted" size={16} />
+                    <input
+                      type="text"
+                      required
+                      value={resetData.identifier}
+                      onChange={(e) => setResetData({ ...resetData, identifier: e.target.value })}
+                      placeholder="Enter registered username or email"
+                      className="w-full theme-input border theme-border rounded-xl pl-10 pr-4 py-2.5 text-xs placeholder-slate-400 focus:outline-none focus:border-red-600 font-body shadow-inner"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-head font-bold uppercase theme-muted mb-1">
+                    New Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-3 theme-muted" size={16} />
+                    <input
+                      type="password"
+                      required
+                      minLength="6"
+                      value={resetData.newPassword}
+                      onChange={(e) => setResetData({ ...resetData, newPassword: e.target.value })}
+                      placeholder="At least 6 characters"
+                      className="w-full theme-input border theme-border rounded-xl pl-10 pr-4 py-2.5 text-xs placeholder-slate-400 focus:outline-none focus:border-red-600 font-body shadow-inner"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-head font-bold uppercase theme-muted mb-1">
+                    Confirm New Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-3 theme-muted" size={16} />
+                    <input
+                      type="password"
+                      required
+                      minLength="6"
+                      value={resetData.confirmPassword}
+                      onChange={(e) => setResetData({ ...resetData, confirmPassword: e.target.value })}
+                      placeholder="Re-enter new password"
+                      className="w-full theme-input border theme-border rounded-xl pl-10 pr-4 py-2.5 text-xs placeholder-slate-400 focus:outline-none focus:border-red-600 font-body shadow-inner"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full py-3 btn-primary text-white font-head text-xs font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 mt-3 cursor-pointer"
+                >
+                  <KeyRound size={16} />
+                  {isLoading ? 'Updating...' : 'Update & Reset Password'}
+                </button>
+
+                <div className="pt-2 text-center">
+                  <button
+                    type="button"
+                    onClick={() => { sound.playPop(); setViewMode('signin'); }}
+                    className="inline-flex items-center gap-1 text-xs font-head font-bold theme-muted hover:theme-text transition-colors cursor-pointer"
+                  >
+                    <ArrowLeft size={14} /> Back to Sign In
+                  </button>
+                </div>
               </form>
             )}
           </div>

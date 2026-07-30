@@ -120,7 +120,7 @@ exports.getMe = asyncHandler(async (req, res, next) => {
     const user = await User.findById(decoded.id);
 
     if (!user) {
-      return next(new AppError('Trainer not found', 444));
+      return next(new AppError('Trainer not found', 404));
     }
 
     sendTokenResponse(user, 200, 'Trainer profile fetched', res);
@@ -182,5 +182,42 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
       role: user.role,
       createdAt: user.createdAt
     }
+  });
+});
+
+/**
+ * Reset / Update Trainer Password
+ * POST /api/v1/auth/reset-password
+ */
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+  const { identifier, emailOrUsername, newPassword, password } = req.body;
+  const targetIdentifier = identifier || emailOrUsername;
+  const targetPassword = newPassword || password;
+
+  if (!targetIdentifier || !targetPassword) {
+    return next(new AppError('Please provide email/username and a new password', 400));
+  }
+
+  if (targetPassword.length < 6) {
+    return next(new AppError('Password must be at least 6 characters long', 400));
+  }
+
+  const user = await User.findOne({
+    $or: [
+      { email: targetIdentifier.toLowerCase() },
+      { username: targetIdentifier.toLowerCase() }
+    ]
+  });
+
+  if (!user) {
+    return next(new AppError('No registered trainer account found with those credentials', 404));
+  }
+
+  user.password = targetPassword;
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'Trainer password reset successfully! You can now sign in with your new password.'
   });
 });

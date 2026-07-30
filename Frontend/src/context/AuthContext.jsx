@@ -120,6 +120,30 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  /** Reset / Update Trainer Password */
+  const resetPassword = useCallback(async (identifier, newPassword) => {
+    setIsLoading(true);
+    setError(null);
+    const toastId = toast.loading('Updating Trainer Password...');
+    try {
+      const res = await apiClient.post('/auth/reset-password', {
+        identifier,
+        newPassword
+      });
+
+      toast.success(res.message || 'Password updated successfully! Please sign in.', { id: toastId });
+      return true;
+    } catch (err) {
+      console.error('[AuthContext] Reset password error:', err);
+      const msg = err.message || 'Password reset failed';
+      setError(msg);
+      toast.error(msg, { id: toastId });
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   /** Update Trainer Card Profile */
   const updateTrainerProfile = useCallback(async (updatedData) => {
     if (!trainer.id) return false;
@@ -165,8 +189,9 @@ export function AuthProvider({ children }) {
       error,
       login: loginWithEmail,
       loginWithEmail,
-      loginWithGoogle: loginWithEmail, // Alias for backward compatibility
+      loginWithGoogle: loginWithEmail,
       signupWithEmail,
+      resetPassword,
       logout,
       updateTrainerProfile
     }}>
