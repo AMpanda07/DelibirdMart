@@ -1,12 +1,13 @@
 /**
  * PokemonCard.jsx
  * High-visibility Pokémon card with Red, Black and White theme.
- * Seamless Light/Dark Mode text visibility.
+ * Mandatory Sign-In Protection for Adoptions.
  */
 import React, { useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { Star, Heart, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { sound } from '../utils/audio';
 
 /* ── Price Formatter ───────────────────────────────────────────── */
@@ -94,6 +95,7 @@ function StatBar({ label, value, max = 160, color }) {
 export default function PokemonCard({ pokemon, compact = false }) {
   const cardRef = useRef(null);
   const { addToCart, isInCart } = useCart();
+  const { isAuthenticated } = useAuth();
   const [liked, setLiked] = useState(false);
   const [addedFlash, setAddedFlash] = useState(false);
 
@@ -115,15 +117,30 @@ export default function PokemonCard({ pokemon, compact = false }) {
     rotY.set(0);
   };
 
+  const handleCardClick = () => {
+    sound.playClick();
+    if (!isAuthenticated) {
+      window.dispatchEvent(new CustomEvent('open-auth-modal'));
+    }
+  };
+
   const toggleWishlist = (e) => {
     e.stopPropagation();
     sound.playPop();
+    if (!isAuthenticated) {
+      window.dispatchEvent(new CustomEvent('open-auth-modal'));
+      return;
+    }
     setLiked(l => !l);
   };
 
   const handleAdoptClick = (e) => {
     e.stopPropagation();
     sound.playSuccess();
+    if (!isAuthenticated) {
+      window.dispatchEvent(new CustomEvent('open-auth-modal'));
+      return;
+    }
     addToCart(pokemon);
     setAddedFlash(true);
     setTimeout(() => setAddedFlash(false), 1400);
@@ -143,7 +160,7 @@ export default function PokemonCard({ pokemon, compact = false }) {
       style={{ rotateX: springX, rotateY: springY }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      onClick={() => sound.playClick()}
+      onClick={handleCardClick}
       className="pokemon-card-container relative rounded-2xl overflow-hidden cursor-pointer group flex flex-col justify-between"
     >
       {/* Top Accent Line */}

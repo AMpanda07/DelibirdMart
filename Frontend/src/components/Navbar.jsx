@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Shield, Award, LogOut, Sun, Moon, Search } from 'lucide-react';
+import { ShoppingBag, Shield, Award, LogOut, Sun, Moon, Search, User, ChevronDown } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -21,7 +21,9 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [trainerModalOpen, setTrainerModalOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const menuRef = useRef(null);
 
   const { totalItems, setIsOpen: setCartOpen } = useCart();
   const { trainer, isAuthenticated, logout } = useAuth();
@@ -33,6 +35,24 @@ export default function Navbar() {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  /* Listen for global sign-in modal triggers from cards and category buttons */
+  useEffect(() => {
+    const handleGlobalAuthReq = () => setAuthModalOpen(true);
+    window.addEventListener('open-auth-modal', handleGlobalAuthReq);
+    return () => window.removeEventListener('open-auth-modal', handleGlobalAuthReq);
+  }, []);
+
+  /* Close user popover menu on click outside */
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const handleSearchSubmit = (e) => {
@@ -74,7 +94,7 @@ export default function Navbar() {
             {/* Top Main Navbar Row */}
             <div className="flex items-center justify-between gap-2 sm:gap-4">
 
-              {/* Logo */}
+              {/* Logo (Clean static red dot) */}
               <Link
                 to="/"
                 onClick={() => sound.playClick()}
@@ -86,26 +106,14 @@ export default function Navbar() {
                     Delibird <span className="text-red-600">Mart</span>
                   </div>
                   <div className="font-body text-[9px] sm:text-[10px] theme-muted tracking-widest uppercase mt-0.5 font-bold flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-600 inline-block animate-ping" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-600 inline-block" />
                     Sanctuary
                   </div>
                 </div>
               </Link>
 
               {/* Center/Right Controls Row */}
-              <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-
-                {/* Theme Switcher Toggle */}
-                <button
-                  onClick={() => {
-                    sound.playPop();
-                    toggleTheme();
-                  }}
-                  title={isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
-                  className="p-2 sm:p-2.5 rounded-xl glass hover:border-red-600/60 transition-all cursor-pointer shadow-md text-red-500 flex items-center justify-center active:scale-95 shrink-0"
-                >
-                  {isDark ? <Sun className="w-4 h-4 text-red-500" /> : <Moon className="w-4 h-4 text-red-500" />}
-                </button>
+              <div className="flex items-center gap-2 shrink-0">
 
                 {/* Search Bar Beside Bag Button */}
                 <form onSubmit={handleSearchSubmit} className="relative flex items-center">
@@ -145,37 +153,101 @@ export default function Navbar() {
                   </AnimatePresence>
                 </button>
 
-                {/* Trainer Pass Card / Sign In */}
-                {isAuthenticated ? (
+                {/* Responsive User Settings & Theme Dropdown Trigger (Hidden until clicked) */}
+                <div className="relative shrink-0" ref={menuRef}>
                   <button
                     onClick={() => {
-                      sound.playClick();
-                      setTrainerModalOpen(true);
+                      sound.playPop();
+                      setUserMenuOpen(o => !o);
                     }}
-                    className="flex items-center gap-1.5 p-1.5 sm:px-3 sm:py-1.5 rounded-xl theme-card border theme-border hover:border-red-600/60 transition-all cursor-pointer shadow-md shrink-0"
+                    className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl theme-card border theme-border hover:border-red-600/60 transition-all cursor-pointer shadow-md"
                   >
-                    <img
-                      src={trainer?.avatar || '/avatar.png'}
-                      alt="Trainer"
-                      className="w-6 h-6 rounded-full object-cover border border-red-500"
-                    />
-                    <span className="hidden md:inline font-head text-xs font-bold theme-text truncate max-w-[80px]">
-                      {trainer?.displayName || 'Trainer'}
+                    {isAuthenticated ? (
+                      <img
+                        src={trainer?.avatar || '/avatar.png'}
+                        alt="Trainer"
+                        className="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover border border-red-500"
+                      />
+                    ) : (
+                      <User className="w-4 h-4 text-red-500" />
+                    )}
+                    <span className="hidden sm:inline font-head text-xs font-bold theme-text max-w-[80px] truncate">
+                      {isAuthenticated ? trainer?.displayName || 'Trainer' : 'Account'}
                     </span>
-                    <Award className="w-3.5 h-3.5 text-red-500 hidden sm:inline" />
+                    <ChevronDown className="w-3.5 h-3.5 theme-muted" />
                   </button>
-                ) : (
-                  <button
-                    onClick={() => {
-                      sound.playClick();
-                      setAuthModalOpen(true);
-                    }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl theme-card border theme-border hover:border-red-600/60 text-xs font-head font-bold theme-text transition-all cursor-pointer shadow-md shrink-0"
-                  >
-                    <Shield className="w-4 h-4 text-red-500" />
-                    <span className="hidden sm:inline">Sign In</span>
-                  </button>
-                )}
+
+                  {/* Popover Dropdown Menu */}
+                  <AnimatePresence>
+                    {userMenuOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute right-0 mt-2 w-52 rounded-2xl theme-card border border-red-600/40 p-2 shadow-2xl z-50 space-y-1 theme-text"
+                      >
+                        {/* Theme Switcher Item */}
+                        <button
+                          onClick={() => {
+                            sound.playPop();
+                            toggleTheme();
+                          }}
+                          className="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-red-600/10 text-xs font-head font-bold theme-text transition-colors cursor-pointer"
+                        >
+                          <div className="flex items-center gap-2">
+                            {isDark ? <Sun className="w-4 h-4 text-red-500" /> : <Moon className="w-4 h-4 text-red-500" />}
+                            <span>{isDark ? 'Light Theme' : 'Dark Theme'}</span>
+                          </div>
+                          <span className="text-[10px] theme-muted uppercase">{isDark ? 'Dark' : 'Light'}</span>
+                        </button>
+
+                        <div className="border-t theme-border my-1" />
+
+                        {/* Trainer Pass / Sign In Option */}
+                        {isAuthenticated ? (
+                          <>
+                            <button
+                              onClick={() => {
+                                sound.playClick();
+                                setUserMenuOpen(false);
+                                setTrainerModalOpen(true);
+                              }}
+                              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-600/10 text-xs font-head font-bold theme-text transition-colors cursor-pointer"
+                            >
+                              <Award className="w-4 h-4 text-red-500" />
+                              <span>View Trainer Pass</span>
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                sound.playPop();
+                                setUserMenuOpen(false);
+                                logout();
+                              }}
+                              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-600/10 text-xs font-head font-bold text-red-500 transition-colors cursor-pointer"
+                            >
+                              <LogOut className="w-4 h-4" />
+                              <span>Sign Out</span>
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              sound.playClick();
+                              setUserMenuOpen(false);
+                              setAuthModalOpen(true);
+                            }}
+                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl btn-primary text-white text-xs font-head font-bold cursor-pointer"
+                          >
+                            <Shield className="w-4 h-4 text-white" />
+                            <span>Sign In / Register</span>
+                          </button>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
 
               </div>
             </div>

@@ -2,7 +2,7 @@
  * Home.jsx
  * High-Editorial E-Commerce Homepage inspired by Stella Layout
  * Official Pokémon Red Theme + Dual Light/Dark System & Web Audio Feedback
- * Features: Rolling Text Advertisement Bar & Mobile-First Floating Spotlight Artwork
+ * Features: Rolling Text Advertisement Bar & Mandatory Sign-In Protection
  */
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -15,6 +15,7 @@ import PokemonCard from '../components/PokemonCard';
 import PokemonCardSkeleton from '../components/PokemonCardSkeleton';
 import { fetchHeroPokemon, fetchPokemonPage } from '../services/pokemonService';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { sound } from '../utils/audio';
 
 const TYPES = [
@@ -42,6 +43,7 @@ function HeroSection() {
   const [heroIndex, setHeroIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     fetchHeroPokemon([658, 448, 149, 6])
@@ -57,6 +59,16 @@ function HeroSection() {
 
   const hero = heroPokemon[heroIndex];
 
+  const handleHeroAdopt = () => {
+    sound.playClick();
+    if (!isAuthenticated) {
+      window.dispatchEvent(new CustomEvent('open-auth-modal'));
+      return;
+    }
+    sound.playSuccess();
+    addToCart(hero);
+  };
+
   return (
     <section className="relative pt-36 pb-20 overflow-hidden theme-bg theme-text">
       {/* Background Editorial Watermark */}
@@ -70,7 +82,7 @@ function HeroSection() {
         <div className="py-2.5 px-4 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white overflow-hidden shadow-lg border border-red-500/40 select-none">
           <div className="flex whitespace-nowrap animate-spin-slow space-x-8 font-head text-xs font-black uppercase tracking-wider items-center">
             <span className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+              <span className="w-2 h-2 rounded-full bg-white" />
               🔥 SPECIAL ADOPTION EVENT LIVE IN KALOS
             </span>
             <span>·</span>
@@ -81,7 +93,7 @@ function HeroSection() {
             <span>👑 OFFICIAL HOLOGRAPHIC POKÉ PASS PERSISTENCE</span>
             <span>·</span>
             <span className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+              <span className="w-2 h-2 rounded-full bg-white" />
               🔥 SPECIAL ADOPTION EVENT LIVE IN KALOS
             </span>
             <span>·</span>
@@ -143,10 +155,7 @@ function HeroSection() {
                 <div className="flex items-center justify-center gap-4">
                   <span className="font-num text-xl font-bold text-red-500">₹{hero.price.toLocaleString('en-IN')}</span>
                   <button
-                    onClick={() => {
-                      sound.playSuccess();
-                      addToCart(hero);
-                    }}
+                    onClick={handleHeroAdopt}
                     className="px-5 py-2.5 rounded-xl btn-primary text-white font-head font-bold text-xs flex items-center gap-2 cursor-pointer shadow-lg"
                   >
                     <ShoppingBag className="w-4 h-4" />
@@ -179,7 +188,13 @@ function HeroSection() {
             <div className="flex flex-wrap gap-4 pt-2">
               <Link
                 to="/marketplace"
-                onClick={() => sound.playSuccess()}
+                onClick={(e) => {
+                  sound.playClick();
+                  if (!isAuthenticated) {
+                    e.preventDefault();
+                    window.dispatchEvent(new CustomEvent('open-auth-modal'));
+                  }
+                }}
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl btn-primary text-white font-head font-bold text-sm shadow-xl"
               >
                 Explore Marketplace
@@ -200,6 +215,7 @@ function FeaturedSection() {
   const [pokemon, setPokemon] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('all');
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     fetchPokemonPage(0, 12)
@@ -270,7 +286,13 @@ function FeaturedSection() {
         <div className="text-center pt-6">
           <Link
             to="/marketplace"
-            onClick={() => sound.playClick()}
+            onClick={(e) => {
+              sound.playClick();
+              if (!isAuthenticated) {
+                e.preventDefault();
+                window.dispatchEvent(new CustomEvent('open-auth-modal'));
+              }
+            }}
             className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl btn-primary text-white font-head font-bold text-sm shadow-xl"
           >
             Browse Full Marketplace <ArrowRight className="w-4 h-4" />
@@ -284,6 +306,8 @@ function FeaturedSection() {
 
 /* ── 3. Editorial Element Showcase (Explore By Type) ──────────────────────── */
 function BrowseByType() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <section className="py-24 bg-lumiose theme-text">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
@@ -299,7 +323,13 @@ function BrowseByType() {
           </div>
           <Link
             to="/marketplace"
-            onClick={() => sound.playClick()}
+            onClick={(e) => {
+              sound.playClick();
+              if (!isAuthenticated) {
+                e.preventDefault();
+                window.dispatchEvent(new CustomEvent('open-auth-modal'));
+              }
+            }}
             className="text-xs font-head font-bold text-red-500 hover:text-red-400 flex items-center gap-1"
           >
             View All Types <ArrowUpRight className="w-4 h-4" />
@@ -318,7 +348,13 @@ function BrowseByType() {
             >
               <Link
                 to={`/marketplace?type=${type.id}`}
-                onClick={() => sound.playPop()}
+                onClick={(e) => {
+                  sound.playPop();
+                  if (!isAuthenticated) {
+                    e.preventDefault();
+                    window.dispatchEvent(new CustomEvent('open-auth-modal'));
+                  }
+                }}
                 className="group relative flex flex-col items-center p-5 rounded-3xl theme-card border theme-border hover:border-red-600 transition-all duration-300 shadow-xl overflow-hidden cursor-pointer"
               >
                 <div className="relative w-16 h-16 rounded-2xl theme-bg border theme-border flex items-center justify-center text-3xl group-hover:border-red-500 group-hover:shadow-[0_0_20px_rgba(238,21,21,0.4)] transition-all">
