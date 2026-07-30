@@ -1,16 +1,13 @@
-/**
- * Navbar.jsx
- * Sticky HopeRise inspired glassmorphic navbar with audio interaction, Firebase Auth & Trainer Pass Card.
- */
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Menu, X, Shield, Award } from 'lucide-react';
+import { ShoppingBag, Menu, X, Shield, Award, User, LogOut } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { sound } from '../utils/audio';
 import CartDrawerNew from './CartDrawerNew';
 import TrainerCardModal from './TrainerCardModal';
+import AuthModal from './AuthModal';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
@@ -21,9 +18,10 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [trainerModalOpen, setTrainerModalOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const { totalItems, setIsOpen: setCartOpen } = useCart();
-  const { trainer, isAuthenticated, login } = useAuth();
+  const { trainer, isAuthenticated, logout } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
@@ -145,40 +143,53 @@ export default function Navbar() {
 
               {/* Trainer Pass Card / Sign In */}
               {isAuthenticated ? (
-                <button
-                  onClick={() => {
-                    sound.playPop();
-                    setTrainerModalOpen(true);
-                  }}
-                  title="Click to view & edit Official Trainer Card"
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-amber-500/30 hover:border-amber-400 cursor-pointer transition-all group shadow-md active:scale-95"
-                >
-                  <img
-                    src={trainer.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${trainer.id}`}
-                    alt={trainer.displayName || 'Trainer Avatar'}
-                    className="w-7 h-7 rounded-lg object-cover border border-amber-500/40"
-                  />
-                  <div className="hidden sm:block leading-none text-left">
-                    <div className="font-head text-[11px] text-white font-bold group-hover:text-amber-400 transition-colors">
-                      {trainer.displayName}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      sound.playPop();
+                      setTrainerModalOpen(true);
+                    }}
+                    title="Click to view & edit Official Trainer Card"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-amber-500/30 hover:border-amber-400 cursor-pointer transition-all group shadow-md active:scale-95"
+                  >
+                    <img
+                      src={trainer.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${trainer.id}`}
+                      alt={trainer.displayName || 'Trainer Avatar'}
+                      className="w-7 h-7 rounded-lg object-cover border border-amber-500/40"
+                    />
+                    <div className="hidden sm:block leading-none text-left">
+                      <div className="font-head text-[11px] text-white font-bold group-hover:text-amber-400 transition-colors">
+                        {trainer.displayName}
+                      </div>
+                      <div className="font-body text-[10px] text-amber-400 font-semibold flex items-center gap-1">
+                        <Award className="w-2.5 h-2.5" />
+                        {trainer.badge || 'Elite'}
+                      </div>
                     </div>
-                    <div className="font-body text-[10px] text-amber-400 font-semibold flex items-center gap-1">
-                      <Award className="w-2.5 h-2.5" />
-                      {trainer.badge || 'Elite'}
-                    </div>
-                  </div>
-                </button>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      sound.playClick();
+                      logout();
+                    }}
+                    title="Sign Out"
+                    className="hidden sm:flex p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer border border-transparent hover:border-rose-500/30"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
               ) : (
                 <button
                   id="signin-btn"
                   onClick={() => {
                     sound.playClick();
-                    login();
+                    setAuthModalOpen(true);
                   }}
                   className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl btn-primary text-white text-xs font-head font-bold cursor-pointer"
                 >
                   <Shield className="w-3.5 h-3.5" />
-                  Sign In
+                  Sign In / Access
                 </button>
               )}
 
@@ -221,33 +232,49 @@ export default function Navbar() {
                 {/* Mobile Authentication Controls */}
                 <div className="pt-2 border-t border-white/10 sm:hidden">
                   {isAuthenticated ? (
-                    <button
-                      onClick={() => {
-                        sound.playPop();
-                        setTrainerModalOpen(true);
-                      }}
-                      className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-head text-sm font-bold"
-                    >
-                      <span className="flex items-center gap-2">
-                        <img
-                          src={trainer.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${trainer.id}`}
-                          alt={trainer.displayName || 'Avatar'}
-                          className="w-6 h-6 rounded-md object-cover"
-                        />
-                        Trainer Pass ({trainer.displayName})
-                      </span>
-                      <Award className="w-4 h-4" />
-                    </button>
+                    <div className="space-y-2">
+                      <button
+                        onClick={() => {
+                          sound.playPop();
+                          setMobileOpen(false);
+                          setTrainerModalOpen(true);
+                        }}
+                        className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-head text-sm font-bold"
+                      >
+                        <span className="flex items-center gap-2">
+                          <img
+                            src={trainer.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${trainer.id}`}
+                            alt={trainer.displayName || 'Avatar'}
+                            className="w-6 h-6 rounded-md object-cover"
+                          />
+                          Trainer Pass ({trainer.displayName})
+                        </span>
+                        <Award className="w-4 h-4" />
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          sound.playPop();
+                          setMobileOpen(false);
+                          logout();
+                        }}
+                        className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 font-head text-xs font-bold"
+                      >
+                        <span>Sign Out</span>
+                        <LogOut className="w-4 h-4" />
+                      </button>
+                    </div>
                   ) : (
                     <button
                       onClick={() => {
                         sound.playClick();
-                        login();
+                        setMobileOpen(false);
+                        setAuthModalOpen(true);
                       }}
                       className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl btn-primary text-white font-head text-sm font-bold"
                     >
                       <Shield className="w-4 h-4" />
-                      Sign In with Google
+                      Sign In / Register
                     </button>
                   )}
                 </div>
@@ -261,6 +288,12 @@ export default function Navbar() {
       <TrainerCardModal
         isOpen={trainerModalOpen}
         onClose={() => setTrainerModalOpen(false)}
+      />
+
+      {/* Auth Sign In / Registration Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
       />
 
       <CartDrawerNew />

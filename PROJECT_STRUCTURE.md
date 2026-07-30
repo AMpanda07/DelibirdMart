@@ -63,13 +63,12 @@ DelibirdMart/
 ### ⚙️ Backend Environment (`Backend/.env`)
 - **Port**: `5000`
 - **Environment**: `development`
-- **MongoDB Atlas URI**: `mongodb+srv://ayushmanpanda120_db_user:8nnBQY1ng38AW2J7@mart.om38tez.mongodb.net/?appName=Mart`
+- **MongoDB Atlas URI**: `mongodb+srv://<username>:<password>@mart.om38tez.mongodb.net/?appName=Mart`
 
 ```env
 PORT=5000
 NODE_ENV=development
-MONGODB_URI=mongodb+srv://ayushmanpanda120_db_user:8nnBQY1ng38AW2J7@mart.om38tez.mongodb.net/?appName=Mart
-MONGO_URI=mongodb+srv://ayushmanpanda120_db_user:8nnBQY1ng38AW2J7@mart.om38tez.mongodb.net/?appName=Mart
+MONGODB_URI=mongodb+srv://<username>:<password>@mart.om38tez.mongodb.net/?appName=Mart
 ```
 
 ### 🎨 Frontend Environment (`Frontend/.env`)

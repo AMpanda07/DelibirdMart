@@ -17,6 +17,7 @@ import { useLocation } from 'react-router-dom';
 // ── Context providers ─────────────────────────────────────────────
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { Toaster } from 'react-hot-toast';
 
 // ── Layout components ─────────────────────────────────────────────
 import Navbar  from './components/Navbar';
@@ -117,6 +118,18 @@ export default function App() {
           <Navbar />
           <AnimatedRoutes />
           <Footer />
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                background: '#0F172A',
+                color: '#F8FAFC',
+                border: '1px solid rgba(245, 158, 11, 0.3)',
+                borderRadius: '0.75rem',
+                fontSize: '0.875rem'
+              }
+            }}
+          />
         </div>
       </CartProvider>
     </AuthProvider>

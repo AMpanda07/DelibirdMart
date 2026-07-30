@@ -1,55 +1,132 @@
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
 const asyncHandler = require('../utils/asyncHandler');
 const AppError = require('../utils/appError');
 
-/**
- * Sync / Authenticate Google OAuth User
- * POST /api/v1/auth/google
- */
-exports.googleAuthSync = asyncHandler(async (req, res, next) => {
-  const { googleId, displayName, email, avatar } = req.body;
+const JWT_SECRET = process.env.JWT_SECRET || 'delibirdmart_secret_key_2026';
 
-  if (!googleId || !email) {
-    return next(new AppError('Google ID and Email are required for authentication', 400));
+// Helper to generate JWT Token
+const sendTokenResponse = (user, statusCode, message, res) => {
+  const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
+    expiresIn: '30d'
+  });
+
+  const userData = {
+    id: user._id,
+    username: user.username,
+    displayName: user.displayName,
+    email: user.email,
+    avatar: user.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.username}`,
+    profession: user.profession || 'Pokémon Trainer',
+    region: user.region || 'Kalos',
+    age: user.age || 18,
+    badge: user.badge || 'Explorer',
+    adoptions: user.adoptions || 0,
+    role: user.role,
+    createdAt: user.createdAt
+  };
+
+  res.status(statusCode).json({
+    success: true,
+    message,
+    token,
+    data: userData
+  });
+};
+
+/**
+ * Register a new Trainer
+ * POST /api/v1/auth/register
+ */
+exports.register = asyncHandler(async (req, res, next) => {
+  const { username, email, password, displayName, profession, region, age } = req.body;
+
+  if (!username || !email || !password) {
+    return next(new AppError('Username, email, and password are required', 400));
   }
 
-  // Find existing user or create a new one (Upsert)
-  const user = await User.findOneAndUpdate(
-    { googleId },
-    {
-      $setOnInsert: {
-        googleId,
-        displayName: displayName || email.split('@')[0],
-        email,
-        avatar: avatar || '',
-        profession: 'Pokémon Trainer',
-        region: 'Kalos',
-        age: 18,
-        badge: 'Explorer',
-        adoptions: 0
-      }
-    },
-    { upsert: true, new: true, runValidators: true }
-  );
-
-  res.status(200).json({
-    success: true,
-    message: 'User authenticated successfully',
-    data: {
-      id: user._id,
-      googleId: user.googleId,
-      displayName: user.displayName,
-      email: user.email,
-      avatar: user.avatar,
-      profession: user.profession || 'Pokémon Trainer',
-      region: user.region || 'Kalos',
-      age: user.age || 18,
-      badge: user.badge || 'Explorer',
-      adoptions: user.adoptions || 0,
-      role: user.role,
-      createdAt: user.createdAt
-    }
+  // Check if username or email already exists
+  const existingUser = await User.findOne({
+    $or: [{ email: email.toLowerCase() }, { username: username.toLowerCase() }]
   });
+
+  if (existingUser) {
+    return next(new AppError('A trainer with this email or username already exists', 400));
+  }
+
+  const avatar = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${username}`;
+
+  const user = await User.create({
+    username: username.toLowerCase(),
+    email: email.toLowerCase(),
+    password,
+    displayName: displayName || username,
+    avatar,
+    profession: profession || 'Pokémon Trainer',
+    region: region || 'Kalos',
+    age: age ? Number(age) : 18
+  });
+
+  sendTokenResponse(user, 201, 'Trainer registered successfully', res);
+});
+
+/**
+ * Login Trainer
+ * POST /api/v1/auth/login
+ */
+exports.login = asyncHandler(async (req, res, next) => {
+  const { emailOrUsername, email, username, password } = req.body;
+  const identifier = emailOrUsername || email || username;
+
+  if (!identifier || !password) {
+    return next(new AppError('Please provide an email/username and password', 400));
+  }
+
+  const user = await User.findOne({
+    $or: [
+      { email: identifier.toLowerCase() },
+      { username: identifier.toLowerCase() }
+    ]
+  }).select('+password');
+
+  if (!user) {
+    return next(new AppError('Invalid credentials', 401));
+  }
+
+  const isMatch = await user.matchPassword(password);
+  if (!isMatch) {
+    return next(new AppError('Invalid credentials', 401));
+  }
+
+  sendTokenResponse(user, 200, 'Welcome back, Trainer!', res);
+});
+
+/**
+ * Get Current Logged In Trainer
+ * GET /api/v1/auth/me
+ */
+exports.getMe = asyncHandler(async (req, res, next) => {
+  let token;
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  if (!token) {
+    return next(new AppError('Not authorized to access this route', 401));
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return next(new AppError('Trainer not found', 444));
+    }
+
+    sendTokenResponse(user, 200, 'Trainer profile fetched', res);
+  } catch (err) {
+    return next(new AppError('Token invalid or expired', 401));
+  }
 });
 
 /**
@@ -57,14 +134,24 @@ exports.googleAuthSync = asyncHandler(async (req, res, next) => {
  * PUT /api/v1/auth/profile
  */
 exports.updateProfile = asyncHandler(async (req, res, next) => {
-  const { googleId, displayName, profession, region, age } = req.body;
-
-  if (!googleId) {
-    return next(new AppError('Google ID is required to update profile', 400));
+  let userId;
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    try {
+      const token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, JWT_SECRET);
+      userId = decoded.id;
+    } catch (e) {}
   }
 
-  const user = await User.findOneAndUpdate(
-    { googleId },
+  const { id, googleId, displayName, profession, region, age } = req.body;
+  const targetId = userId || id || googleId;
+
+  if (!targetId) {
+    return next(new AppError('User ID is required to update profile', 400));
+  }
+
+  const user = await User.findByIdAndUpdate(
+    targetId,
     {
       ...(displayName && { displayName }),
       ...(profession && { profession }),
@@ -83,7 +170,7 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
     message: 'Trainer Card updated successfully',
     data: {
       id: user._id,
-      googleId: user.googleId,
+      username: user.username,
       displayName: user.displayName,
       email: user.email,
       avatar: user.avatar,
