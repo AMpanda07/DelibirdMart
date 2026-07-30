@@ -14,8 +14,8 @@ const CREATOR = {
   socials: [
     {
       name: 'Instagram',
-      url: 'https://www.instagram.com/lnpcwan?utm_source=qr&igsh=MXJzcWlmcGJqcTZseg==',
-      handle: '@lnpcwan',
+      url: 'https://www.instagram.com/curiodynam',
+      handle: '@curiodynam',
       color: 'from-pink-600 to-rose-600',
       icon: Globe
     },

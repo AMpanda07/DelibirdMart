@@ -36,9 +36,9 @@ const ROADMAP = [
 ];
 
 const SOCIALS = [
-  { icon: AtSign, label: 'Twitter', href: 'https://x.com/errorgeko' },
-  { icon: Code2,  label: 'GitHub',  href: 'https://github.com/AMpanda07' },
-  { icon: Mail,   label: 'Email',   href: 'https://www.instagram.com/lnpcwan?utm_source=qr&igsh=MXJzcWlmcGJqcTZseg==' },
+  { icon: AtSign, label: 'Twitter',   href: 'https://x.com/errorgeko' },
+  { icon: Code2,  label: 'GitHub',    href: 'https://github.com/AMpanda07' },
+  { icon: Mail,   label: 'Instagram', href: 'https://www.instagram.com/curiodynam' },
 ];
 
 export default function Footer() {

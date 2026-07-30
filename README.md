@@ -75,7 +75,7 @@ Built by **CWAN** and created by **ErrorGeko (Ayushman Panda)**, the marketplace
 | **Profile** | Pixel Art Trainer Avatar |
 
 ### 🌐 Official Contact Channels
-- 📸 **Instagram**: [@lnpcwan](https://www.instagram.com/lnpcwan?utm_source=qr&igsh=MXJzcWlmcGJqcTZseg==)
+- 📸 **Instagram**: [@curiodynam](https://www.instagram.com/curiodynam)
 - 🐦 **X (Twitter)**: [@errorgeko](https://x.com/errorgeko)
 - 🐙 **GitHub**: [AMpanda07](https://github.com/AMpanda07)
 
