@@ -26,6 +26,7 @@ import Footer  from './components/Footer';
 // ── Pages (lazy-loaded for code-splitting) ────────────────────────
 const Home        = lazy(() => import('./pages/Home'));
 const Marketplace = lazy(() => import('./pages/Marketplace'));
+const About       = lazy(() => import('./pages/About'));
 
 /* ── Page transition wrapper ─────────────────────────────────────── */
 const PageTransition = ({ children }) => (
@@ -92,6 +93,16 @@ function AnimatedRoutes() {
             <PageTransition>
               <Suspense fallback={<PageLoader />}>
                 <Marketplace />
+              </Suspense>
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <PageTransition>
+              <Suspense fallback={<PageLoader />}>
+                <About />
               </Suspense>
             </PageTransition>
           }

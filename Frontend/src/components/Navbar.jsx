@@ -13,6 +13,7 @@ import PokeBallLogo from './PokeBallLogo';
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/marketplace', label: 'Marketplace' },
+  { href: '/about', label: 'About' },
 ];
 
 export default function Navbar() {

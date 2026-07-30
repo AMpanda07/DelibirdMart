@@ -1,13 +1,13 @@
 /**
  * Home.jsx
- * Pokémon Red, Black and White Aesthetic Landing Page for Delibird Mart
+ * Redesigned Pokémon Red, Black & White Aesthetic Landing Page
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight, Shield, Heart, CheckCircle,
-  Users, Star, Sparkles, Flame
+  Users, Star, Sparkles, Flame, Zap, Award, Filter
 } from 'lucide-react';
 import PokemonCard from '../components/PokemonCard';
 import PokemonCardSkeleton from '../components/PokemonCardSkeleton';
@@ -15,14 +15,22 @@ import { fetchHeroPokemon, fetchPokemonPage } from '../services/pokemonService';
 import { sound } from '../utils/audio';
 
 const TYPES = [
-  { id: 'fire',     label: 'Fire',     emoji: '🔥' },
-  { id: 'water',    label: 'Water',    emoji: '💧' },
-  { id: 'grass',    label: 'Grass',    emoji: '🌿' },
-  { id: 'electric', label: 'Electric', emoji: '⚡' },
-  { id: 'psychic',  label: 'Psychic',  emoji: '🔮' },
-  { id: 'fighting', label: 'Fighting', emoji: '🥊' },
-  { id: 'dragon',   label: 'Dragon',   emoji: '🐉' },
-  { id: 'ghost',    label: 'Ghost',    emoji: '👻' },
+  { id: 'fire',     label: 'Fire',     emoji: '🔥', count: '14+' },
+  { id: 'water',    label: 'Water',    emoji: '💧', count: '18+' },
+  { id: 'grass',    label: 'Grass',    emoji: '🌿', count: '12+' },
+  { id: 'electric', label: 'Electric', emoji: '⚡', count: '10+' },
+  { id: 'psychic',  label: 'Psychic',  emoji: '🔮', count: '9+'  },
+  { id: 'fighting', label: 'Fighting', emoji: '🥊', count: '8+'  },
+  { id: 'dragon',   label: 'Dragon',   emoji: '🐉', count: '7+'  },
+  { id: 'ghost',    label: 'Ghost',    emoji: '👻', count: '6+'  },
+];
+
+const FEATURED_FILTERS = [
+  { id: 'all',      label: '⚡ All Featured' },
+  { id: 'fire',     label: '🔥 Fire Specials' },
+  { id: 'water',    label: '💧 Water Elite' },
+  { id: 'electric', label: '⚡ High Energy' },
+  { id: 'dragon',   label: '🐉 Dragon Rares' },
 ];
 
 const fadeUp = {
@@ -214,40 +222,52 @@ function StatsBar() {
   );
 }
 
-/* ── Browse by Type ────────────────────────────────────────────── */
+/* ── Redesigned Browse by Type (Futuristic Selection Grid) ─────────── */
 function BrowseByType() {
   return (
-    <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="text-center mb-12">
-        <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest bg-red-600/10 px-3.5 py-1.5 rounded-full border border-red-600/20">
+    <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <div className="text-center space-y-3 max-w-2xl mx-auto">
+        <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest bg-red-600/10 px-4 py-1.5 rounded-full border border-red-600/30">
           Elemental Categories
         </span>
-        <h2 className="font-head text-3xl sm:text-4xl font-extrabold text-white mt-3">
+        <h2 className="font-head text-3xl sm:text-5xl font-black text-white tracking-tight">
           Explore by <span className="gradient-text-red">Type</span>
         </h2>
+        <p className="font-body text-xs sm:text-sm text-slate-400">
+          Select an elemental class to inspect available companions in our Lumiose Sanctuary
+        </p>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
         {TYPES.map((type, i) => (
           <motion.div
             key={type.id}
-            initial={{ opacity: 0, scale: 0.85 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.05 }}
-            whileHover={{ y: -6, scale: 1.05 }}
+            transition={{ delay: i * 0.04 }}
+            whileHover={{ y: -8, scale: 1.05 }}
           >
             <Link
               to={`/marketplace?type=${type.id}`}
               onClick={() => sound.playPop()}
-              className="flex flex-col items-center gap-2.5 group cursor-pointer"
+              className="group relative flex flex-col items-center p-5 rounded-3xl bg-black border border-white/10 hover:border-red-600/70 transition-all duration-300 shadow-xl overflow-hidden cursor-pointer"
             >
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-black border border-white/15 flex items-center justify-center text-3xl group-hover:border-red-600 transition-all shadow-lg">
+              {/* LED Corner Glow */}
+              <div className="absolute top-0 right-0 w-12 h-12 bg-red-600/10 rounded-full blur-xl group-hover:bg-red-600/30 transition-all" />
+
+              <div className="relative w-16 h-16 rounded-2xl bg-slate-950 border border-white/10 flex items-center justify-center text-3xl group-hover:border-red-500 group-hover:shadow-[0_0_20px_rgba(238,21,21,0.4)] transition-all">
                 {type.emoji}
               </div>
-              <span className="font-head text-xs font-bold text-slate-300 group-hover:text-red-500 transition-colors">
-                {type.label}
-              </span>
+
+              <div className="text-center mt-3 space-y-0.5">
+                <span className="font-head text-xs font-bold text-white group-hover:text-red-500 transition-colors block">
+                  {type.label}
+                </span>
+                <span className="font-num text-[10px] text-slate-500 block font-semibold">
+                  {type.count}
+                </span>
+              </div>
             </Link>
           </motion.div>
         ))}
@@ -256,44 +276,88 @@ function BrowseByType() {
   );
 }
 
-/* ── Featured Pokémon Grid ──────────────────────────────────────── */
+/* ── Redesigned Featured Selection Options Grid ──────────────────────── */
 function FeaturedSection() {
   const [pokemon, setPokemon] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState('all');
 
   useEffect(() => {
-    fetchPokemonPage(0, 8)
+    fetchPokemonPage(0, 12)
       .then(res => setPokemon(res.pokemon))
       .finally(() => setLoading(false));
   }, []);
 
+  const filteredPokemon = useMemo(() => {
+    if (activeFilter === 'all') return pokemon.slice(0, 8);
+    return pokemon.filter(p => p.types?.includes(activeFilter)).slice(0, 8);
+  }, [pokemon, activeFilter]);
+
   return (
-    <section className="py-20 relative overflow-hidden bg-black/60 border-y border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest bg-red-600/10 px-3.5 py-1.5 rounded-full border border-red-600/20">
-              Fresh Listings
+    <section className="py-24 relative overflow-hidden bg-black/80 border-y border-white/10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+
+        {/* Header & Filter Switcher */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-2">
+            <span className="font-head text-xs font-bold text-red-500 uppercase tracking-widest bg-red-600/10 px-4 py-1.5 rounded-full border border-red-600/30 inline-block">
+              Sanctuary Selection
             </span>
-            <h2 className="font-head text-3xl sm:text-4xl font-extrabold text-white mt-3">
-              Ready for <span className="gradient-text-red">Adoption</span>
+            <h2 className="font-head text-3xl sm:text-4xl font-black text-white">
+              Featured <span className="gradient-text-red">Companions</span>
             </h2>
           </div>
+
+          {/* Interactive Selection Options Pill Bar */}
+          <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-slate-950 border border-white/10">
+            {FEATURED_FILTERS.map(f => (
+              <button
+                key={f.id}
+                onClick={() => {
+                  sound.playPop();
+                  setActiveFilter(f.id);
+                }}
+                className={`px-4 py-2 rounded-xl font-head text-xs font-bold transition-all cursor-pointer ${
+                  activeFilter === f.id
+                    ? 'bg-red-600 text-white shadow-[0_4px_16px_rgba(238,21,21,0.5)]'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Product Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {loading ? (
+            Array.from({ length: 8 }).map((_, i) => <PokemonCardSkeleton key={i} />)
+          ) : filteredPokemon.length > 0 ? (
+            filteredPokemon.map(p => <PokemonCard key={p.id} pokemon={p} />)
+          ) : (
+            <div className="col-span-full py-12 text-center text-slate-400 space-y-2">
+              <p className="font-head text-sm font-bold">No companions available in this featured selection.</p>
+              <button
+                onClick={() => setActiveFilter('all')}
+                className="text-xs text-red-500 hover:underline font-bold"
+              >
+                Reset Selection Filter
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="text-center pt-4">
           <Link
             to="/marketplace"
             onClick={() => sound.playClick()}
-            className="hidden sm:inline-flex items-center gap-2 font-head text-sm text-red-500 hover:text-red-400 font-bold transition-colors"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl btn-ghost text-white font-head font-bold text-sm cursor-pointer border border-white/15 hover:border-red-600/60"
           >
-            View All Marketplace <ArrowRight className="w-4 h-4" />
+            Explore Complete Marketplace <ArrowRight className="w-4 h-4 text-red-500" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {loading
-            ? Array.from({ length: 8 }).map((_, i) => <PokemonCardSkeleton key={i} />)
-            : pokemon.map(p => <PokemonCard key={p.id} pokemon={p} />)
-          }
-        </div>
       </div>
     </section>
   );
