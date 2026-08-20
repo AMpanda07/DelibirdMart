@@ -172,6 +172,31 @@ export function AuthProvider({ children }) {
     }
   }, [trainer.id]);
 
+  /** Adopt Pokémon Companions */
+  const adoptPokemons = useCallback(async (items) => {
+    const savedToken = localStorage.getItem('token') || trainer.token;
+    if (!savedToken) return false;
+    const toastId = toast.loading('Finalizing Pokémon adoption with Lumiose Sanctuary...');
+    try {
+      const res = await apiClient.post('/auth/adopt', { items });
+      const user = res?.data;
+      if (user) {
+        setTrainer(prev => ({
+          ...prev,
+          ...user,
+          adoptions: user.adoptions ?? prev.adoptions,
+          adoptedPokemons: user.adoptedPokemons || prev.adoptedPokemons || []
+        }));
+      }
+      toast.success(res.message || 'Adoption finalized! Companions added to Trainer Pass.', { id: toastId });
+      return true;
+    } catch (err) {
+      console.error('[AuthContext] Adopt error:', err);
+      toast.error(err.message || 'Failed to save adoption to Trainer Pass', { id: toastId });
+      return false;
+    }
+  }, [trainer.token]);
+
   /** Clear Session */
   const logout = useCallback(() => {
     localStorage.removeItem('token');
@@ -193,7 +218,8 @@ export function AuthProvider({ children }) {
       signupWithEmail,
       resetPassword,
       logout,
-      updateTrainerProfile
+      updateTrainerProfile,
+      adoptPokemons
     }}>
       {children}
     </AuthContext.Provider>

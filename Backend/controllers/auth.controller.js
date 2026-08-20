@@ -22,6 +22,7 @@ const sendTokenResponse = (user, statusCode, message, res) => {
     age: user.age || 18,
     badge: user.badge || 'Explorer',
     adoptions: user.adoptions || 0,
+    adoptedPokemons: user.adoptedPokemons || [],
     role: user.role,
     createdAt: user.createdAt
   };
@@ -221,3 +222,57 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     message: 'Trainer password reset successfully! You can now sign in with your new password.'
   });
 });
+
+/**
+ * Adopt Pokémon companions and store in Trainer profile
+ * POST /api/v1/auth/adopt
+ */
+exports.adoptPokemons = asyncHandler(async (req, res, next) => {
+  let userId;
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    try {
+      const token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, JWT_SECRET);
+      userId = decoded.id;
+    } catch (e) {}
+  }
+
+  if (!userId) {
+    return next(new AppError('You must be signed in to adopt Pokémon companions', 401));
+  }
+
+  const { items, pokemons, pokemon } = req.body;
+  const rawList = items || pokemons || (pokemon ? [pokemon] : []);
+
+  if (!Array.isArray(rawList) || rawList.length === 0) {
+    return next(new AppError('No Pokémon companions provided for adoption', 400));
+  }
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return next(new AppError('Trainer profile not found', 404));
+  }
+
+  const formattedNewEntries = [];
+  rawList.forEach(entry => {
+    const p = entry.pokemon || entry;
+    const qty = entry.quantity || 1;
+    for (let i = 0; i < qty; i++) {
+      formattedNewEntries.push({
+        pokemonId: p.id || p.pokemonId || Math.floor(Math.random() * 1000),
+        name: p.name || 'Unknown Companion',
+        image: p.image || p.sprite || '',
+        types: Array.isArray(p.types) ? p.types : (p.type ? [p.type] : ['Normal']),
+        price: p.price || 0,
+        adoptedAt: new Date()
+      });
+    }
+  });
+
+  user.adoptedPokemons.push(...formattedNewEntries);
+  user.adoptions = (user.adoptions || 0) + formattedNewEntries.length;
+  await user.save();
+
+  sendTokenResponse(user, 200, `${formattedNewEntries.length} companion(s) adopted successfully!`, res);
+});
+

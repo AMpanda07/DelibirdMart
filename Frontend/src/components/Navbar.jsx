@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Shield, Award, LogOut, Sun, Moon, Search, User, ChevronDown } from 'lucide-react';
+import { ShoppingBag, Shield, Award, LogOut, Sun, Moon, Search, User, ChevronDown, Menu, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -22,6 +22,7 @@ export default function Navbar() {
   const [trainerModalOpen, setTrainerModalOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const menuRef = useRef(null);
 
@@ -116,15 +117,15 @@ export default function Navbar() {
                 {/* Center/Right Controls Row */}
                 <div className="flex items-center gap-2 shrink-0">
 
-                  {/* Search Bar Beside Bag Button */}
-                  <form onSubmit={handleSearchSubmit} className="relative flex items-center">
-                    <Search className="absolute left-2.5 sm:left-3 w-3.5 h-3.5 theme-muted pointer-events-none" />
+                  {/* Search Bar (Visible on sm+ screens) */}
+                  <form onSubmit={handleSearchSubmit} className="hidden sm:flex relative items-center">
+                    <Search className="absolute left-3 w-3.5 h-3.5 theme-muted pointer-events-none" />
                     <input
                       type="text"
                       placeholder="Search..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-24 sm:w-40 md:w-56 theme-input border theme-border rounded-xl pl-7 sm:pl-8 pr-2 py-1.5 text-xs placeholder-slate-400 focus:outline-none focus:border-red-600 font-body shadow-inner transition-all"
+                      className="w-36 md:w-56 theme-input border theme-border rounded-xl pl-8 pr-2 py-1.5 text-xs placeholder-slate-400 focus:outline-none focus:border-red-600 font-body shadow-inner transition-all"
                     />
                   </form>
 
@@ -154,11 +155,23 @@ export default function Navbar() {
                     </AnimatePresence>
                   </button>
 
+                  {/* Mobile Hamburger Drawer Trigger Button */}
+                  <button
+                    onClick={() => {
+                      sound.playPop();
+                      setMobileMenuOpen(o => !o);
+                    }}
+                    className="sm:hidden flex items-center justify-center p-2 rounded-xl theme-card border theme-border text-red-500 hover:border-red-600 transition-all cursor-pointer"
+                    aria-label="Toggle Mobile Menu"
+                  >
+                    {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                  </button>
+
                 </div>
               </div>
 
-              {/* Sub-Navigation Bar Below Main Row (Home, Marketplace, About, and Interactive Icon Menu Beside About) */}
-              <div className="flex items-center justify-center pt-1 border-t theme-border">
+              {/* Desktop Sub-Navigation Bar */}
+              <div className="hidden sm:flex items-center justify-center pt-1 border-t theme-border">
                 <nav className="flex items-center gap-1 sm:gap-2">
                   {NAV_LINKS.map(link => (
                     <Link
@@ -174,7 +187,7 @@ export default function Navbar() {
                     </Link>
                   ))}
 
-                  {/* Interactive Icon Menu Button Placed Directly Beside About Button (Clean Icon-Only Trigger) */}
+                  {/* Interactive Icon Menu Button */}
                   <div className="relative" ref={menuRef}>
                     <button
                       onClick={() => {
@@ -196,7 +209,7 @@ export default function Navbar() {
                       <ChevronDown className={`w-3.5 h-3.5 theme-muted transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`} />
                     </button>
 
-                    {/* Hidden Menu Popover Placed Directly Below Trigger Button */}
+                    {/* Hidden Menu Popover */}
                     <AnimatePresence>
                       {userMenuOpen && (
                         <motion.div
@@ -276,6 +289,116 @@ export default function Navbar() {
                   </div>
                 </nav>
               </div>
+
+              {/* Expandable Mobile Navigation Drawer */}
+              <AnimatePresence>
+                {mobileMenuOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className="sm:hidden overflow-hidden border-t theme-border pt-3 pb-2 space-y-3"
+                  >
+                    {/* Mobile Search Bar */}
+                    <form onSubmit={(e) => { handleSearchSubmit(e); setMobileMenuOpen(false); }} className="relative flex items-center px-1">
+                      <Search className="absolute left-4 w-3.5 h-3.5 theme-muted pointer-events-none" />
+                      <input
+                        type="text"
+                        placeholder="Search Pokémon..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full theme-input border theme-border rounded-xl pl-9 pr-3 py-2 text-xs placeholder-slate-400 focus:outline-none focus:border-red-600 font-body shadow-inner"
+                      />
+                    </form>
+
+                    {/* Mobile Nav Links */}
+                    <div className="grid grid-cols-3 gap-2 px-1">
+                      {NAV_LINKS.map(link => (
+                        <Link
+                          key={link.href}
+                          to={link.href}
+                          onClick={() => {
+                            sound.playPop();
+                            setMobileMenuOpen(false);
+                          }}
+                          className={`py-2 text-center rounded-xl font-head text-xs font-bold transition-all ${
+                            isActive(link.href)
+                              ? 'bg-red-600 text-white shadow-md'
+                              : 'theme-card border theme-border theme-text'
+                          }`}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+
+                    {/* Mobile Trainer Control Options */}
+                    <div className="space-y-2 pt-2 border-t theme-border px-1">
+                      <button
+                        onClick={() => {
+                          sound.playPop();
+                          toggleTheme();
+                        }}
+                        className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl theme-card border theme-border text-xs font-head font-bold theme-text"
+                      >
+                        <div className="flex items-center gap-2">
+                          {isDark ? <Sun className="w-4 h-4 text-red-500" /> : <Moon className="w-4 h-4 text-red-500" />}
+                          <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+                        </div>
+                        <span className="text-[10px] theme-muted uppercase">{isDark ? 'Dark' : 'Light'}</span>
+                      </button>
+
+                      {isAuthenticated ? (
+                        <>
+                          <button
+                            onClick={() => {
+                              sound.playClick();
+                              setMobileMenuOpen(false);
+                              setTrainerModalOpen(true);
+                            }}
+                            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl theme-card border border-red-600/40 text-xs font-head font-bold theme-text"
+                          >
+                            <div className="flex items-center gap-2">
+                              <img
+                                src={trainer?.avatar || '/avatar.png'}
+                                alt="Trainer"
+                                className="w-5 h-5 rounded-full object-cover border border-red-500"
+                              />
+                              <span>Trainer Pass ({trainer?.displayName})</span>
+                            </div>
+                            <Award className="w-4 h-4 text-red-500" />
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              sound.playPop();
+                              setMobileMenuOpen(false);
+                              logout();
+                            }}
+                            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-red-600/10 border border-red-600/30 text-xs font-head font-bold text-red-500"
+                          >
+                            <LogOut className="w-4 h-4" />
+                            <span>Sign Out</span>
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            sound.playClick();
+                            setMobileMenuOpen(false);
+                            setAuthModalOpen(true);
+                          }}
+                          className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl btn-primary text-white text-xs font-head font-bold shadow-md"
+                        >
+                          <Shield className="w-4 h-4 text-white" />
+                          <span>Sign In / Register</span>
+                        </button>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
             </div>
           </motion.div>

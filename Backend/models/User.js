@@ -54,6 +54,14 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  adoptedPokemons: [{
+    pokemonId: { type: Number, required: true },
+    name: { type: String, required: true },
+    image: { type: String },
+    types: [{ type: String }],
+    price: { type: Number },
+    adoptedAt: { type: Date, default: Date.now }
+  }],
   role: {
     type: String,
     enum: ['trainer', 'admin'],

@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, ShoppingBag, ArrowRight, Minus, Plus, CheckCircle2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { sound } from '../utils/audio';
 
 const formatPrice = (p) =>
@@ -18,17 +19,25 @@ export default function CartDrawerNew() {
     items, removeFromCart, updateQuantity, clearCart,
     totalItems, totalPrice,
   } = useCart();
+  const { isAuthenticated, adoptPokemons } = useAuth();
 
   const [purchased, setPurchased] = useState(false);
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     sound.playSuccess();
-    setPurchased(true);
-    setTimeout(() => {
-      clearCart();
-      setPurchased(false);
-      setIsOpen(false);
-    }, 2800);
+    if (!isAuthenticated) {
+      window.dispatchEvent(new CustomEvent('open-auth-modal'));
+      return;
+    }
+    const success = await adoptPokemons(items);
+    if (success) {
+      setPurchased(true);
+      setTimeout(() => {
+        clearCart();
+        setPurchased(false);
+        setIsOpen(false);
+      }, 2800);
+    }
   };
 
   return (
