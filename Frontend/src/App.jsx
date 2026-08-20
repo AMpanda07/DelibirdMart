@@ -23,6 +23,7 @@ import { Toaster } from 'react-hot-toast';
 // ── Layout components ─────────────────────────────────────────────
 import Navbar  from './components/Navbar';
 import Footer  from './components/Footer';
+import DisclaimerGuideModal from './components/DisclaimerGuideModal';
 
 // ── Pages (lazy-loaded for code-splitting) ────────────────────────
 const Home        = lazy(() => import('./pages/Home'));
@@ -123,6 +124,14 @@ function AnimatedRoutes() {
 
 /* ── Root export ─────────────────────────────────────────────────── */
 export default function App() {
+  const [disclaimerOpen, setDisclaimerOpen] = React.useState(true);
+
+  React.useEffect(() => {
+    const handleOpenDisclaimer = () => setDisclaimerOpen(true);
+    window.addEventListener('open-disclaimer-modal', handleOpenDisclaimer);
+    return () => window.removeEventListener('open-disclaimer-modal', handleOpenDisclaimer);
+  }, []);
+
   return (
     <ThemeProvider>
       <AuthProvider>
@@ -131,6 +140,10 @@ export default function App() {
             <Navbar />
             <AnimatedRoutes />
             <Footer />
+            <DisclaimerGuideModal
+              isOpen={disclaimerOpen}
+              onClose={() => setDisclaimerOpen(false)}
+            />
             <Toaster
               position="bottom-right"
               toastOptions={{

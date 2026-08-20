@@ -22,8 +22,8 @@ const LINKS = {
   ],
   Company: [
     { label: 'About Us',       href: '/about' },
-    { label: 'Safety Policy',  href: '#' },
-    { label: 'Pokémon Welfare', href: '#' },
+    { label: 'Disclaimer & Guide', href: '#', isDisclaimer: true },
+    { label: 'Safety Policy',  href: '/about' },
     { label: 'Contact',        href: '/about' },
   ],
 };
@@ -102,12 +102,24 @@ export default function Footer() {
               <ul className="space-y-2.5">
                 {links.map(link => (
                   <li key={link.label}>
-                    <Link
-                      to={link.href}
-                      className="font-body text-sm theme-muted hover:text-red-500 transition-colors duration-200 inline-block"
-                    >
-                      {link.label}
-                    </Link>
+                    {link.isDisclaimer ? (
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          window.dispatchEvent(new CustomEvent('open-disclaimer-modal'));
+                        }}
+                        className="font-body text-sm theme-muted hover:text-red-500 transition-colors duration-200 inline-block cursor-pointer text-left"
+                      >
+                        {link.label}
+                      </button>
+                    ) : (
+                      <Link
+                        to={link.href}
+                        className="font-body text-sm theme-muted hover:text-red-500 transition-colors duration-200 inline-block"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
