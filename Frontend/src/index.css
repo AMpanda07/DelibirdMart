@@ -135,7 +135,7 @@
 
 /* ── Glow & Text Accent ────────────────────────────────────────── */
 .gradient-text-red {
-  background: linear-gradient(135deg, #EE1515 0%, #C40D0D 100%);
+  background: var(--brand-gradient, linear-gradient(135deg, #EE1515 0%, #C40D0D 100%));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -143,16 +143,16 @@
 
 /* ── Buttons ───────────────────────────────────────────────────── */
 .btn-primary {
-  background: linear-gradient(135deg, #EE1515 0%, #C40D0D 100%);
+  background: var(--brand-gradient, linear-gradient(135deg, #EE1515 0%, #C40D0D 100%));
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #FFFFFF !important;
-  box-shadow: 0 8px 24px rgba(238, 21, 21, 0.4);
+  box-shadow: 0 8px 24px var(--red-glow, rgba(238, 21, 21, 0.4));
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .btn-primary:hover {
   transform: translateY(-2px);
-  background: linear-gradient(135deg, #FF2E2E 0%, #D80F0F 100%);
-  box-shadow: 0 14px 36px rgba(238, 21, 21, 0.6);
+  filter: brightness(1.1);
+  box-shadow: 0 14px 36px var(--red-glow, rgba(238, 21, 21, 0.6));
 }
 .btn-primary:active { transform: translateY(0); }
 
@@ -165,20 +165,20 @@
 }
 .btn-secondary:hover {
   transform: translateY(-2px);
-  border-color: rgba(238, 21, 21, 0.6);
-  box-shadow: 0 14px 36px rgba(238, 21, 21, 0.18);
+  border-color: var(--red-primary, #EE1515);
+  box-shadow: 0 14px 36px var(--red-glow, rgba(238, 21, 21, 0.18));
 }
 
 .btn-ghost {
-  background: rgba(238, 21, 21, 0.08);
-  border: 1px solid rgba(238, 21, 21, 0.25);
+  background: var(--red-glow, rgba(238, 21, 21, 0.08));
+  border: 1px solid var(--border-accent);
   color: var(--text-primary);
   backdrop-filter: blur(12px);
   transition: all 0.25s ease;
 }
 .btn-ghost:hover {
-  background: rgba(238, 21, 21, 0.18);
-  border-color: rgba(238, 21, 21, 0.55);
+  background: var(--red-glow, rgba(238, 21, 21, 0.18));
+  border-color: var(--red-primary, #EE1515);
 }
 
 /* ── Type Badges ───────────────────────────────────────────────── */
@@ -193,4 +193,4 @@
 /* ── Scrollbar ─────────────────────────────────────────────────── */
 ::-webkit-scrollbar       { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg-main); }
-::-webkit-scrollbar-thumb { background: #EE1515; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: var(--red-primary, #EE1515); border-radius: 4px; }
