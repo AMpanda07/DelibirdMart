@@ -272,5 +272,4 @@ export const FEATURED_POKEMON = POKEMON_LIST.filter(p => p.featured);
 export const TYPE_MAP = Object.fromEntries(TYPES.map(t => [t.id, t]));
 
 /* ── Helper: price formatter ────────────────────────────────────── */
-export const formatPrice = (p) =>
-  new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(p);
+export const formatPrice = (p) => `🪙 ${Number(p || 0).toLocaleString('en-US')}`;

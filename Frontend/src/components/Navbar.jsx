@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Shield, Award, LogOut, Sun, Moon, Search, User, ChevronDown, Menu, X } from 'lucide-react';
+import { ShoppingBag, Shield, Award, LogOut, Sun, Moon, Search, User, ChevronDown, Menu, X, Settings } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -9,6 +9,7 @@ import { sound } from '../utils/audio';
 import CartDrawerNew from './CartDrawerNew';
 import TrainerCardModal from './TrainerCardModal';
 import AuthModal from './AuthModal';
+import SettingsModal from './SettingsModal';
 import PokeBallLogo from './PokeBallLogo';
 
 const NAV_LINKS = [
@@ -21,6 +22,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [trainerModalOpen, setTrainerModalOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -228,6 +230,22 @@ export default function Navbar() {
                             </p>
                           </div>
 
+                          {/* Settings Trigger Button */}
+                          <button
+                            onClick={() => {
+                              sound.playClick();
+                              setUserMenuOpen(false);
+                              setSettingsModalOpen(true);
+                            }}
+                            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-red-600/10 text-xs font-head font-bold theme-text transition-colors cursor-pointer"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Settings className="w-4 h-4 text-red-500" />
+                              <span>Preferences & Settings</span>
+                            </div>
+                            <span className="text-[10px] theme-muted font-mono">⚙️</span>
+                          </button>
+
                           {/* Theme Switcher Button */}
                           <button
                             onClick={() => {
@@ -335,6 +353,22 @@ export default function Navbar() {
 
                     {/* Mobile Trainer Control Options */}
                     <div className="space-y-2 pt-2 border-t theme-border px-1">
+                      {/* Mobile Settings Button */}
+                      <button
+                        onClick={() => {
+                          sound.playClick();
+                          setMobileMenuOpen(false);
+                          setSettingsModalOpen(true);
+                        }}
+                        className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl theme-card border theme-border text-xs font-head font-bold theme-text"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Settings className="w-4 h-4 text-red-500" />
+                          <span>App Settings & Preferences</span>
+                        </div>
+                        <span className="text-[10px] theme-muted font-mono">⚙️</span>
+                      </button>
+
                       <button
                         onClick={() => {
                           sound.playPop();
@@ -409,6 +443,7 @@ export default function Navbar() {
       <CartDrawerNew />
       <TrainerCardModal isOpen={trainerModalOpen} onClose={() => setTrainerModalOpen(false)} />
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      <SettingsModal isOpen={settingsModalOpen} onClose={() => setSettingsModalOpen(false)} />
     </>
   );
 }

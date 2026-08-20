@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingBag, Check, Zap } from 'lucide-react';
 import { playClickSound, playHoverSound } from '../utils/sound';
+import { formatPokéCoins } from '../utils/formatCurrency';
 import { TYPE_COLORS } from '../utils/mockProducts';
 
 export default function ProductModal({ product, onClose, onAddToCart, soundEnabled }) {
@@ -89,8 +90,8 @@ export default function ProductModal({ product, onClose, onAddToCart, soundEnabl
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-pixel text-[7px] text-slate-500 mb-0.5">PRICE</div>
-                  <div className="font-pixel text-[12px] text-amber-400 text-glow-gold">
-                    {product.price.toLocaleString()}<span className="text-[9px] text-amber-500/70 ml-1">G</span>
+                  <div className="font-num text-sm font-bold text-red-500">
+                    {formatPokéCoins(product.price)}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 bg-slate-950 rounded-lg border border-slate-800 p-1">

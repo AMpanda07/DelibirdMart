@@ -7,6 +7,10 @@ export function ThemeProvider({ children }) {
     return localStorage.getItem('theme') || 'dark';
   });
 
+  const [colorScheme, setColorSchemeState] = useState(() => {
+    return localStorage.getItem('colorScheme') || 'red';
+  });
+
   useEffect(() => {
     const root = document.documentElement;
     if (theme === 'light') {
@@ -19,12 +23,29 @@ export function ThemeProvider({ children }) {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute('data-color-scheme', colorScheme);
+    localStorage.setItem('colorScheme', colorScheme);
+  }, [colorScheme]);
+
   const toggleTheme = useCallback(() => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   }, []);
 
+  const setColorScheme = useCallback((scheme) => {
+    setColorSchemeState(scheme);
+  }, []);
+
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, isDark: theme === 'dark' }}>
+    <ThemeContext.Provider value={{
+      theme,
+      setTheme,
+      toggleTheme,
+      isDark: theme === 'dark',
+      colorScheme,
+      setColorScheme
+    }}>
       {children}
     </ThemeContext.Provider>
   );

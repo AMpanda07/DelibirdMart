@@ -19,6 +19,7 @@ import {
   EVOLUTION_STAGES, GENERATIONS, RARITIES,
 } from '../services/pokemonService';
 import { sound } from '../utils/audio';
+import { formatPokéCoins } from '../utils/formatCurrency';
 
 const TYPES = [
   { id: 'fire',     emoji: '🔥', label: 'Fire'     },
@@ -283,8 +284,8 @@ export default function Marketplace() {
             style={{ '--val': `${(maxPrice / MAX_PRICE) * 100}%` }}
           />
           <div className="flex justify-between font-num text-xs font-bold theme-muted">
-            <span>₹0</span>
-            <span className="text-red-500">₹{maxPrice.toLocaleString('en-IN')}</span>
+            <span>{formatPokéCoins(0)}</span>
+            <span className="text-red-500">{formatPokéCoins(maxPrice)}</span>
           </div>
         </div>
       </FilterSection>

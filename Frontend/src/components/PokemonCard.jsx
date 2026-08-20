@@ -9,14 +9,10 @@ import { Star, Heart, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { sound } from '../utils/audio';
+import { formatPokéCoins } from '../utils/formatCurrency';
 
 /* ── Price Formatter ───────────────────────────────────────────── */
-const fmt = (p) =>
-  new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    maximumFractionDigits: 0,
-  }).format(p);
+const fmt = (p) => formatPokéCoins(p);
 
 /* ── Type Badges Lookup ────────────────────────────────────────── */
 const TYPE_INFO = {

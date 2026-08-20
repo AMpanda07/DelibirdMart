@@ -153,7 +153,7 @@ function HeroSection() {
                 </div>
 
                 <div className="flex items-center justify-center gap-4">
-                  <span className="font-num text-xl font-bold text-red-500">₹{hero.price.toLocaleString('en-IN')}</span>
+                  <span className="font-num text-xl font-bold text-red-500">{formatPokéCoins(hero.price)}</span>
                   <button
                     onClick={handleHeroAdopt}
                     className="px-5 py-2.5 rounded-xl btn-primary text-white font-head font-bold text-xs flex items-center gap-2 cursor-pointer shadow-lg"

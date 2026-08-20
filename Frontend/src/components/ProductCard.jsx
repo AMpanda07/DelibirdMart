@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingBag, Eye } from 'lucide-react';
 import { playClickSound, playHoverSound } from '../utils/sound';
+import { formatPokéCoins } from '../utils/formatCurrency';
 import { TYPE_COLORS } from '../utils/mockProducts';
 
 function RarityBadge({ rarity }) {
@@ -100,8 +101,8 @@ export default function ProductCard({ product, onAddToCart, onSelectProduct, sou
         <div className="flex items-center justify-between pt-1 border-t border-slate-800/60 mt-auto">
           <div>
             <div className="font-pixel text-[7px] text-slate-500 uppercase mb-0.5">Price</div>
-            <div className="font-pixel text-[11px] text-amber-400 text-glow-gold">
-              {product.price.toLocaleString()}<span className="text-[8px] text-amber-500/70 ml-1">G</span>
+            <div className="font-num text-xs font-bold text-red-500">
+              {formatPokéCoins(product.price)}
             </div>
           </div>
 

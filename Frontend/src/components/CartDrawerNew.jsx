@@ -9,9 +9,7 @@ import { X, Trash2, ShoppingBag, ArrowRight, Minus, Plus, CheckCircle2 } from 'l
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { sound } from '../utils/audio';
-
-const formatPrice = (p) =>
-  new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(p);
+import { formatPokéCoins } from '../utils/formatCurrency';
 
 export default function CartDrawerNew() {
   const {
@@ -105,7 +103,7 @@ export default function CartDrawerNew() {
                     <img src={pokemon.image} alt={pokemon.name} className="w-14 h-14 object-contain theme-card p-1 rounded-lg border theme-border" />
                     <div className="flex-1 min-w-0">
                       <div className="font-head text-sm font-bold theme-text truncate">{pokemon.name}</div>
-                      <div className="font-num text-xs font-bold text-red-500 mt-0.5">{formatPrice(pokemon.price)}</div>
+                      <div className="font-num text-xs font-bold text-red-500 mt-0.5">{formatPokéCoins(pokemon.price)}</div>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <button
@@ -152,7 +150,7 @@ export default function CartDrawerNew() {
               <div className="p-5 border-t theme-border space-y-4 theme-card">
                 <div className="flex justify-between font-head text-sm font-bold theme-text">
                   <span>Total Fee</span>
-                  <span className="font-num text-red-500">{formatPrice(totalPrice)}</span>
+                  <span className="font-num text-red-500">{formatPokéCoins(totalPrice)}</span>
                 </div>
                 <button
                   onClick={handleCheckout}
