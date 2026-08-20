@@ -47,8 +47,6 @@ export default function AuthModal({ isOpen, onClose }) {
 
   const { loginWithEmail, signupWithEmail, resetPassword, isLoading } = useAuth();
 
-  if (!isOpen) return null;
-
   const handleSignInSubmit = async (e) => {
     e.preventDefault();
     sound.playClick();
@@ -95,7 +93,8 @@ export default function AuthModal({ isOpen, onClose }) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
         <div
           className="absolute inset-0"
           onClick={() => { sound.playClick(); onClose(); }}
@@ -413,6 +412,7 @@ export default function AuthModal({ isOpen, onClose }) {
           </div>
         </motion.div>
       </div>
+      )}
     </AnimatePresence>
   );
 }

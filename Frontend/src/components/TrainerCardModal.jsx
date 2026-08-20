@@ -47,8 +47,6 @@ export default function TrainerCardModal({ isOpen, onClose }) {
     }
   }, [trainer]);
 
-  if (!isOpen) return null;
-
   const handleSave = async () => {
     sound.playClick();
     const success = await updateTrainerProfile(formData);
@@ -64,7 +62,8 @@ export default function TrainerCardModal({ isOpen, onClose }) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
         <div
           className="absolute inset-0"
           onClick={() => { sound.playClick(); onClose(); }}
@@ -364,6 +363,7 @@ export default function TrainerCardModal({ isOpen, onClose }) {
           </div>
         </motion.div>
       </div>
+      )}
     </AnimatePresence>
   );
 }

@@ -131,6 +131,19 @@ export default function Navbar() {
                     />
                   </form>
 
+                  {/* Settings Direct Button */}
+                  <button
+                    onClick={() => {
+                      sound.playClick();
+                      setSettingsModalOpen(true);
+                    }}
+                    title="Preferences & Settings"
+                    className="p-2 sm:p-2.5 rounded-xl theme-card border theme-border hover:border-red-600/60 transition-all cursor-pointer shadow-sm text-red-500 shrink-0"
+                    aria-label="Settings"
+                  >
+                    <Settings className="w-4 h-4" />
+                  </button>
+
                   {/* Cart Drawer Button */}
                   <button
                     id="cart-btn"

@@ -7,8 +7,6 @@ import PokeBallLogo from './PokeBallLogo';
 export default function DisclaimerGuideModal({ isOpen, onClose }) {
   const [step, setStep] = useState(1); // 1: Disclaimer, 2: App Guide
 
-  if (!isOpen) return null;
-
   const handleNext = () => {
     sound.playClick();
     setStep(2);
@@ -26,7 +24,8 @@ export default function DisclaimerGuideModal({ isOpen, onClose }) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
         {/* Backdrop click optional exit */}
         <div
           className="absolute inset-0"
@@ -232,6 +231,7 @@ export default function DisclaimerGuideModal({ isOpen, onClose }) {
           </div>
         </motion.div>
       </div>
+      )}
     </AnimatePresence>
   );
 }

@@ -17,6 +17,7 @@ import { fetchHeroPokemon, fetchPokemonPage } from '../services/pokemonService';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { sound } from '../utils/audio';
+import { formatPokéCoins } from '../utils/formatCurrency';
 
 const TYPES = [
   { id: 'fire',     label: 'Fire',     emoji: '🔥', count: '14+' },

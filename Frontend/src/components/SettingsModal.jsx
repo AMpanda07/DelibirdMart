@@ -69,8 +69,6 @@ export default function SettingsModal({ isOpen, onClose }) {
     }
   }, [trainer, isOpen]);
 
-  if (!isOpen) return null;
-
   const handleSave = async () => {
     sound.playClick();
     if (isAuthenticated) {
@@ -82,18 +80,19 @@ export default function SettingsModal({ isOpen, onClose }) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-        <div
-          className="absolute inset-0"
-          onClick={() => { sound.playClick(); onClose(); }}
-        />
+      {isOpen ? (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div
+            className="absolute inset-0"
+            onClick={() => { sound.playClick(); onClose(); }}
+          />
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          className="relative max-w-lg w-full rounded-3xl overflow-hidden theme-card border border-red-600/40 z-10 shadow-2xl theme-text"
-        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            className="relative max-w-lg w-full rounded-3xl overflow-hidden theme-card border border-red-600/40 z-10 shadow-2xl theme-text"
+          >
           {/* Header */}
           <div className="p-6 border-b theme-border flex items-center justify-between theme-card relative">
             <div className="flex items-center gap-3">
@@ -384,6 +383,7 @@ export default function SettingsModal({ isOpen, onClose }) {
           </div>
         </motion.div>
       </div>
+      ) : null}
     </AnimatePresence>
   );
 }

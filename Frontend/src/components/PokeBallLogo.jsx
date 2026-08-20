@@ -11,7 +11,13 @@ import { useTheme } from '../context/ThemeContext';
  *   - Yellow 🟡: Ultra Ball
  */
 export default function PokeBallLogo({ className = "w-10 h-10", animated = true, forceScheme = null }) {
-  const { colorScheme: activeScheme } = useTheme();
+  let activeScheme = 'red';
+  try {
+    const themeCtx = useTheme();
+    if (themeCtx?.colorScheme) activeScheme = themeCtx.colorScheme;
+  } catch (e) {
+    activeScheme = 'red';
+  }
   const scheme = forceScheme || activeScheme || 'red';
 
   // Config mapping for each Poké Ball type
