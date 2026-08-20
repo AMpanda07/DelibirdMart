@@ -256,14 +256,30 @@ exports.adoptPokemons = asyncHandler(async (req, res, next) => {
   const formattedNewEntries = [];
   rawList.forEach(entry => {
     const p = entry.pokemon || entry;
-    const qty = entry.quantity || 1;
+    const qty = Number(entry.quantity) || 1;
+
+    // Extract numeric Pokédex ID safely (strip any 'pkmn-' prefix)
+    let parsedId = Number(p.pokedexId || p.pokemonId);
+    if (isNaN(parsedId) || !parsedId) {
+      const idStr = String(p.id || '');
+      const digits = idStr.replace(/\D/g, '');
+      parsedId = digits ? parseInt(digits, 10) : Math.floor(Math.random() * 1000) + 1;
+    }
+
+    let parsedPrice = Number(p.price);
+    if (isNaN(parsedPrice)) parsedPrice = 0;
+
+    const name = String(p.name || 'Unknown Companion').trim();
+    const image = String(p.image || p.sprite || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${parsedId}.png`).trim();
+    const types = Array.isArray(p.types) ? p.types.map(t => String(t)) : (p.type ? [String(p.type)] : ['Normal']);
+
     for (let i = 0; i < qty; i++) {
       formattedNewEntries.push({
-        pokemonId: p.id || p.pokemonId || Math.floor(Math.random() * 1000),
-        name: p.name || 'Unknown Companion',
-        image: p.image || p.sprite || '',
-        types: Array.isArray(p.types) ? p.types : (p.type ? [p.type] : ['Normal']),
-        price: p.price || 0,
+        pokemonId: parsedId,
+        name,
+        image,
+        types,
+        price: parsedPrice,
         adoptedAt: new Date()
       });
     }

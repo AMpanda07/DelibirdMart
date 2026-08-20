@@ -178,7 +178,27 @@ export function AuthProvider({ children }) {
     if (!savedToken) return false;
     const toastId = toast.loading('Finalizing Pokémon adoption with Lumiose Sanctuary...');
     try {
-      const res = await apiClient.post('/auth/adopt', { items });
+      const formattedItems = (items || []).map(entry => {
+        const p = entry.pokemon || entry;
+        const rawId = p.pokedexId || p.pokemonId || p.id;
+        const numericId = typeof rawId === 'number'
+          ? rawId
+          : parseInt(String(rawId).replace(/\D/g, ''), 10) || 1;
+        return {
+          quantity: Number(entry.quantity) || 1,
+          pokemon: {
+            pokemonId: numericId,
+            pokedexId: numericId,
+            id: numericId,
+            name: p.name || 'Unknown Companion',
+            image: p.image || p.sprite || '',
+            types: p.types || (p.type ? [p.type] : ['Normal']),
+            price: Number(p.price) || 0
+          }
+        };
+      });
+
+      const res = await apiClient.post('/auth/adopt', { items: formattedItems });
       const user = res?.data;
       if (user) {
         setTrainer(prev => ({
