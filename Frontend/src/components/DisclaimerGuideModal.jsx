@@ -7,6 +7,11 @@ import PokeBallLogo from './PokeBallLogo';
 export default function DisclaimerGuideModal({ isOpen, onClose }) {
   const [step, setStep] = useState(1); // 1: Disclaimer, 2: App Guide
 
+  const handleClose = () => {
+    try { localStorage.setItem('hasSeenDisclaimer', 'true'); } catch (e) {}
+    onClose();
+  };
+
   const handleNext = () => {
     sound.playClick();
     setStep(2);
@@ -19,7 +24,7 @@ export default function DisclaimerGuideModal({ isOpen, onClose }) {
 
   const handleFinish = () => {
     sound.playSuccess();
-    onClose();
+    handleClose();
   };
 
   return (
@@ -31,7 +36,7 @@ export default function DisclaimerGuideModal({ isOpen, onClose }) {
           className="absolute inset-0"
           onClick={() => {
             sound.playPop();
-            onClose();
+            handleClose();
           }}
         />
 
@@ -46,7 +51,7 @@ export default function DisclaimerGuideModal({ isOpen, onClose }) {
           <button
             onClick={() => {
               sound.playPop();
-              onClose();
+              handleClose();
             }}
             title="Exit Disclaimer & Enter App"
             className="absolute top-4 right-4 z-20 p-2 rounded-xl theme-bg border theme-border theme-muted hover:theme-text hover:border-red-600 transition-all cursor-pointer shadow-md"
@@ -194,7 +199,7 @@ export default function DisclaimerGuideModal({ isOpen, onClose }) {
                 <button
                   onClick={() => {
                     sound.playPop();
-                    onClose();
+                    handleClose();
                   }}
                   className="px-4 py-2.5 rounded-xl theme-bg border theme-border text-xs font-head font-bold theme-muted hover:theme-text cursor-pointer transition-all"
                 >

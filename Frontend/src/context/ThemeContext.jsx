@@ -30,6 +30,7 @@ export function ThemeProvider({ children }) {
 
     const schemeMap = {
       red:     { primary: '#EE1515', secondary: '#DC2626', gradient: 'linear-gradient(135deg, #EE1515 0%, #C40D0D 100%)', glow: 'rgba(238, 21, 21, 0.4)' },
+      blue:    { primary: '#2563EB', secondary: '#1D4ED8', gradient: 'linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)', glow: 'rgba(37, 99, 235, 0.4)' },
       cyan:    { primary: '#06B6D4', secondary: '#0284C7', gradient: 'linear-gradient(135deg, #06B6D4 0%, #0284C7 100%)', glow: 'rgba(6, 182, 212, 0.4)' },
       yellow:  { primary: '#EAB308', secondary: '#CA8A04', gradient: 'linear-gradient(135deg, #EAB308 0%, #CA8A04 100%)', glow: 'rgba(234, 179, 8, 0.4)' },
       emerald: { primary: '#10B981', secondary: '#059669', gradient: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', glow: 'rgba(16, 185, 129, 0.4)' },

@@ -108,7 +108,7 @@ export default function TrainerCardModal({ isOpen, onClose }) {
             <div className="flex flex-col sm:flex-row items-center gap-5 p-4 rounded-2xl theme-bg border theme-border relative">
               <div className="relative">
                 <img
-                  src={trainer.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${trainer.id}`}
+                  src={trainer.avatar || localStorage.getItem('trainer_avatar') || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${trainer.id || 'Trainer'}`}
                   alt={trainer.displayName || 'Trainer Avatar'}
                   className="w-20 h-20 rounded-2xl object-cover border-2 border-red-600/60 shadow-lg"
                 />

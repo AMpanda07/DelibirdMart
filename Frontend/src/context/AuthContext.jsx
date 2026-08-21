@@ -32,6 +32,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const initializeAuth = async () => {
       const savedToken = localStorage.getItem('token');
+      const savedAvatar = localStorage.getItem('trainer_avatar');
       if (savedToken) {
         try {
           const res = await apiClient.get('/auth/me', {
@@ -40,17 +41,20 @@ export function AuthProvider({ children }) {
           if (res?.data) {
             setTrainer({
               ...res.data,
+              avatar: res.data.avatar || savedAvatar || null,
               token: savedToken
             });
           } else {
             localStorage.removeItem('token');
-            setTrainer(DEFAULT_TRAINER);
+            setTrainer(prev => ({ ...DEFAULT_TRAINER, avatar: savedAvatar || null }));
           }
         } catch (err) {
           console.warn('[AuthContext] Saved token verification failed:', err);
           localStorage.removeItem('token');
-          setTrainer(DEFAULT_TRAINER);
+          setTrainer(prev => ({ ...DEFAULT_TRAINER, avatar: savedAvatar || null }));
         }
+      } else if (savedAvatar) {
+        setTrainer(prev => ({ ...prev, avatar: savedAvatar }));
       }
       setIsLoading(false);
     };
@@ -146,7 +150,18 @@ export function AuthProvider({ children }) {
 
   /** Update Trainer Card Profile */
   const updateTrainerProfile = useCallback(async (updatedData) => {
-    if (!trainer.id) return false;
+    if (updatedData.avatar) {
+      localStorage.setItem('trainer_avatar', updatedData.avatar);
+    }
+    if (!trainer.id) {
+      setTrainer(prev => ({
+        ...prev,
+        ...updatedData,
+        avatar: updatedData.avatar || prev.avatar
+      }));
+      toast.success('Preferences updated!');
+      return true;
+    }
     const toastId = toast.loading('Saving Trainer Card...');
     try {
       const res = await apiClient.put('/auth/profile', {
@@ -154,12 +169,18 @@ export function AuthProvider({ children }) {
         ...updatedData
       });
       const user = res?.data;
+      const finalAvatar = user?.avatar || updatedData.avatar || trainer.avatar;
+      if (finalAvatar) {
+        localStorage.setItem('trainer_avatar', finalAvatar);
+      }
       setTrainer(prev => ({
         ...prev,
-        displayName: user?.displayName || prev.displayName,
-        profession:  user?.profession  || prev.profession,
-        region:      user?.region      || prev.region,
-        age:         user?.age         || prev.age,
+        ...user,
+        displayName: user?.displayName || updatedData.displayName || prev.displayName,
+        profession:  user?.profession  || updatedData.profession  || prev.profession,
+        region:      user?.region      || updatedData.region      || prev.region,
+        age:         user?.age         || updatedData.age         || prev.age,
+        avatar:      finalAvatar,
         badge:       user?.badge       || prev.badge,
         adoptions:   user?.adoptions   ?? prev.adoptions
       }));
@@ -170,7 +191,7 @@ export function AuthProvider({ children }) {
       toast.error(err.message || 'Failed to update Trainer Card', { id: toastId });
       return false;
     }
-  }, [trainer.id]);
+  }, [trainer.id, trainer.avatar]);
 
   /** Adopt Pokémon Companions */
   const adoptPokemons = useCallback(async (items) => {

@@ -94,12 +94,12 @@
 .bg-lumiose {
   background-color: var(--bg-main);
   background-image:
-    radial-gradient(ellipse 75% 55% at 50% -10%, rgba(238, 21, 21, 0.15) 0%, transparent 65%);
+    radial-gradient(ellipse 75% 55% at 50% -10%, var(--brand-glow, rgba(238, 21, 21, 0.15)) 0%, transparent 65%);
 }
 
 .bg-city-grid {
   background-image:
-    radial-gradient(circle, rgba(238, 21, 21, 0.12) 1px, transparent 1px);
+    radial-gradient(circle, var(--brand-glow, rgba(238, 21, 21, 0.12)) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
@@ -128,8 +128,8 @@
 }
 .pokemon-card-container:hover {
   background-color: var(--bg-card-hover);
-  border-color: rgba(238, 21, 21, 0.65);
-  box-shadow: 0 20px 45px rgba(238, 21, 21, 0.2);
+  border-color: var(--brand-primary, #EE1515);
+  box-shadow: 0 20px 45px var(--brand-glow, rgba(238, 21, 21, 0.2));
   transform: translateY(-6px);
 }
 
@@ -146,13 +146,13 @@
   background: var(--brand-gradient, linear-gradient(135deg, #EE1515 0%, #C40D0D 100%));
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #FFFFFF !important;
-  box-shadow: 0 8px 24px var(--red-glow, rgba(238, 21, 21, 0.4));
+  box-shadow: 0 8px 24px var(--brand-glow, rgba(238, 21, 21, 0.4));
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .btn-primary:hover {
   transform: translateY(-2px);
   filter: brightness(1.1);
-  box-shadow: 0 14px 36px var(--red-glow, rgba(238, 21, 21, 0.6));
+  box-shadow: 0 14px 36px var(--brand-glow, rgba(238, 21, 21, 0.6));
 }
 .btn-primary:active { transform: translateY(0); }
 
@@ -165,20 +165,20 @@
 }
 .btn-secondary:hover {
   transform: translateY(-2px);
-  border-color: var(--red-primary, #EE1515);
-  box-shadow: 0 14px 36px var(--red-glow, rgba(238, 21, 21, 0.18));
+  border-color: var(--brand-primary, #EE1515);
+  box-shadow: 0 14px 36px var(--brand-glow, rgba(238, 21, 21, 0.18));
 }
 
 .btn-ghost {
-  background: var(--red-glow, rgba(238, 21, 21, 0.08));
+  background: var(--brand-glow, rgba(238, 21, 21, 0.08));
   border: 1px solid var(--border-accent);
   color: var(--text-primary);
   backdrop-filter: blur(12px);
   transition: all 0.25s ease;
 }
 .btn-ghost:hover {
-  background: var(--red-glow, rgba(238, 21, 21, 0.18));
-  border-color: var(--red-primary, #EE1515);
+  background: var(--brand-glow, rgba(238, 21, 21, 0.18));
+  border-color: var(--brand-primary, #EE1515);
 }
 
 /* ── Type Badges ───────────────────────────────────────────────── */
@@ -193,4 +193,37 @@
 /* ── Scrollbar ─────────────────────────────────────────────────── */
 ::-webkit-scrollbar       { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg-main); }
-::-webkit-scrollbar-thumb { background: var(--red-primary, #EE1515); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: var(--brand-primary, #EE1515); border-radius: 4px; }
+
+/* ── DYNAMIC BRAND SCHEME UTILITY OVERRIDES ───────────────────── */
+[data-color-scheme] .text-red-500,
+[data-color-scheme] .text-red-600 {
+  color: var(--brand-primary) !important;
+}
+
+[data-color-scheme] .bg-red-600,
+[data-color-scheme] .bg-red-500 {
+  background-color: var(--brand-primary) !important;
+}
+
+[data-color-scheme] .bg-red-600\/10,
+[data-color-scheme] .bg-red-600\/20,
+[data-color-scheme] .bg-red-600\/30,
+[data-color-scheme] .bg-red-950 {
+  background-color: var(--brand-glow) !important;
+}
+
+[data-color-scheme] .border-red-600,
+[data-color-scheme] .border-red-500,
+[data-color-scheme] .border-red-600\/20,
+[data-color-scheme] .border-red-600\/30,
+[data-color-scheme] .border-red-600\/40,
+[data-color-scheme] .border-red-600\/50,
+[data-color-scheme] .border-red-500\/60 {
+  border-color: var(--brand-glow) !important;
+}
+
+[data-color-scheme] input:focus,
+[data-color-scheme] select:focus {
+  border-color: var(--brand-primary) !important;
+}

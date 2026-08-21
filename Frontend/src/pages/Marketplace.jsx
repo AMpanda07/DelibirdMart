@@ -87,7 +87,7 @@ function FilterSection({ title, icon: Icon, children, defaultOpen = true }) {
 
 export default function Marketplace() {
   const [searchParams] = useSearchParams();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const { allPokemon, total, hasMore, loading, loadMore } = usePokemonInfinite(20);
 
   const [searchQuery,      setSearchQuery]      = useState(() => searchParams.get('search') || '');
@@ -102,12 +102,12 @@ export default function Marketplace() {
   const [maxPrice,         setMaxPrice]         = useState(MAX_PRICE);
   const [sortBy,           setSortBy]           = useState('featured');
 
-  // Trigger Auth Modal automatically if accessing marketplace while unauthenticated
+  // Trigger Auth Modal automatically if accessing marketplace while unauthenticated (after loading completes)
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isLoading && !isAuthenticated) {
       window.dispatchEvent(new CustomEvent('open-auth-modal'));
     }
-  }, [isAuthenticated]);
+  }, [isLoading, isAuthenticated]);
 
   const filtered = useMemo(() => {
     const filters = {
@@ -146,6 +146,17 @@ export default function Marketplace() {
     setSearchQuery('');
     setSortBy('featured');
   };
+
+  if (isLoading) {
+    return (
+      <main className="min-h-screen pt-36 pb-20 bg-lumiose theme-text flex items-center justify-center px-4">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-8 h-8 animate-spin text-red-500" />
+          <p className="font-head text-xs font-bold theme-muted">Verifying Trainer Pass Credentials...</p>
+        </div>
+      </main>
+    );
+  }
 
   if (!isAuthenticated) {
     return (

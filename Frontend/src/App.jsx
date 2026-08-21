@@ -124,7 +124,14 @@ function AnimatedRoutes() {
 
 /* ── Root export ─────────────────────────────────────────────────── */
 export default function App() {
-  const [disclaimerOpen, setDisclaimerOpen] = React.useState(true);
+  const [disclaimerOpen, setDisclaimerOpen] = React.useState(() => {
+    try {
+      const hasSeen = localStorage.getItem('hasSeenDisclaimer') === 'true';
+      return !hasSeen;
+    } catch (e) {
+      return true;
+    }
+  });
 
   React.useEffect(() => {
     const handleOpenDisclaimer = () => setDisclaimerOpen(true);

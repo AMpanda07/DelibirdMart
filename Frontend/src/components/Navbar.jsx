@@ -42,10 +42,19 @@ export default function Navbar() {
 
   /* Listen for global sign-in modal triggers */
   useEffect(() => {
-    const handleGlobalAuthReq = () => setAuthModalOpen(true);
+    const handleGlobalAuthReq = () => {
+      if (!isAuthenticated) setAuthModalOpen(true);
+    };
     window.addEventListener('open-auth-modal', handleGlobalAuthReq);
     return () => window.removeEventListener('open-auth-modal', handleGlobalAuthReq);
-  }, []);
+  }, [isAuthenticated]);
+
+  /* Auto close AuthModal when logged in */
+  useEffect(() => {
+    if (isAuthenticated) {
+      setAuthModalOpen(false);
+    }
+  }, [isAuthenticated]);
 
   /* Close user menu on click outside */
   useEffect(() => {
@@ -212,9 +221,9 @@ export default function Navbar() {
                       title="User Settings & Theme Menu"
                       className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl theme-card border theme-border hover:border-red-600/60 transition-all cursor-pointer shadow-sm text-xs font-head font-bold theme-text"
                     >
-                      {isAuthenticated ? (
+                      {isAuthenticated || trainer?.avatar || localStorage.getItem('trainer_avatar') ? (
                         <img
-                          src={trainer?.avatar || '/avatar.png'}
+                          src={trainer?.avatar || localStorage.getItem('trainer_avatar') || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${trainer?.id || 'Trainer'}`}
                           alt="Trainer"
                           className="w-4 h-4 rounded-full object-cover border border-red-500"
                         />
@@ -408,7 +417,7 @@ export default function Navbar() {
                           >
                             <div className="flex items-center gap-2">
                               <img
-                                src={trainer?.avatar || '/avatar.png'}
+                                src={trainer?.avatar || localStorage.getItem('trainer_avatar') || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${trainer?.id || 'Trainer'}`}
                                 alt="Trainer"
                                 className="w-5 h-5 rounded-full object-cover border border-red-500"
                               />

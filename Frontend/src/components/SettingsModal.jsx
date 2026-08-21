@@ -18,6 +18,7 @@ const AVATAR_PRESETS = [
 
 const COLOR_SCHEMES = [
   { id: 'red',     name: 'Electric Red',    color: '#EE1515', border: 'border-red-500' },
+  { id: 'blue',    name: 'Royal Blue',      color: '#2563EB', border: 'border-blue-500' },
   { id: 'cyan',    name: 'Neon Cyan',       color: '#06B6D4', border: 'border-cyan-500' },
   { id: 'yellow',  name: 'Thunder Yellow',  color: '#EAB308', border: 'border-yellow-500' },
   { id: 'emerald', name: 'Emerald Grass',   color: '#10B981', border: 'border-emerald-500' },
