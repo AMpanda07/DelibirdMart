@@ -1,107 +1,116 @@
-# 🎁 Delibird Mart
+# 🎁 Delibird Mart — Lumiose City Sanctuary
 
 <div align="center">
 
-![Status](https://img.shields.io/badge/Status-Completed%20v1.0-brightgreen)
-![Theme](https://img.shields.io/badge/Theme-Pokémon%20Red%2C%20Obsidian%20%26%20Snow%20White-red)
-![Mode](https://img.shields.io/badge/Mode-Dual%20Light%20%2F%20Dark%20System-blue)
-![MERN](https://img.shields.io/badge/Stack-React%2019%20%7C%20Node.js%20%7C%20Express%20%7C%20MongoDB-purple)
-![Database](https://img.shields.io/badge/Database-MongoDB%20Atlas-darkgreen)
-![Company](https://img.shields.io/badge/Company-CWAN-blue)
-![Creator](https://img.shields.io/badge/Creator-ErrorGeko%20%28Ayushman%20Panda%29-orange)
+<svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="48" fill="#0A0A0C" stroke="#EE1515" stroke-width="2"/>
+  <path d="M 2,50 A 48,48 0 0,1 98,50 Z" fill="url(#pokeball-red)"/>
+  <defs>
+    <linearGradient id="pokeball-red" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EE1515"/>
+      <stop offset="100%" stop-color="#C40D0D"/>
+    </linearGradient>
+  </defs>
+  <path d="M 2,50 A 48,48 0 0,0 98,50 Z" fill="#F8FAFC"/>
+  <line x1="2" y1="50" x2="98" y2="50" stroke="#0A0A0C" stroke-width="8"/>
+  <circle cx="50" cy="50" r="14" fill="#0A0A0C"/>
+  <circle cx="50" cy="50" r="9" fill="#FFFFFF" stroke="#0A0A0C" stroke-width="2"/>
+  <circle cx="50" cy="50" r="4" fill="#EE1515"/>
+</svg>
 
 ### **Find Your Perfect Pokémon Companion.**
 
-*The official editorial Pokémon adoption marketplace for the Kalos Region.*
+*The official editorial Pokémon adoption marketplace for the Kalos Region (Lumiose City).*
+
+[![Status](https://img.shields.io/badge/Status-Phase%202%20Completed-brightgreen?style=for-the-badge&logo=github)](#)
+[![Version](https://img.shields.io/badge/Version-v2.0.0-blue?style=for-the-badge)](#)
+[![Color Schemes](https://img.shields.io/badge/Color%20Schemes-Red%20%7C%20Blue%20%7C%20Cyan%20%7C%20Yellow%20%7C%20Emerald%20%7C%20Purple-red?style=for-the-badge)](#)
+[![Dual Theme](https://img.shields.io/badge/Theme-Dual%20Light%20%2F%20Dark%20System-0A0A0C?style=for-the-badge)](#)
+[![Stack](https://img.shields.io/badge/Stack-MERN%20%7C%20Vite%208%20%7C%20React%2019-purple?style=for-the-badge&logo=react)](#)
+[![Database](https://img.shields.io/badge/Database-MongoDB%20Atlas-darkgreen?style=for-the-badge&logo=mongodb)](#)
+[![Company](https://img.shields.io/badge/Company-CWAN-blue?style=for-the-badge)](#)
+[![Creator](https://img.shields.io/badge/Creator-ErrorGeko%20(Ayushman%20Panda)-orange?style=for-the-badge)](#)
 
 </div>
 
 ---
 
-# 📖 About Delibird Mart
+## 📖 Overview
 
-**Delibird Mart** is an editorial, high-performance Pokémon adoption platform set in the **Kalos Region** (inspired by *Pokémon Legends: Z-A*).
-
-Built by **CWAN** and created by **ErrorGeko (Ayushman Panda)**, the marketplace features an official **Pokémon Red, Pitch Obsidian Black, and Snow White** aesthetic, dual **Light & Dark Mode** system, vector Poké Ball branding, Web Audio sound feedback, native JWT authentication with Password Reset, and interactive Trainer Pass Cards backed by **MongoDB Atlas**.
+**Delibird Mart** is a high-editorial, high-performance Pokémon adoption platform set in the fictional **Kalos Region (Lumiose City)**. Inspired by modern web design aesthetics and *Pokémon Legends: Z-A*, Delibird Mart offers a full MERN-stack e-commerce experience complete with live dynamic brand theme customization, profile picture presets, native authentication, holographic Trainer Pass IDs, and an extensive PokéDex adoption catalog.
 
 ---
 
-# 🎨 Brand & Design System
+## 🎨 Theme & Design System
 
-- **Official Poké Ball Vector Emblem**: HD vector SVG Poké Ball with red shell, gloss reflection, black center band, and glowing core button.
-- **Dual Light / Dark Theme Palette**:
-  - **Electric Red**: `#EE1515` / `#DC2626`
-  - **Dark Mode**: Pitch Obsidian (`#0A0A0C`), Charcoal (`#141418`), Pure White Text (`#FFFFFF`)
-  - **Light Mode**: Snow Pearl (`#F8FAFC`), Pure White Cards (`#FFFFFF`), Deep Navy Text (`#0F172A`)
-- **Typography**: `Poppins` (Headings), `Inter` (Body text), and `Space Grotesk` (Numerical values).
-- **Web Audio API**: Synthesized futuristic UI clicks, pops, quest chiming, and adoption sound effects.
+Delibird Mart features a custom dual light/dark mode design system with full dynamic brand scheme customization:
 
----
+### 🔴 Primary Brand Color Schemes
+Trainers can switch color themes anytime in **App Settings**, which dynamically updates every red/accent element across the entire UI (headers, text gradients, buttons, cards, borders, glows, badges, scrollbars):
 
-# ✨ Core Completed Features
+- 🔴 **Electric Red**: `#EE1515` (Classic Poké Ball Palette)
+- 🔵 **Royal Blue**: `#2563EB` (Cobalt Sanctuary Blue)
+- 🔷 **Neon Cyan**: `#06B6D4` (High-Energy Luminous Cyan)
+- ⚡ **Thunder Yellow**: `#EAB308` (Electric Spike Yellow)
+- 🌿 **Emerald Grass**: `#10B981` (Kalos Meadow Green)
+- 🔮 **Psychic Purple**: `#A855F7` (Cosmic Psychic Aura)
 
-### 1. 🔐 Native JWT Auth & Password Reset System
-- **Dedicated Sign In, Registration & Forgot Password**: Sign in, create a Trainer Pass, or reset forgotten passwords via email/username.
-- **Backend Hashing & Reset**: Built using `bcryptjs` for password hashing, signed 30-day `jsonwebtoken` (JWT) session management, and `POST /api/v1/auth/reset-password` endpoint.
-- **Mandatory Protection**: Accessing `/marketplace`, adopting companions, or viewing trainer options requires an authenticated Trainer Pass.
+### 🌓 Dual Display Modes
+- **Pitch Obsidian Dark**: `#0A0A0C` background, `#141418` cards, high-visibility contrast white text `#FFFFFF`.
+- **Snow Pearl Light**: `#F8FAFC` background, pure white `#FFFFFF` cards, deep navy `#0F172A` text.
 
-### 2. 🪪 Holographic Trainer Pass Card
-- Digital Trainer Pass displaying avatar, handle, profession, home region, member join date, and adoption counter.
-- Live edit mode allowing trainers to update profile attributes persisted directly to MongoDB Atlas via `PUT /api/v1/auth/profile`.
-
-### 3. 🛍️ Pokémon Adoption Marketplace
-- **Infinite Scroll & Pagination**: Browse through hundreds of PokéDex entries via PokéAPI integration.
-- **Filter Directory**: Filter by Elemental Type, Evolution Stage (Stage 1, 2, 3), Rarity Tier (Common, Uncommon, Rare, Epic, Legendary), Region, and Price Slider.
-- **Search & Sort**: Real-time search by name/type and price/BST sorting.
-
-### 4. 📢 Rolling Text Marquee Advertisement Banner
-- Continuous rolling marquee text banner on the homepage showcasing sanctuary adoption news, health checks, and holographic pass persistence.
-
-### 5. ⚙️ Responsive Navbar & User Popover Menu
-- Sub-navigation bar (`Home`, `Marketplace`, `About`) with an interactive User Settings Icon trigger placed directly beside the `About` button.
-- Dropdown popover menu allows switching between Light/Dark mode, viewing Holographic Passes, or Signing In / Out.
-
-### 6. 👥 About CWAN & Creator Directory
-- Dedicated `/about` page highlighting company **CWAN** and creator **ErrorGeko (Ayushman Panda)** with custom pixel art avatar and official contact links.
+### ✍️ Typography Architecture
+- **Headings**: `Poppins` (Clean, bold, athletic display sans)
+- **Body**: `Inter` (Legible, modern interface typography)
+- **Numbers / PokéCoins**: `Space Grotesk` (Monospaced tech numerical styling)
 
 ---
 
-# 👤 Creator & Company Credits
+## ✨ Features (Phase 2 Completed)
 
-| Role | Details |
+### 1. ⚙️ System & Trainer Preferences Modal
+- **Profile Details**: Live edit trainer handle, profession, home region, and age.
+- **Profile Logo Presets**: Choose from pixel art avatars (Trainer, Red, Ash, Serena, Cynthia, Pikachu, Lucario, Delibird) or input a custom avatar image URL with instant global state synchronization across the Navbar, Trainer Card, and Settings.
+- **Dynamic Color Schemes**: One-click switching between Red, Blue, Cyan, Yellow, Emerald, and Purple.
+- **Light / Dark Mode**: Toggle day and night display modes on demand.
+
+### 2. 🔐 Native REST JWT Auth & Password Reset
+- **Auth Modals**: Sign in, register a new Trainer Pass, or reset forgotten passwords (`POST /api/v1/auth/reset-password`).
+- **Token Verification**: 30-day JWT persistent session with seamless loading check protection.
+- **Route Guarding**: Mandatory sign-in protection for marketplace access, cart adoptions, and trainer pass details.
+
+### 3. 🪪 Holographic Trainer Pass ID
+- View official Lumiose Sanctuary Trainer credentials, badge tier, home region, join date, and saved adopted companions history.
+- Directly persist updates to **MongoDB Atlas**.
+
+### 4. 🛍️ Pokémon Marketplace & Search Directory
+- **Infinite Catalog**: Browse hundreds of Pokémon fetched via PokéAPI with lazy-loading 20-card chunks.
+- **Filter Directory**: Filter by Type, Evolution Stage, Rarity Tier, Region, and Max Adoption Fee slider (`₽`).
+- **Sorting**: Sort by Featured, Price (Low/High), Rating, and Strongest (BST).
+
+### 5. 🔊 Web Audio API Sound System
+- Synthesized audio feedback for UI clicks, pops, category filtering, theme switching, and adoption checkout success.
+
+### 6. 📜 World Disclaimer & Interactive User Guide
+- Step-by-step modal explaining the fictional Kalos region setting and user navigation tips.
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technologies Used |
 |---|---|
-| **Company** | **CWAN** (Creative Web & Application Network) |
-| **Creator** | **ErrorGeko (Ayushman Panda)** |
-| **Profile** | Pixel Art Trainer Avatar |
-
-### 🌐 Official Contact Channels
-- 📸 **Instagram**: [@curiodynam](https://www.instagram.com/curiodynam)
-- 🐦 **X (Twitter)**: [@errorgeko](https://x.com/errorgeko)
-- 🐙 **GitHub**: [AMpanda07](https://github.com/AMpanda07)
-
----
-
-# 🛠️ Tech Stack
-
-### Frontend
-- **React 19** & **React Router DOM 7**
-- **Vite 8**
-- **Tailwind CSS** (Custom Dual-Theme Design System)
-- **Framer Motion** (3D card tilt & page transitions)
-- **Lucide React** (Vector UI icons)
-- **React Hot Toast** (Notification feedback)
-- **Axios** (REST Client)
-
-### Backend
-- **Node.js** & **Express.js**
-- **MongoDB Atlas** & **Mongoose ODM**
-- **JWT (JsonWebToken)**
-- **bcryptjs** (Password hashing)
-- **CORS & dotenv**
+| **Frontend Core** | React 19, React Router DOM 7, Vite 8 |
+| **Styling & Theme** | Tailwind CSS v4, Custom CSS Variables, Glassmorphism, Responsive Grid |
+| **Animations & FX** | Framer Motion (3D spring card tilt & page transitions), Web Audio API |
+| **Icons & UI** | Lucide React, React Hot Toast |
+| **Backend API** | Node.js, Express.js |
+| **Database** | MongoDB Atlas, Mongoose ODM |
+| **Authentication** | JWT (jsonwebtoken), bcryptjs password hashing |
 
 ---
 
-# 🚀 Getting Started
+## 🚀 Getting Started Locally
 
 ### 1. Clone Repository
 ```bash
@@ -109,7 +118,7 @@ git clone https://github.com/AMpanda07/DelibirdMart.git
 cd DelibirdMart
 ```
 
-### 2. Environment Setup
+### 2. Environment Configuration
 
 **Backend (`Backend/.env`)**:
 ```env
@@ -124,22 +133,40 @@ JWT_SECRET=your_jwt_secret_key
 VITE_API_BASE_URL=http://localhost:5000/api/v1
 ```
 
-### 3. Run Locally
+### 3. Install & Start
 
 ```bash
-# Install dependencies & run Backend & Frontend concurrently
+# Start Backend
+cd Backend
+npm install
+npm start
+
+# Start Frontend (in a new terminal)
+cd Frontend
 npm install
 npm run dev
 ```
 
-- **Frontend App**: `http://localhost:5174/`
-- **Backend API**: `http://localhost:5000/`
+- **Frontend App**: `http://localhost:5173/`
+- **Backend API**: `http://localhost:5000/api/v1`
 
 ---
 
-# ⚠ Disclaimer
+## 👤 Company & Creator Credits
 
-This is a fan-made portfolio project created for educational purposes. **Pokémon**, **Delibird**, **Poké Ball**, and all related names and character designs belong to **Nintendo**, **GAME FREAK**, and **The Pokémon Company**.
+| Role | Details |
+|---|---|
+| **Company** | **CWAN** (Creative Web & Application Network) |
+| **Creator** | **ErrorGeko (Ayushman Panda)** |
+| **GitHub** | [@AMpanda07](https://github.com/AMpanda07) |
+| **Instagram** | [@curiodynam](https://www.instagram.com/curiodynam) |
+| **X (Twitter)** | [@errorgeko](https://x.com/errorgeko) |
+
+---
+
+## ⚠️ Disclaimer
+
+This is a fan-made portfolio project created for educational purposes. **Pokémon**, **Delibird**, **Poké Ball**, **Kalos Region**, and all related names and character designs belong to **Nintendo**, **GAME FREAK**, and **The Pokémon Company**.
 
 ---
 
