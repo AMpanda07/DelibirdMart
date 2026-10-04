@@ -37,7 +37,7 @@
 
 ## 📖 Overview
 
-**Delibird Mart** is a high-editorial, high-performance Pokémon adoption platform set in the fictional **Kalos Region (Lumiose City)**. Inspired by modern web design aesthetics and *Pokémon Legends: Z-A*, Delibird Mart offers a full MERN-stack e-commerce experience complete with live dynamic brand theme customization, profile picture presets, native authentication, holographic Trainer Pass IDs, and an extensive PokéDex adoption catalog.
+**Delibird Mart** is a high-editorial, high-performance Pokémon adoption platform set in the fictional **Kalos Region (Lumiose City)**. Inspired by modern web design aesthetics and *Pokémon Legends: Z-A*, Delibird Mart offers a full MERN-stack e-commerce experience complete with live dynamic brand theme customization, profile picture presets, native authentication, holographic Trainer Pass IDs, and an extensive PokéDex adoption catalog and updates.
 
 ---
 
